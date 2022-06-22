@@ -1,0 +1,42 @@
+---
+#################################################
+# Setup
+#################################################
+
+- name: Test check mode | Ensure TestUser absent
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+
+#################################################
+# Test
+#################################################
+
+- name: Test check mode | Create TestUser in check mode
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    password: TestUser
+    enabled: true
+    groups:
+      - admin
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test check mode | Check TestUser absent
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test check mode | Check state
+  assert:
+    that: "result.changed == false"

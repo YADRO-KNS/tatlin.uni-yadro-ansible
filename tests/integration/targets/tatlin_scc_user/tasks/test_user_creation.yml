@@ -1,0 +1,43 @@
+---
+#################################################
+# Setup
+#################################################
+
+- name: Test user creation | Ensure TestUser is absent
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+
+#################################################
+# Test
+#################################################
+
+- name: Test user creation | Create user
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    password: TestUser
+    enabled: true
+    groups:
+      - admin
+  register: result
+
+- name: Test user creation | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user creation | Check TestUser created
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    enabled: true
+    groups:
+      - admin
+    state: "present"
+  check_mode: true
+  register: result
+
+- name: Test user creation | Check state
+  assert:
+    that: "result.changed == false"

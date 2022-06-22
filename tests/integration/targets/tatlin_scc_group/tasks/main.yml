@@ -1,0 +1,109 @@
+---
+#################################################
+# Setup
+#################################################
+
+- name: Test user group creation | Ensure TestGroup is absent
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    state: absent
+
+#################################################
+# Test
+#################################################
+
+- name: Test user group creation | Create user group
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    parent_groups:
+      - admin
+    comment: Test group comment
+    state: present
+  register: result
+
+- name: Test user group creation | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user group creation | Check TestGroup created
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    parent_groups:
+      - admin
+    comment: Test group comment
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test user group creation | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test user group update | Update user group
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    parent_groups:
+      - data
+      - monitor
+    comment: Changed comment
+    state: present
+  register: result
+
+- name: Test user group update | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user group update | Check parent groups were updated
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    parent_groups:
+      - data
+      - monitor
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test user group update | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test user group update | Check parent groups were updated
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    comment: Changed comment
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test user group update | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test user group deletion | Remove TestGroup
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    state: absent
+  register: result
+
+- name: Test user group deletion | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user group deletion | Check TestGroup removed
+  yadro.tatlin.tatlin_scc_group:
+    connection: "{{ connection }}"
+    name: TestGroup
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test user group deletion | Check state
+  assert:
+    that: "result.changed == false"

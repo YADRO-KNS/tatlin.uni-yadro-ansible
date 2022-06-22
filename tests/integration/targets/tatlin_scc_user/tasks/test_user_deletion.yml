@@ -1,0 +1,34 @@
+---
+- name: Test user deletion | Create/update TestUser
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    password: TestUser
+    enabled: true
+    groups:
+      - admin
+    state: present
+  register: result
+
+- name: Test user deletion | Remove TestUser
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+  register: result
+
+- name: Test user deletion | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user deletion | Check TestUser removed
+  yadro.tatlin.tatlin_scc_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test user deletion | Check state
+  assert:
+    that: "result.changed == false"
