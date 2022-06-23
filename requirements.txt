@@ -1,0 +1,3 @@
+cryptography==3.4.8
+ansible
+coverage==4.5.4
