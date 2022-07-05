@@ -10,13 +10,14 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 try:
-    from typing import List, Optional, Union
+    from typing import List, Optional, Union, Dict
 except ImportError:
     # Satisfy Python 2 which doesn't have typing.
-    List = Optional = Union = None
+    List = Optional = Union = Dict = None
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     TatlinClientError,
     RESTClientNotFoundError
@@ -28,9 +29,12 @@ class AuthService:
     SERVICE_ENDPOINT = 'auth'
     USERS_ENDPOINT = SERVICE_ENDPOINT + '/' + 'users'
     GROUPS_ENDPOINT = SERVICE_ENDPOINT + '/' + 'groups'
+    LDAP_ENDPOINT = SERVICE_ENDPOINT + '/' + 'ldap'
+    LDAP_CONFIG_ENDOPINT = LDAP_ENDPOINT + '/' + 'configuration'
 
     def __init__(self, tatlin_client):
         self._client = tatlin_client
+        self._ldap_config = None
 
     def create_group(self, name, parent_groups=None, comment=None):
         # type: (str, List[Union[str, UserGroup]], str) -> UserGroup
@@ -155,3 +159,9 @@ class AuthService:
             )
             rv.append(user)
         return rv
+
+    def get_ldap_config(self):  # type: () -> LdapConfig
+        if self._ldap_config is None:
+            self._ldap_config = LdapConfig(self._client)
+        self._ldap_config.load()
+        return self._ldap_config

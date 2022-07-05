@@ -1,0 +1,165 @@
+---
+
+- name: Test ldap config | Ensure ldap is disabled
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    state: absent
+
+- name: Test ldap config | Full config update
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    host: "{{ ldap_host }}"
+    port: 389
+    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ***REMOVED***
+    base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
+    search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
+    encryption: off
+    user_attribute: cn
+    group_attribute: cn
+    type: custom
+  register: result
+
+- name: Test user group creation | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ldap config | Check config updated
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    host: "{{ ldap_host }}"
+    port: 389
+    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ***REMOVED***
+    base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
+    search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
+    encryption: off
+    user_attribute: cn
+    group_attribute: cn
+    type: custom
+  check_mode: true
+  register: result
+
+- name: Test ldap config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test ldap config | Get ldap server certificate
+  get_certificate:
+    host: "{{ ldap_host }}"
+    port: 636
+  register: cert_info
+
+- name: Test ldap config | Extract certificate
+  command: openssl x509 -outform PEM
+  args:
+    stdin: "{{ cert_info.cert }}"
+  register: remote_cert
+
+- name: Test ldap config | Save ldap server certificate
+  copy:
+    dest: "{{ role_path }}/files/ca.crt"
+    content: "{{ remote_cert.stdout }}"
+
+- name: Test ldap config | Enable ssl encryption
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    lookup_password: ***REMOVED***
+    encryption: ssl
+    port: 636
+    crt_path: "{{ role_path }}/files/ca.crt"
+  register: result
+
+- name: Test ldap config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ldap config | Enable tls encryption
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    lookup_password: ***REMOVED***
+    encryption: tls
+    port: 389
+    crt_content: "{{ cert_info.cert }}"
+  register: result
+
+- name: Test ldap config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ldap config | Change filter
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    lookup_password: ***REMOVED***
+    search_filter: (uid=*)
+    crt_path: "{{ role_path }}/files/ca.crt"
+  register: result
+
+- name: Test ldap config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ldap config | Check filter and encryption updated
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    lookup_password: ***REMOVED***
+    search_filter: (uid=*)
+  check_mode: true
+  register: result
+
+- name: Test ldap config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test AD config | Full config update
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    host: "{{ ldap_host }}"
+    port: 389
+    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ***REMOVED***
+    base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
+    search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
+    encryption: off
+    type: ad
+  register: result
+
+- name: Test AD config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test check mode | Ensure ldap is disabled
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    state: absent
+
+- name: Test check mode | Full config update
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    host: "{{ ldap_host }}"
+    port: 389
+    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ***REMOVED***
+    base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
+    search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
+    encryption: off
+    user_attribute: cn
+    group_attribute: cn
+    type: custom
+  check_mode: true
+  register: result
+
+- name: Test check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test check mode | Check ldap is absent
+  yadro.tatlin.tatlin_scc_ldap:
+    connection: "{{ connection }}"
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test check mode | Check state
+  assert:
+    that: "result.changed == false"

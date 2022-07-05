@@ -20,8 +20,14 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_cli
 
 class TatlinModule(AnsibleModule):
 
-    def __init__(self, argument_spec=None, supports_check_mode=False, required_if=None):
-        # type: (Dict, bool, List) -> None
+    def __init__(
+        self,
+        argument_spec=None,
+        supports_check_mode=False,
+        required_if=None,
+        mutually_exclusive=None,
+    ):
+        # type: (Dict, bool, List, List) -> None
         _argument_spec = {
             "connection": {
                 "required": True,
@@ -29,10 +35,26 @@ class TatlinModule(AnsibleModule):
                 "options": {
                     "base_url": {"required": True, "type": "str"},
                     "username": {"required": False, "type": "str"},
-                    "password": {"required": False, "type": "str", "no_log": True},
-                    "validate_certs": {"required": False, "type": "bool", "default": True},
-                    "login_path": {"required": False, "type": "str", "default": "auth/login"},
-                    "timeout": {"required": False, "type": "int", "default": 30},
+                    "password": {
+                        "required": False,
+                        "type": "str",
+                        "no_log": True,
+                    },
+                    "validate_certs": {
+                        "required": False,
+                        "type": "bool",
+                        "default": True,
+                    },
+                    "login_path": {
+                        "required": False,
+                        "type": "str",
+                        "default": "auth/login",
+                    },
+                    "timeout": {
+                        "required": False,
+                        "type": "int",
+                        "default": 30,
+                    },
                 }
             },
         }
@@ -43,6 +65,7 @@ class TatlinModule(AnsibleModule):
             argument_spec=_argument_spec,
             supports_check_mode=supports_check_mode,
             required_if=required_if,
+            mutually_exclusive=mutually_exclusive,
         )
 
         self.tatlin_api = None  # type: TatlinClient
@@ -63,7 +86,10 @@ class TatlinModule(AnsibleModule):
             self.tatlin_api.authorize()
             self._run()
         except Exception as e:
-            self.fail_json(msg='Operation failed.', error=str(e))
+            self.fail_json(
+                msg='Operation failed',
+                error='{0}: {1}'.format(type(e).__name__, e),
+            )
 
     def _run(self):  # type: () -> None
         raise NotImplementedError('Method not implemented!')

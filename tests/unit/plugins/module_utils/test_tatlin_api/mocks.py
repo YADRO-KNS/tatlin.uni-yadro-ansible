@@ -22,6 +22,7 @@ AUTH_PACKAGE = 'ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api
 AUTH_SERVICE_CLASS = AUTH_PACKAGE + '.auth_service.AuthService'
 USER_CLASS = AUTH_PACKAGE + '.user.User'
 USER_GROUP_CLASS = AUTH_PACKAGE + '.group.UserGroup'
+LDAP_CONFIG_CLASS = AUTH_PACKAGE + '.ldap_config.LdapConfig'
 
 
 def mock_response_data(
@@ -226,3 +227,42 @@ def parent_groups_mock(mocker):
     }
 
     return mock_response_data(mocker, data, monitor, testgroup)
+
+
+@pytest.fixture
+def get_ldap_mock(mocker):
+    ldap_config = {
+        'host': '127.0.0.1',
+        'port': '389',
+        'lookUpUserName': 'TestLookupUser',
+        'baseDn': 'dc=yadro,dc=com',
+        'userBaseDn': '',
+        'groupBaseDn': '',
+        'usersFilter': '(memberof=cn=Users,dc=yadro,dc=com)',
+        'groupsFilter': '',
+        'attrLogin': 'cn',
+        'attrGroup': 'cn',
+        'useSsl': True,
+        'useStartTls': False,
+        'type': 'custom',
+    }
+
+    mock_response_data(mocker, **ldap_config)
+
+
+@pytest.fixture
+def update_ldap_mock(mocker):
+    mock_response_data(
+        mocker,
+        target=LDAP_CONFIG_CLASS + '.load'
+    )
+    return mock_response_data(mocker)
+
+
+@pytest.fixture
+def reset_ldap_mock(mocker):
+    mock_response_data(
+        mocker,
+        target=LDAP_CONFIG_CLASS + '.load'
+    )
+    return mock_response_data(mocker)

@@ -130,3 +130,19 @@ class TestAuthService:
     ):
         with pytest.raises(TatlinClientError):
             client.auth_service.create_group(name='grouperror')
+
+    def test_get_ldap_config(self, client, get_ldap_mock):
+        expected_config = {
+            'host': '127.0.0.1',
+            'port': '389',
+            'lookup_user': 'TestLookupUser',
+            'base_dn': 'dc=yadro,dc=com',
+            'search_filter': '(memberof=cn=Users,dc=yadro,dc=com)',
+            'encryption': 'ssl',
+            'user_attribute': 'cn',
+            'group_attribute': 'cn',
+            'type': 'custom',
+        }
+
+        ldap_config = client.auth_service.get_ldap_config()
+        check_object(ldap_config, expected_config)
