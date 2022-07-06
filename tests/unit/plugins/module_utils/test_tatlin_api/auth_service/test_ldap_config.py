@@ -10,12 +10,16 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import json
+
+from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
 
 
 class TestLdapConfig:
 
-    def test_new_ldap_config(self, client, update_ldap_mock, open_url_kwargs):
+    def test_new_ldap_config(
+        self, client, update_ldap_mock, open_url_kwargs, mocker
+    ):
         ldap_config = LdapConfig(client=client)
 
         ldap_config.update(
@@ -36,27 +40,34 @@ class TestLdapConfig:
             method='PUT',
             url='https://localhost/{0}'.format(
                 client.auth_service.LDAP_CONFIG_ENDOPINT),
-            data=json.dumps({
-                'host': '127.0.0.1',
-                'port': '636',
-                'lookUpUserName': 'LookupUser',
-                'lookUpUserPwd': '***REMOVED***',
-                'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
-                'baseDn': 'dc=yadro,dc=com',
-                'attrLogin': 'sAMAccountName',
-                'attrGroup': 'cn',
-                'type': 'custom',
-                'useStartTls': True,
-                'useSsl': False,
-                'rootCa': 'testcert',
-            }),
+            data=mocker.ANY,
             headers={'Content-Type': 'application/json'},
         )
 
         update_ldap_mock.assert_called_with(**open_url_kwargs)
 
+        # Satisfy Python 2. It does not have builtin dict order,
+        # so resulting json may be in different order than expected
+        call_args, call_kwargs = update_ldap_mock.call_args
+        call_data = json.loads(call_kwargs['data'])
+        expected_call_data = {
+            'host': '127.0.0.1',
+            'port': '636',
+            'lookUpUserName': 'LookupUser',
+            'lookUpUserPwd': '***REMOVED***',
+            'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
+            'baseDn': 'dc=yadro,dc=com',
+            'attrLogin': 'sAMAccountName',
+            'attrGroup': 'cn',
+            'type': 'custom',
+            'useStartTls': True,
+            'useSsl': False,
+            'rootCa': 'testcert',
+        }
+        assert_that(call_data, has_entries(expected_call_data))
+
     def test_update_existing_ldap_config(
-        self, client, update_ldap_mock, open_url_kwargs
+        self, client, update_ldap_mock, open_url_kwargs, mocker,
     ):
         ldap_config = LdapConfig(client=client)
         ldap_config.host = '127.0.0.1'
@@ -78,24 +89,31 @@ class TestLdapConfig:
             method='PUT',
             url='https://localhost/{0}'.format(
                 client.auth_service.LDAP_CONFIG_ENDOPINT),
-            data=json.dumps({
-                'host': '127.0.0.1',
-                'port': '636',
-                'lookUpUserName': 'LookupUser',
-                'lookUpUserPwd': '***REMOVED***',
-                'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
-                'baseDn': 'dc=yadro,dc=com',
-                'attrLogin': 'sAMAccountName',
-                'attrGroup': 'cn',
-                'type': 'custom',
-                'useStartTls': True,
-                'useSsl': False,
-                'rootCa': 'testcert',
-            }),
+            data=mocker.ANY,
             headers={'Content-Type': 'application/json'},
         )
 
         update_ldap_mock.assert_called_with(**open_url_kwargs)
+
+        # Satisfy Python 2. It does not have builtin dict order,
+        # so resulting json may be in different order than expected
+        call_args, call_kwargs = update_ldap_mock.call_args
+        call_data = json.loads(call_kwargs['data'])
+        expected_call_data = {
+            'host': '127.0.0.1',
+            'port': '636',
+            'lookUpUserName': 'LookupUser',
+            'lookUpUserPwd': '***REMOVED***',
+            'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
+            'baseDn': 'dc=yadro,dc=com',
+            'attrLogin': 'sAMAccountName',
+            'attrGroup': 'cn',
+            'type': 'custom',
+            'useStartTls': True,
+            'useSsl': False,
+            'rootCa': 'testcert',
+        }
+        assert_that(call_data, has_entries(expected_call_data))
 
     def test_reset_ldap(self, client, reset_ldap_mock, open_url_kwargs):
         ldap_config = LdapConfig(client=client)

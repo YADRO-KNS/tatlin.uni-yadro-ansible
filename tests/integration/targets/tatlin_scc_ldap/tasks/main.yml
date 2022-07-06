@@ -45,7 +45,7 @@
     that: "result.changed == false"
 
 - name: Test ldap config | Get ldap server certificate
-  get_certificate:
+  community.crypto.get_certificate:
     host: "{{ ldap_host }}"
     port: 636
   register: cert_info
@@ -58,7 +58,7 @@
 
 - name: Test ldap config | Save ldap server certificate
   copy:
-    dest: "{{ role_path }}/files/ca.crt"
+    dest: "{{ role_path }}/ca.crt"
     content: "{{ remote_cert.stdout }}"
 
 - name: Test ldap config | Enable ssl encryption
@@ -67,7 +67,7 @@
     lookup_password: ***REMOVED***
     encryption: ssl
     port: 636
-    crt_path: "{{ role_path }}/files/ca.crt"
+    crt_path: "{{ role_path }}/ca.crt"
   register: result
 
 - name: Test ldap config | Check state
@@ -92,7 +92,7 @@
     connection: "{{ connection }}"
     lookup_password: ***REMOVED***
     search_filter: (uid=*)
-    crt_path: "{{ role_path }}/files/ca.crt"
+    crt_path: "{{ role_path }}/ca.crt"
   register: result
 
 - name: Test ldap config | Check state
