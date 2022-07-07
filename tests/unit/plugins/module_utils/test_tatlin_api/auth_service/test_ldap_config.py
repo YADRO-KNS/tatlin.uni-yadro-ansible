@@ -10,18 +10,29 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import json
-
 from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
+    OPEN_URL_FUNC,
+    LDAP_CONFIG_CLASS,
+)
 
 
 class TestLdapConfig:
 
     def test_new_ldap_config(
-        self, client, update_ldap_mock, open_url_kwargs, mocker
+        self, client, mock_method, open_url_kwargs, mocker
     ):
+        # Mock load method
+        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create LDAP config object
         ldap_config = LdapConfig(client=client)
 
+        # Update LDAP config
         ldap_config.update(
             host='127.0.0.1',
             port=636,
@@ -36,6 +47,7 @@ class TestLdapConfig:
             type='custom',
         )
 
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
             url='https://localhost/{0}'.format(
@@ -44,11 +56,12 @@ class TestLdapConfig:
             headers={'Content-Type': 'application/json'},
         )
 
-        update_ldap_mock.assert_called_with(**open_url_kwargs)
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
 
         # Satisfy Python 2. It does not have builtin dict order,
         # so resulting json may be in different order than expected
-        call_args, call_kwargs = update_ldap_mock.call_args
+        call_args, call_kwargs = open_url_mock.call_args
         call_data = json.loads(call_kwargs['data'])
         expected_call_data = {
             'host': '127.0.0.1',
@@ -67,8 +80,15 @@ class TestLdapConfig:
         assert_that(call_data, has_entries(expected_call_data))
 
     def test_update_existing_ldap_config(
-        self, client, update_ldap_mock, open_url_kwargs, mocker,
+        self, client, mock_method, open_url_kwargs, mocker,
     ):
+        # Mock load method
+        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create LDAP config object
         ldap_config = LdapConfig(client=client)
         ldap_config.host = '127.0.0.1'
         ldap_config.port = '636'
@@ -79,12 +99,14 @@ class TestLdapConfig:
         ldap_config.group_attribute = 'cn'
         ldap_config.type = 'custom'
 
+        # Update search filter for LDAP
         ldap_config.update(
             lookup_password='***REMOVED***',
             search_filter='(memberof=cn=TestUsers,dc=yadro,dc=com)',
             cert='testcert',
         )
 
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
             url='https://localhost/{0}'.format(
@@ -93,11 +115,12 @@ class TestLdapConfig:
             headers={'Content-Type': 'application/json'},
         )
 
-        update_ldap_mock.assert_called_with(**open_url_kwargs)
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
 
         # Satisfy Python 2. It does not have builtin dict order,
         # so resulting json may be in different order than expected
-        call_args, call_kwargs = update_ldap_mock.call_args
+        call_args, call_kwargs = open_url_mock.call_args
         call_data = json.loads(call_kwargs['data'])
         expected_call_data = {
             'host': '127.0.0.1',
@@ -115,12 +138,25 @@ class TestLdapConfig:
         }
         assert_that(call_data, has_entries(expected_call_data))
 
-    def test_reset_ldap(self, client, reset_ldap_mock, open_url_kwargs):
+    def test_reset_ldap(self, client, mock_method, open_url_kwargs):
+        # Mock load method
+        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create LDAP config object
         ldap_config = LdapConfig(client=client)
+
+        # Reset LDAP config
         ldap_config.reset()
+
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='DELETE',
             url='https://localhost/{0}'.format(
                 client.auth_service.LDAP_CONFIG_ENDOPINT),
         )
-        reset_ldap_mock.assert_called_with(**open_url_kwargs)
+
+        # Result: Request with expected parameters was sent to tatlin"):
+        open_url_mock.assert_called_with(**open_url_kwargs)

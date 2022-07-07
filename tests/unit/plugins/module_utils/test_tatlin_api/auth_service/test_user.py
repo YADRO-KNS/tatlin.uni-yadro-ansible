@@ -14,11 +14,22 @@ import json
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
+    OPEN_URL_FUNC,
+    USER_CLASS,
+)
 
 
 class TestUser:
 
-    def test_user_update(self, client, update_user_mock, open_url_kwargs):
+    def test_user_update(self, client, mock_method, open_url_kwargs):
+        # Mock reload method
+        mock_method(target=USER_CLASS + '.reload')
+
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create user
         user = User(
             client=client,
             name='testuser',
@@ -27,6 +38,7 @@ class TestUser:
             member_of=['testuser'],
         )
 
+        # Update user
         user.update(
             password='123',
             enabled=True,
@@ -36,6 +48,7 @@ class TestUser:
             ],
         )
 
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}'.format(
@@ -48,11 +61,19 @@ class TestUser:
             headers={'Content-Type': 'application/json'},
         )
 
-        update_user_mock.assert_called_with(**open_url_kwargs)
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
 
     def test_update_one_argument(
-        self, client, update_user_mock, open_url_kwargs
+        self, client, mock_method, open_url_kwargs
     ):
+        # Mock reload method
+        mock_method(target=USER_CLASS + '.reload')
+
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create user
         user = User(
             client=client,
             name='testuser',
@@ -61,8 +82,10 @@ class TestUser:
             member_of=['testuser'],
         )
 
+        # Update user state
         user.update(enabled=False)
 
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}'.format(
@@ -73,9 +96,11 @@ class TestUser:
             headers={'Content-Type': 'application/json'},
         )
 
-        update_user_mock.assert_called_with(**open_url_kwargs)
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
 
     def test_update_no_arguments(self, client):
+        # Create user
         user = User(
             client=client,
             name='testuser',
@@ -84,10 +109,34 @@ class TestUser:
             member_of=['testuser'],
         )
 
+        # Check if TypeError raises when group updates without parameters"):
         with pytest.raises(TypeError):
             user.update()
 
-    def test_groups(self, client, user_groups_mock):
+    def test_groups(self, client, mock_method):
+        # Mock reload method
+        mock_method(target=USER_CLASS + '.reload')
+
+        # Mock response with 3 groups
+        admin = {
+            'name': 'admin',
+            'gid': 1100,
+            'displayName': 'Administrative group',
+        }
+        testuser = {
+            'name': 'testuser',
+            'gid': 2001,
+            'displayName': '',
+        }
+        another_group = {
+            'name': 'another_group',
+            'gid': 2002,
+            'displayName': 'Another group',
+        }
+
+        mock_method(OPEN_URL_FUNC, admin, testuser, another_group)
+
+        # Define expected data
         expected_groups = [
             dict(name='admin',
                  gid=1100,
@@ -96,6 +145,7 @@ class TestUser:
                  gid=2001,
                  comment='')]
 
+        # Create user
         user = User(
             client=client,
             name='testuser',
@@ -104,10 +154,16 @@ class TestUser:
             member_of=['testuser', 'admin'],
         )
 
+        # Result: 2 groups with expected params was returned
+        assert len(user.groups) == 2
         for group in user.groups:
             check_object(group, expected_groups)
 
-    def test_delete(self, client, delete_user_mock, open_url_kwargs):
+    def test_delete(self, client, mock_method, open_url_kwargs):
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create user
         user = User(
             client=client,
             name='testuser',
@@ -116,12 +172,15 @@ class TestUser:
             member_of=['testuser'],
         )
 
+        # Delete user
         user.delete()
 
+        # Defining expected call parameters
         open_url_kwargs.update(
             method='DELETE',
             url='https://localhost/{0}/{1}'.format(
                 client.auth_service.USERS_ENDPOINT, 'testuser'),
         )
 
-        delete_user_mock.assert_called_with(**open_url_kwargs)
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
