@@ -18,7 +18,8 @@ class ModuleDocFragment(object):
         required: True
         type: dict
         description:
-          - I(connection) describes Tatlin connection configuration. Only session connection supported.
+          - I(connection) describes Tatlin Storage Processor (SP) connection configuration.
+          - Only session connection supported.
           - Authorization is executed automatically with corresponding endpoint. 'auth/login' by default.
           - Client receives x-auth-token and uses it for following requests.
         suboptions:

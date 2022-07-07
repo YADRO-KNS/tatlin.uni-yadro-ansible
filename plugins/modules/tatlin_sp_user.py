@@ -13,8 +13,8 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: tatlin_scc_user
-short_description: Configure SCC user
+module: tatlin_sp_user
+short_description: Configure SP user
 version_added: "1.0.0"
 description:
   - Purpose of this module is to create/change local user's attributes
@@ -70,7 +70,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Create TestUser
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     password: "TestPassword"
@@ -81,7 +81,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify TestUser
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     enabled: false
@@ -89,7 +89,7 @@ EXAMPLES = r"""
       monitor
 
 - name: Delete TestUser
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     state: "absent"

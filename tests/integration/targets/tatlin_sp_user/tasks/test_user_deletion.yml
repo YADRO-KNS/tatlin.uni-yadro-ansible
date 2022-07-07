@@ -1,6 +1,6 @@
 ---
 - name: Test user deletion | Create/update TestUser
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     password: TestUser
@@ -11,7 +11,7 @@
   register: result
 
 - name: Test user deletion | Remove TestUser
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent
@@ -22,7 +22,7 @@
     that: "result.changed == true"
 
 - name: Test user deletion | Check TestUser removed
-  yadro.tatlin.tatlin_scc_user:
+  yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent

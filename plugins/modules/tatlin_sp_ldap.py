@@ -13,8 +13,8 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: tatlin_scc_ldap
-short_description: Configure SCC LDAP client settings.
+module: tatlin_sp_ldap
+short_description: Configure SP LDAP client settings.
 version_added: "1.0.0"
 description:
   - This module is intended to configure ldap settings
@@ -114,7 +114,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Add ldap config
-  yadro.tatlin.tatlin_scc_ldap:
+  yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -129,14 +129,14 @@ EXAMPLES = r"""
   register: result
 
 - name: Change search filter
-  yadro.tatlin.tatlin_scc_ldap:
+  yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     search_filter: (uid=*)
   register: result
 
 - name: Test ldap config | Enable tls encryption
-  yadro.tatlin.tatlin_scc_ldap:
+  yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     encryption: tls
@@ -145,7 +145,7 @@ EXAMPLES = r"""
   register: result
 
 - name: Add AD config with ssl encryption
-  yadro.tatlin.tatlin_scc_ldap:
+  yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 636

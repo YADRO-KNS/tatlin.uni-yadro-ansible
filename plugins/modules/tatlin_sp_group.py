@@ -13,8 +13,8 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: tatlin_scc_group
-short_description: Configure SCC user group
+module: tatlin_sp_group
+short_description: Configure SP user group
 version_added: "1.0.0"
 description:
   - Purpose of this module is to create/change user groups
@@ -61,7 +61,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Create TestGroup
-  yadro.tatlin.tatlin_scc_group:
+  yadro.tatlin.tatlin_sp_group:
     connection: "{{ connection }}"
     name: "TestGroup"
     parent_groups:
@@ -71,7 +71,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify TestGroup
-  yadro.tatlin.tatlin_scc_group:
+  yadro.tatlin.tatlin_sp_group:
     connection: "{{ connection }}"
     name: "TestGroup"
     parent_groups:
@@ -79,7 +79,7 @@ EXAMPLES = r"""
     comment: Testing admin group
 
 - name: Delete TestGroup
-  yadro.tatlin.tatlin_scc_group:
+  yadro.tatlin.tatlin_sp_group:
     connection: "{{ connection }}"
     name: "TestGroup"
     state: "absent"
