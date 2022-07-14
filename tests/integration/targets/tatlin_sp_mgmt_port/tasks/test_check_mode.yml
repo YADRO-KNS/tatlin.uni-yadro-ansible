@@ -1,0 +1,54 @@
+- name: Test mgmt port check mode | Reset configuration
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+
+- name: Test mgmt port check mode | Change SP addresses
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip2 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip4 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+  check_mode: true
+
+- name: Test mgmt port check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test mgmt port check mode | Check SP addresses were not changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+  check_mode: true
+
+- name: Test mgmt port check mode | Check state
+  assert:
+    that: "result.changed == false"

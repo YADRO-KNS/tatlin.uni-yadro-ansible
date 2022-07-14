@@ -1,0 +1,58 @@
+- name: Test change mgmt port virtual ip | Reset configuration
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+
+- name: Test change mgmt port virtual ip | Save initial connection address
+  set_fact:
+    init_connect_ip: "{{ connection.base_url }}"
+
+- name: Test change mgmt port virtual ip | Update virtual ip
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    virtual_address:
+      ip: "{{ ip.management.ip2 }}"
+      mask: 24
+  register: result
+
+- name: Test change mgmt port virtual ip | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test change mgmt port virtual ip | Update connection address
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': ip.management.ip2 }, recursive=true) }}"
+    loop: "{{ connection|list }}"
+
+- name: Test change mgmt port virtual ip | Check virtual ip changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    virtual_address:
+      ip: "{{ ip.management.ip2 }}"
+      mask: 24
+  register: result
+  check_mode: true
+
+- name: Test change mgmt port virtual ip | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test change mgmt port virtual ip | Restore virtual ip
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    virtual_address:
+      ip: "{{ init_connect_ip }}"
+      mask: 24
+
+- name: Test change mgmt port virtual ip | Restore connection address
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': init_connect_ip }, recursive=true) }}"
+    loop: "{{ connection|list }}"

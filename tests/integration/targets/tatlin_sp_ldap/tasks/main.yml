@@ -20,7 +20,7 @@
     type: custom
   register: result
 
-- name: Test user group creation | Check state
+- name: Test ldap config | Check state
   assert:
     that: "result.changed == true"
 

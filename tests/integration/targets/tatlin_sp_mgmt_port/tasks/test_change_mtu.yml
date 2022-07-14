@@ -1,0 +1,25 @@
+- name: Test change mgmt port mtu | Reset configuration
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    mtu: 1800
+
+- name: Test change mgmt port mtu | Update mtu
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    mtu: 1500
+  register: result
+
+- name: Test change mgmt port mtu | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test change mgmt port mtu | Check mtu changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    mtu: 1500
+  register: result
+  check_mode: true
+
+- name: Test change mgmt port mtu | Check state
+  assert:
+    that: "result.changed == false"

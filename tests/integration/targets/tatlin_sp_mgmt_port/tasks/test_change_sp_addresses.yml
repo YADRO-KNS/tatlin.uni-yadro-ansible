@@ -1,0 +1,135 @@
+- name: Test change mgmt ips | Reset configuration
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+
+- name: Test change mgmt ips | Update SP addresses
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip2 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip4 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test change mgmt ips | Check SP addresses changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip2 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip4 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+#  until: result is not failed
+#  retries: 3
+#  delay: 3
+  check_mode: true
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test change mgmt ips | Update single SP with single ip
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip2 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test change mgmt ips | Check SP addresses changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip2 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip4 }}"
+            mask: "{{ ip.management.mask }}"
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+  check_mode: true
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test change mgmt ips | Update both SP with single ip
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test change mgmt ips | Check SP addresses changed
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
+  register: result
+#  until: result is not failed
+#  retries: 3
+#  delay: 3
+  check_mode: true
+
+- name: Test change mgmt ips | Check state
+  assert:
+    that: "result.changed == false"

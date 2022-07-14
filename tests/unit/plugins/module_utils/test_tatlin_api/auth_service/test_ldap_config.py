@@ -59,7 +59,7 @@ class TestLdapConfig:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-        # Satisfy Python 2. It does not have builtin dict order,
+        # Satisfy Python <= 2.7 & 3.5. It does not have builtin dict order,
         # so resulting json may be in different order than expected
         call_args, call_kwargs = open_url_mock.call_args
         call_data = json.loads(call_kwargs['data'])
@@ -118,7 +118,7 @@ class TestLdapConfig:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-        # Satisfy Python 2. It does not have builtin dict order,
+        # Satisfy Python <= 2.7 & 3.5. It does not have builtin dict order,
         # so resulting json may be in different order than expected
         call_args, call_kwargs = open_url_mock.call_args
         call_data = json.loads(call_kwargs['data'])

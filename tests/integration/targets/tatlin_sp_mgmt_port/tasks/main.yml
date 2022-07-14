@@ -1,0 +1,4 @@
+---
+- name: Include nested test files
+  include_tasks: "{{ item }}"
+  loop: "{{ lookup('fileglob', 'test_*.yml', wantlist=True) }}"

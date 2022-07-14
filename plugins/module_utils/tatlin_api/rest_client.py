@@ -75,6 +75,12 @@ class RestClient:
     def authorize(self, username=None, password=None, auth=None):
         raise NotImplementedError
 
+    def set_host(self, host):  # type: (str) -> None
+        self._host = host
+
+    def get_host(self):  # type: () -> str
+        return self._host
+
     def make_request(
         self, path, method, query_params=None, body=None, headers=None,
     ):  # type: (str, str, Dict, Union[Dict, bytes], Dict) -> RestResponse

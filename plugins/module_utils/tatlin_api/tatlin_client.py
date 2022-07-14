@@ -20,8 +20,10 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_clien
     AUTH_BASIC,
     AUTH_SESSION,
 )
+
 from base64 import b64encode
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.auth_service import AuthService
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.network_service import NetworkService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
 
@@ -53,6 +55,7 @@ class TatlinClient(RestClient):
         )
 
         self._auth_service = None
+        self._network_service = None
 
     def __enter__(self):
         self.authorize(self._username, self._password, self._auth_method)
@@ -100,11 +103,23 @@ class TatlinClient(RestClient):
         if self._token:
             self.post(LOGOUT_PATH)
 
+    # Potentially this method can have more arguments.
+    # But now only one is needed
+    def reconnect(self, host=None):
+        self._host = host or self._host
+        self.authorize()
+
     @property
     def auth_service(self):  # type: () -> AuthService
         if not self._auth_service:
             self._auth_service = AuthService(self)
         return self._auth_service
+
+    @property
+    def network_service(self):  # type: () -> NetworkService
+        if not self._network_service:
+            self._network_service = NetworkService(self)
+        return self._network_service
 
 
 class TatlinAuthorizationError(Exception):
