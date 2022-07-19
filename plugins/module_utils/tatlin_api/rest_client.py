@@ -67,8 +67,6 @@ class RestClient:
             self._protocol = "https"
             self._host = base_url
 
-        self._base_url = "{0}://{1}".format(self._protocol, self._host)
-
         self.validate_certs = validate_certs
         self.timeout = timeout
 
@@ -111,7 +109,7 @@ class RestClient:
         if headers:
             request_kwargs["headers"].update(headers)
 
-        url = build_url(self._base_url, path, query_params=query_params)
+        url = build_url(self.base_url, path, query_params=query_params)
         response = self._make_request(url, request_body, **request_kwargs)
         return RestResponse(response)
 
@@ -171,7 +169,7 @@ class RestClient:
 
     @property
     def base_url(self):
-        return self._base_url
+        return "{0}://{1}".format(self._protocol, self._host)
 
 
 class RestResponse:
