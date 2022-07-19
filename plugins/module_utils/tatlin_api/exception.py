@@ -26,5 +26,9 @@ class RESTClientConnectionError(Exception):
     pass
 
 
+class RESTClientUnauthorized(Exception):
+    pass
+
+
 class TatlinClientError(Exception):
     pass
