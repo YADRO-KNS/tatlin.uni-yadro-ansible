@@ -126,23 +126,20 @@ EXAMPLES = r"""
     user_attribute: cn
     group_attribute: cn
     type: custom
-  register: result
 
 - name: Change search filter
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     search_filter: (uid=*)
-  register: result
 
-- name: Test ldap config | Enable tls encryption
+- name: Enable tls encryption
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     encryption: tls
     port: 389
     crt_path: /path/to/certificate.pem
-  register: result
 
 - name: Add AD config with ssl encryption
   yadro.tatlin.tatlin_sp_ldap:
@@ -158,7 +155,6 @@ EXAMPLES = r"""
       -----BEGIN CERTIFICATE-----
       MIIDuz...
     type: ad
-  register: result
 """
 
 
