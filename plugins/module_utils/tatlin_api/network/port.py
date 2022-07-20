@@ -149,8 +149,8 @@ class Port:
         self._client.post(
             path='{ports_endpoint}/{port_type}/{port_name}'.format(
                 ports_endpoint=self._client.network_service.PORTS_ENDPOINT,
-                port_type='ip',
-                port_name='mgmt',
+                port_type=self.type,
+                port_name=self.name,
             ),
             body={
                 'params': {
