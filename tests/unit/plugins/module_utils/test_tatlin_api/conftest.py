@@ -15,7 +15,7 @@ from ansible_collections.yadro.tatlin.tests.unit.compat.mock import MagicMock
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture()
 def client():
     return TatlinClient(
         base_url='localhost',
