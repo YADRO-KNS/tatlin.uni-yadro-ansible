@@ -10,6 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.port import Port
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
 try:
@@ -26,13 +27,18 @@ class NetworkService:
         just current object model abstraction
     """
 
-    PREFIX = 'osmgr'
-    VERSION = 'v2'
-    OSMGR_ENDPOINT = PREFIX + '/' + VERSION
-    PORTS_ENDPOINT = OSMGR_ENDPOINT + '/ports'
+    OSMGR_ENDPOINT = 'osmgr'
+    VERSION1 = 'v1'
+    VERSION2 = 'v2'
+    PORTS_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION2, 'ports'])
+    NTP_SERVERS_ENDPOINT = '/'.join(
+        [OSMGR_ENDPOINT, VERSION1, 'netconfig', 'ntp', 'servers'])
 
     def __init__(self, client):
         self._client = client
+
+    def get_ntp_config(self):
+        return NtpConfig(client=self._client)
 
     def get_ports(self):  # type: () -> List[Port]
         rv = []

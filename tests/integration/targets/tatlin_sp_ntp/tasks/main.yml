@@ -1,0 +1,131 @@
+---
+- name: Test ntp config | Ensure ntp list is empty
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    state: absent
+
+#### TEST 1
+- name: Test ntp config check mode | Set server
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+  check_mode: true
+  register: result
+
+- name: Test ntp config check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ntp config check mode | Check servers not changed
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+  check_mode: true
+  register: result
+
+- name: Test ntp config check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+#### TEST 2
+- name: Test ntp config | Set ntp servers
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+      - example.com
+      - happ-y.pa.th.com
+      - 127.0.0.1
+  register: result
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ntp config | Check servers changed
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+      - example.com
+      - happ-y.pa.th.com
+      - 127.0.0.1
+  check_mode: true
+  register: result
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 3
+- name: Test ntp config | Remove one server
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - happ-y.pa.th.com
+    state: absent
+  register: result
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ntp config | Check server removed
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - happ-y.pa.th.com
+    state: absent
+  register: result
+  check_mode: true
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == false"
+
+##### TEST 4
+- name: Test ntp config check mode | Set server
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+  register: result
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ntp config | Clear servers
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test ntp config | Check servers cleared
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+  check_mode: true
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test ntp config check mode | Check servers cleared
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+  register: result
+  check_mode: true
+
+- name: Test ntp config | Check state
+  assert:
+    that: "result.changed == true"

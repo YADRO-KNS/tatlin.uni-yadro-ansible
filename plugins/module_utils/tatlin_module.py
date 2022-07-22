@@ -10,9 +10,9 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 try:
-    from typing import Dict, List
+    from typing import Dict, List, Sequence
 except ImportError:
-    Dict = List = None
+    Dict = List = Sequence = None
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
@@ -27,7 +27,7 @@ class TatlinModule(AnsibleModule):
         required_if=None,
         mutually_exclusive=None,
     ):
-        # type: (Dict, bool, List, List) -> None
+        # type: (Dict, bool, Sequence, List) -> None
         _argument_spec = {
             "connection": {
                 "required": True,

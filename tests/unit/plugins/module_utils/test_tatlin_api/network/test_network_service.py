@@ -154,3 +154,16 @@ class TestNetworkService:
             client.network_service.get_port('AbsentPort')
 
         assert str(exc_info.value) == 'Not found port with name AbsentPort'
+
+    def test_get_ntp_config(self, client, mock_method):
+        # Mock open_url response for get_ports
+        mock_method(
+            OPEN_URL_FUNC,
+            ntp_server_list=['127.0.0.1']
+        )
+
+        # Call get_ntp_config
+        ntp_config = client.network_service.get_ntp_config()
+
+        # Result: Config with expected server was returned
+        assert ntp_config.servers == ['127.0.0.1']
