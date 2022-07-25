@@ -14,20 +14,14 @@ import pytest
 from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    PORT_CLASS,
-    PORT_MODULE,
+    OPEN_URL_FUNC, PORT_CLASS, PORT_MODULE,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.port import (
-    get_ip_and_mask,
-    get_ip_only,
-    Port,
-    Node,
-    ChangedHost,
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import (
+    get_ip_and_mask, get_ip_only, Port, Node, ChangedHost,
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    RESTClientConnectionError,
-    TatlinClientError,
+    RESTClientConnectionError, TatlinClientError,
 )
 
 
@@ -256,7 +250,7 @@ class TestPort:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}/{2}'.format(
-                client.network_service.PORTS_ENDPOINT,
+                PORTS_ENDPOINT,
                 port.type,
                 port.name),
             data=mocker.ANY,
@@ -309,7 +303,7 @@ class TestPort:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}/{2}'.format(
-                client.network_service.PORTS_ENDPOINT,
+                PORTS_ENDPOINT,
                 port.type,
                 port.name),
             data=mocker.ANY,
@@ -364,7 +358,7 @@ class TestPort:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}/{2}'.format(
-                client.network_service.PORTS_ENDPOINT,
+                PORTS_ENDPOINT,
                 port.type,
                 port.name),
             data=mocker.ANY,
@@ -419,7 +413,7 @@ class TestPort:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}/{2}'.format(
-                client.network_service.PORTS_ENDPOINT,
+                PORTS_ENDPOINT,
                 port.type,
                 port.name),
             data=mocker.ANY,
@@ -489,7 +483,7 @@ class TestPort:
                 method='GET',
                 url='https://{0}/{1}'.format(
                     ip,
-                    client.network_service.PORTS_ENDPOINT),
+                    PORTS_ENDPOINT),
             )
             calls.append(mocker.call(**call_args))
 

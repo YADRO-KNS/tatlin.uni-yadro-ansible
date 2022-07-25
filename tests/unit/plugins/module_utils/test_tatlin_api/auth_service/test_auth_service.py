@@ -14,9 +14,11 @@ import pytest
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
+    USERS_ENDPOINT, GROUPS_ENDPOINT,
+)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError,
-    RESTClientNotFoundError,
+    TatlinClientError, RESTClientNotFoundError,
 )
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC,
@@ -107,7 +109,7 @@ class TestAuthService:
         open_url_kwargs.update(
             method='PUT',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.USERS_ENDPOINT, 'testname'),
+                USERS_ENDPOINT, 'testname'),
             data=json.dumps({
                 'secret': 'password',
                 'memberOf': ['monitor', 'data'],
@@ -208,7 +210,7 @@ class TestAuthService:
         open_url_kwargs.update(
             method='PUT',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.GROUPS_ENDPOINT, 'testgroup'),
+                GROUPS_ENDPOINT, 'testgroup'),
             data=json.dumps({
                 'displayName': 'Test Group',
                 'memberOf': [],

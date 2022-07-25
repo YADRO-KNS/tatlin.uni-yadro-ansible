@@ -14,9 +14,9 @@ import json
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    USER_CLASS,
+    OPEN_URL_FUNC, USER_CLASS,
 )
 
 
@@ -52,7 +52,7 @@ class TestUser:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.USERS_ENDPOINT, 'testuser'),
+                USERS_ENDPOINT, 'testuser'),
             data=json.dumps({
                 'enabled': 'true',
                 'secret': '123',
@@ -89,7 +89,7 @@ class TestUser:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.USERS_ENDPOINT, 'testuser'),
+                USERS_ENDPOINT, 'testuser'),
             data=json.dumps({
                 'enabled': 'false',
             }),
@@ -179,7 +179,7 @@ class TestUser:
         open_url_kwargs.update(
             method='DELETE',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.USERS_ENDPOINT, 'testuser'),
+                USERS_ENDPOINT, 'testuser'),
         )
 
         # Result: Request with expected parameters was sent to tatlin

@@ -14,6 +14,8 @@ try:
 except ImportError:
     Union = List = TYPE_CHECKING = None
 
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
+
 if TYPE_CHECKING:
     from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 
@@ -26,10 +28,7 @@ class User:
         self.uid = uid
         self.enabled = enabled
         self._member_of = member_of
-        self._endpoint = '{0}/{1}'.format(
-            self._client.auth_service.USERS_ENDPOINT,
-            self.name,
-        )
+        self._endpoint = '/'.join([USERS_ENDPOINT, self.name])
 
     def delete(self):  # type: () -> None
         self._client.delete(self._endpoint)

@@ -9,6 +9,8 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import NTP_SERVERS_ENDPOINT
+
 try:
     from typing import List
 except ImportError:
@@ -21,7 +23,7 @@ class NtpConfig:
     def __init__(self, client):
         self._client = client
         self.servers = None
-        self._endpoint = self._client.network_service.NTP_SERVERS_ENDPOINT
+        self._servers_endpoint = NTP_SERVERS_ENDPOINT
 
         self.load()
 
@@ -29,7 +31,7 @@ class NtpConfig:
         self.set_servers(self.servers + [server])
 
     def load(self):  # type: () -> None
-        data = self._client.get(self._endpoint).json
+        data = self._client.get(self._servers_endpoint).json
         self.servers = data['ntp_server_list']
 
     def remove_server(self, server):  # type: (str) -> None
@@ -40,7 +42,7 @@ class NtpConfig:
 
     def set_servers(self, servers):  # type: (List) -> None
         self._client.put(
-            self._endpoint,
+            self._servers_endpoint,
             body={'ntp_server_list': servers},
         )
         self.load()

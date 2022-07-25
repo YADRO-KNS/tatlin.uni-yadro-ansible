@@ -10,7 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.port import Node
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Node
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
@@ -55,7 +55,7 @@ class TestNetworkService:
         )
 
         # Call get_ports
-        ports = client.network_service.get_ports()
+        ports = client.osmgr_service.get_ports()
 
         # Result: two ports was returned
         assert len(ports) == 2
@@ -113,7 +113,7 @@ class TestNetworkService:
         )
 
         # Call get_port
-        mgmt_port = client.network_service.get_port('mgmt')
+        mgmt_port = client.osmgr_service.get_port('mgmt')
 
         # Define expected port
         expected_ports = [
@@ -151,7 +151,7 @@ class TestNetworkService:
 
         # Call get_port
         with pytest.raises(TatlinClientError) as exc_info:
-            client.network_service.get_port('AbsentPort')
+            client.osmgr_service.get_port('AbsentPort')
 
         assert str(exc_info.value) == 'Not found port with name AbsentPort'
 
@@ -163,22 +163,7 @@ class TestNetworkService:
         )
 
         # Call get_ntp_config
-        ntp_config = client.network_service.get_ntp_config()
+        ntp_config = client.osmgr_service.get_ntp_config()
 
         # Result: Config with expected server was returned
         assert ntp_config.servers == ['127.0.0.1']
-
-    def test_get_snmp_config(self, client, mock_method):
-        # Mock open_url response for get_ports
-        mock_method(
-            OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'127.0.0.1:162': {}}
-        )
-
-        # Call get_ntp_config
-        snmp_config = client.network_service.get_snmp_config()
-
-        # Result: Config with expected server was returned
-        assert snmp_config.community == 'tatlin'
-        assert snmp_config.servers == ['127.0.0.1:162']

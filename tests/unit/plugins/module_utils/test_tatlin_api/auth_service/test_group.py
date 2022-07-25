@@ -13,9 +13,9 @@ import pytest
 import json
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import GROUPS_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    USER_GROUP_CLASS,
+    OPEN_URL_FUNC, USER_GROUP_CLASS,
 )
 
 
@@ -42,7 +42,7 @@ class TestGroup:
         open_url_kwargs.update(
             method='POST',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.GROUPS_ENDPOINT, 'testgroup'),
+                GROUPS_ENDPOINT, 'testgroup'),
             data=json.dumps({
                 'displayName': 'testcomment',
                 'memberOf': []
@@ -121,7 +121,7 @@ class TestGroup:
         open_url_kwargs.update(
             method='DELETE',
             url='https://localhost/{0}/{1}'.format(
-                client.auth_service.GROUPS_ENDPOINT, 'testgroup'),
+                GROUPS_ENDPOINT, 'testgroup'),
         )
 
         # Result: Request with expected parameters was sent to tatlin

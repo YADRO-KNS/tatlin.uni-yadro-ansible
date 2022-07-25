@@ -19,22 +19,20 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError,
-    RESTClientNotFoundError
+    TatlinClientError, RESTClientNotFoundError,
+)
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
+    GROUPS_ENDPOINT, USERS_ENDPOINT,
 )
 
 
 class AuthService:
 
-    SERVICE_ENDPOINT = 'auth'
-    USERS_ENDPOINT = SERVICE_ENDPOINT + '/' + 'users'
-    GROUPS_ENDPOINT = SERVICE_ENDPOINT + '/' + 'groups'
-    LDAP_ENDPOINT = SERVICE_ENDPOINT + '/' + 'ldap'
-    LDAP_CONFIG_ENDOPINT = LDAP_ENDPOINT + '/' + 'configuration'
-
     def __init__(self, tatlin_client):
         self._client = tatlin_client
         self._ldap_config = None
+        self._groups_endpoint = GROUPS_ENDPOINT
+        self._users_endpoint = USERS_ENDPOINT
 
     def create_group(self, name, parent_groups=None, comment=None):
         # type: (str, List[Union[str, UserGroup]], str) -> UserGroup
@@ -51,7 +49,7 @@ class AuthService:
                 })
 
         self._client.put(
-            self.GROUPS_ENDPOINT + '/' + name,
+            self._groups_endpoint + '/' + name,
             body={
                 'displayName': comment,
                 'memberOf': member_of,
@@ -80,7 +78,7 @@ class AuthService:
             member_of.append(group if isinstance(group, str) else group.name)
 
         self._client.put(
-            self.USERS_ENDPOINT + '/' + name,
+            self._users_endpoint + '/' + name,
             body={
                 'secret': password,
                 'memberOf': member_of,
@@ -98,7 +96,7 @@ class AuthService:
 
     def get_group(self, name):  # type: (str) -> Optional[UserGroup]
         try:
-            data = self._client.get(self.GROUPS_ENDPOINT + '/' + name).json
+            data = self._client.get(self._groups_endpoint + '/' + name).json
         except RESTClientNotFoundError:
             return None
 
@@ -117,7 +115,7 @@ class AuthService:
 
     def get_groups(self):  # type: () -> List[UserGroup]
         rv = []
-        data = self._client.get(self.GROUPS_ENDPOINT).json
+        data = self._client.get(self._groups_endpoint).json
 
         for item in data:
             group = UserGroup(
@@ -132,7 +130,7 @@ class AuthService:
 
     def get_user(self, name):  # type: (str) -> Optional[User]
         try:
-            data = self._client.get(self.USERS_ENDPOINT + '/' + name).json
+            data = self._client.get(self._users_endpoint + '/' + name).json
         except RESTClientNotFoundError:
             return None
 
@@ -148,7 +146,7 @@ class AuthService:
 
     def get_users(self):  # type: () -> List[User]
         rv = []
-        data = self._client.get(self.USERS_ENDPOINT).json
+        data = self._client.get(self._users_endpoint).json
         for item in data.values():
             user = User(
                 client=self._client,

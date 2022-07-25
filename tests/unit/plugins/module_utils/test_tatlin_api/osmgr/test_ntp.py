@@ -11,11 +11,11 @@ __metaclass__ = type
 
 import json
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import NTP_SERVERS_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    NTP_CONFIG_CLASS,
+    OPEN_URL_FUNC, NTP_CONFIG_CLASS,
 )
 
 
@@ -68,9 +68,7 @@ class TestNtp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.NTP_SERVERS_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(NTP_SERVERS_ENDPOINT),
             data=json.dumps({'ntp_server_list': ['yadro.com', '2.2.2.2']}),
             headers={'Content-Type': 'application/json'},
         )
@@ -97,9 +95,7 @@ class TestNtp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.NTP_SERVERS_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(NTP_SERVERS_ENDPOINT),
             data=json.dumps({'ntp_server_list': ['yadro.com', '1.1.1.1']}),
             headers={'Content-Type': 'application/json'},
         )
@@ -129,9 +125,7 @@ class TestNtp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.NTP_SERVERS_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(NTP_SERVERS_ENDPOINT),
             data=json.dumps({'ntp_server_list': ['yadro.com', '2.2.2.2']}),
             headers={'Content-Type': 'application/json'},
         )
@@ -161,9 +155,7 @@ class TestNtp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.NTP_SERVERS_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(NTP_SERVERS_ENDPOINT),
             data=json.dumps({'ntp_server_list': []}),
             headers={'Content-Type': 'application/json'},
         )

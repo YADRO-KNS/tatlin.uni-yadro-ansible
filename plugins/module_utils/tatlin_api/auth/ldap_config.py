@@ -16,6 +16,7 @@ except ImportError:
     Optional = Dict = None
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import LDAP_CONFIG_ENDOPINT
 
 
 ENCRYPTION_TLS = 'tls'
@@ -31,15 +32,16 @@ class LdapConfig:
         self.port = None
         self.lookup_user = None
         self.base_dn = None
-        self.search_filter = None,
-        self.encryption = None,
-        self.user_attribute = None,
-        self.group_attribute = None,
-        self.type = None,
+        self.search_filter = None
+        self.encryption = None
+        self.user_attribute = None
+        self.group_attribute = None
+        self.type = None
+        self._ldap_config_endpoint = LDAP_CONFIG_ENDOPINT
 
     def load(self):  # type: () -> None
         data = self._client.get(
-            self._client.auth_service.LDAP_CONFIG_ENDOPINT,
+            self._ldap_config_endpoint,
         ).json
 
         self.host = data['host']
@@ -61,7 +63,7 @@ class LdapConfig:
             return ENCRYPTION_OFF
 
     def reset(self):
-        self._client.delete(self._client.auth_service.LDAP_CONFIG_ENDOPINT)
+        self._client.delete(self._ldap_config_endpoint)
         self.load()
 
     def update(self, lookup_password, **params):
@@ -131,7 +133,7 @@ class LdapConfig:
             )
 
         self._client.put(
-            self._client.auth_service.LDAP_CONFIG_ENDOPINT,
+            self._ldap_config_endpoint,
             body=request_body,
         )
 

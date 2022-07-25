@@ -11,12 +11,12 @@ __metaclass__ = type
 
 import pytest
 import json
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SNMP_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    SNMP_CONFIG_CLASS,
+    OPEN_URL_FUNC, SNMP_CONFIG_CLASS,
 )
 
 
@@ -76,9 +76,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({'community': 'tatlin', 'recipients': {}}),
             headers={'Content-Type': 'application/json'},
         )
@@ -109,9 +107,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({
                 'community': 'tatlin',
                 'recipients': {'127.0.0.1:162': {},
@@ -149,9 +145,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({
                 'community': 'test_community',
                 'recipients': {'127.0.0.1:162': {},
@@ -186,9 +180,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=None,
         )
 
@@ -218,9 +210,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({
                 'community': 'tatlin',
                 'recipients': {'127.0.0.1:162': {},
@@ -258,9 +248,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({
                 'community': 'tatlin',
                 'recipients': {'127.0.0.1:162': {}, 'example.com:2': {}},
@@ -296,9 +284,7 @@ class TestSnmp:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.network_service.SNMP_ENDPOINT,
-            ),
+            url='https://localhost/{0}'.format(SNMP_ENDPOINT),
             data=json.dumps({
                 'community': 'tatlin',
                 'recipients': {'127.0.0.1:162': {}},

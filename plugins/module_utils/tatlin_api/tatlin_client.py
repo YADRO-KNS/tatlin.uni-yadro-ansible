@@ -23,7 +23,8 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_clien
 
 from base64 import b64encode
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.auth_service import AuthService
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.network_service import NetworkService
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.osmgr_service import OsmgrService
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.notification_service import NotificationService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
 
@@ -55,7 +56,8 @@ class TatlinClient(RestClient):
         )
 
         self._auth_service = None
-        self._network_service = None
+        self._osmgr_service = None
+        self._notification_service = None
 
     def __enter__(self):
         self.authorize(self._username, self._password, self._auth_method)
@@ -116,10 +118,16 @@ class TatlinClient(RestClient):
         return self._auth_service
 
     @property
-    def network_service(self):  # type: () -> NetworkService
-        if not self._network_service:
-            self._network_service = NetworkService(self)
-        return self._network_service
+    def osmgr_service(self):  # type: () -> OsmgrService
+        if not self._osmgr_service:
+            self._osmgr_service = OsmgrService(self)
+        return self._osmgr_service
+
+    @property
+    def notification_service(self):  # type: () -> NotificationService
+        if not self._notification_service:
+            self._notification_service = NotificationService(self)
+        return self._notification_service
 
 
 class TatlinAuthorizationError(Exception):

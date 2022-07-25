@@ -16,10 +16,10 @@ except ImportError:
 
 import sys
 import time
+
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError,
-    RESTClientConnectionError,
-    RESTClientUnauthorized,
+    TatlinClientError, RESTClientConnectionError, RESTClientUnauthorized,
 )
 
 if sys.version_info[0] >= 3:
@@ -72,16 +72,16 @@ class Port:
         self.nodes = {}
         self.virtual_address = None
         self._changed_host = ChangedHost(self._client)
+        self._ports_endpoint = PORTS_ENDPOINT
+        self._endpoint = '/'.join([PORTS_ENDPOINT, self.type, self.name])
 
-        self.load()
+        self.load()  # TODO: Надо это убрать
 
     def is_mgmt(self):  # type: () -> bool
         return self.name == 'mgmt'
 
     def load(self):  # type: () -> None
-        all_ports_data = self._client.get(
-            self._client.network_service.PORTS_ENDPOINT
-        ).json
+        all_ports_data = self._client.get(self._ports_endpoint).json
 
         port_data = next(
             item for item in all_ports_data if item['id'] == self.name
@@ -147,11 +147,7 @@ class Port:
             )
 
         self._client.post(
-            path='{ports_endpoint}/{port_type}/{port_name}'.format(
-                ports_endpoint=self._client.network_service.PORTS_ENDPOINT,
-                port_type=self.type,
-                port_name=self.name,
-            ),
+            path=self._endpoint,
             body={
                 'params': {
                     'nodes': body_nodes,
@@ -266,8 +262,7 @@ class Port:
             with self._changed_host(ip):
                 for attempt in range(attempts):
                     try:
-                        self._client.get(
-                            self._client.network_service.PORTS_ENDPOINT)
+                        self._client.get(self._ports_endpoint)
                         is_up = True
                     except RESTClientUnauthorized:
                         is_up = True

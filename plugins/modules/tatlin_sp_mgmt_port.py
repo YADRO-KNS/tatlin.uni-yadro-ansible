@@ -161,7 +161,7 @@ class TatlinMgmtPort(TatlinModule):
         )
 
     def _run(self):
-        port = self.tatlin_api.network_service.get_port('mgmt')
+        port = self.tatlin_api.osmgr_service.get_port('mgmt')
         port_changes = self.get_port_changes(port)
 
         if len(port_changes) > 0:

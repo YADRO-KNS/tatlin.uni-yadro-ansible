@@ -12,9 +12,9 @@ __metaclass__ = type
 import json
 from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import LDAP_CONFIG_ENDOPINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    LDAP_CONFIG_CLASS,
+    OPEN_URL_FUNC, LDAP_CONFIG_CLASS,
 )
 
 
@@ -50,8 +50,7 @@ class TestLdapConfig:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.auth_service.LDAP_CONFIG_ENDOPINT),
+            url='https://localhost/{0}'.format(LDAP_CONFIG_ENDOPINT),
             data=mocker.ANY,
             headers={'Content-Type': 'application/json'},
         )
@@ -109,8 +108,7 @@ class TestLdapConfig:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='PUT',
-            url='https://localhost/{0}'.format(
-                client.auth_service.LDAP_CONFIG_ENDOPINT),
+            url='https://localhost/{0}'.format(LDAP_CONFIG_ENDOPINT),
             data=mocker.ANY,
             headers={'Content-Type': 'application/json'},
         )
@@ -154,8 +152,7 @@ class TestLdapConfig:
         # Defining expected call parameters
         open_url_kwargs.update(
             method='DELETE',
-            url='https://localhost/{0}'.format(
-                client.auth_service.LDAP_CONFIG_ENDOPINT),
+            url='https://localhost/{0}'.format(LDAP_CONFIG_ENDOPINT),
         )
 
         # Result: Request with expected parameters was sent to tatlin"):

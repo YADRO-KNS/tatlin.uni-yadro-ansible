@@ -9,10 +9,10 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.port import Port
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.ntp import NtpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Port
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
 
 try:
     from typing import List, Dict
@@ -21,32 +21,18 @@ except ImportError:
     List = Dict = None
 
 
-class NetworkService:
-    """
-    Note:
-        Tatlin doesn't have such service. It's
-        just current object model abstraction
-    """
-
-    OSMGR_ENDPOINT = 'osmgr'
-    NOTIFICATION_ENDPOINT = 'notification'
-    VERSION1 = 'v1'
-    VERSION2 = 'v2'
-    PORTS_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION2, 'ports'])
-    NTP_SERVERS_ENDPOINT = '/'.join(
-        [OSMGR_ENDPOINT, VERSION1, 'netconfig', 'ntp', 'servers']
-    )
-    SNMP_ENDPOINT = '/'.join([NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp'])
+class OsmgrService:
 
     def __init__(self, client):
         self._client = client
+        self._ports_endpoint = PORTS_ENDPOINT
 
     def get_ntp_config(self):
         return NtpConfig(client=self._client)
 
     def get_ports(self):  # type: () -> List[Port]
         rv = []
-        ports_data = self._client.get(self.PORTS_ENDPOINT).json
+        ports_data = self._client.get(self._ports_endpoint).json
         for item in ports_data:
             port = Port(
                 client=self._client,
@@ -67,6 +53,3 @@ class NetworkService:
             )
 
         return port
-
-    def get_snmp_config(self):
-        return SnmpConfig(client=self._client)

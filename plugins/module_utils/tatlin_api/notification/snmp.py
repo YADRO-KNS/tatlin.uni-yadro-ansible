@@ -10,6 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SNMP_ENDPOINT
 
 try:
     from typing import List
@@ -23,7 +24,7 @@ class SnmpConfig:
         self._client = client
         self.community = None
         self.servers = []
-        self._endpoint = self._client.network_service.SNMP_ENDPOINT
+        self._endpoint = SNMP_ENDPOINT
 
         self.load()
 
