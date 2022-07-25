@@ -167,3 +167,18 @@ class TestNetworkService:
 
         # Result: Config with expected server was returned
         assert ntp_config.servers == ['127.0.0.1']
+
+    def test_get_snmp_config(self, client, mock_method):
+        # Mock open_url response for get_ports
+        mock_method(
+            OPEN_URL_FUNC,
+            community='tatlin',
+            recipients={'127.0.0.1:162': {}}
+        )
+
+        # Call get_ntp_config
+        snmp_config = client.network_service.get_snmp_config()
+
+        # Result: Config with expected server was returned
+        assert snmp_config.community == 'tatlin'
+        assert snmp_config.servers == ['127.0.0.1:162']

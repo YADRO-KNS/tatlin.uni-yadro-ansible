@@ -11,6 +11,7 @@ __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.port import Port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.network.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
 try:
@@ -28,11 +29,14 @@ class NetworkService:
     """
 
     OSMGR_ENDPOINT = 'osmgr'
+    NOTIFICATION_ENDPOINT = 'notification'
     VERSION1 = 'v1'
     VERSION2 = 'v2'
     PORTS_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION2, 'ports'])
     NTP_SERVERS_ENDPOINT = '/'.join(
-        [OSMGR_ENDPOINT, VERSION1, 'netconfig', 'ntp', 'servers'])
+        [OSMGR_ENDPOINT, VERSION1, 'netconfig', 'ntp', 'servers']
+    )
+    SNMP_ENDPOINT = '/'.join([NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp'])
 
     def __init__(self, client):
         self._client = client
@@ -63,3 +67,6 @@ class NetworkService:
             )
 
         return port
+
+    def get_snmp_config(self):
+        return SnmpConfig(client=self._client)

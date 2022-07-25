@@ -1,0 +1,176 @@
+- name: Test SNMP config | Ensure SNMP is empty
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    state: absent
+
+#### TEST 1
+- name: Test SNMP config check mode | Set SNMP config
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: tatlin
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test SNMP config check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config check mode | Check config was not changed
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: tatlin
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test SNMP config check mode | Check state
+  assert:
+    that: "result.changed == true"
+
+#### TEST 2
+- name: Test SNMP config | Set SNMP config
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: tatlin
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+      - ip: example.com
+        port: 162
+    state: present
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config | Set SNMP config
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: tatlin
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+      - ip: example.com
+        port: 162
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 3
+- name: Test SNMP config | Add new server
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+      - ip: example.com
+        port: 162
+      - ip: 192.168.11.22
+        port: 16216
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config | Check servers were changed
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+      - ip: example.com
+        port: 162
+      - ip: 192.168.11.22
+        port: 16216
+  check_mode: true
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 4
+- name: Test SNMP config | Remove server
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    servers:
+      - ip: example.com
+        port: 162
+    state: absent
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config | Check servers was removed
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    servers:
+      - ip: 127.0.1.2
+        port: 162
+      - ip: 192.168.11.22
+        port: 16216
+  check_mode: true
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 5
+- name: Test SNMP config | Change community
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: test_community
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config | Check community was changed
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: test_community
+  check_mode: true
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 6
+- name: Test SNMP config | Reset config
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SNMP config | Check config was reset
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test SNMP config | Check state
+  assert:
+    that: "result.changed == false"
