@@ -184,7 +184,7 @@ class RestResponse:
     @property
     def json(self):  # type: () -> Dict
         try:
-            return json.loads(self._body)
+            return json.loads(self._body or '{}')
         except ValueError:
             raise ValueError("Unable to parse json")
 
