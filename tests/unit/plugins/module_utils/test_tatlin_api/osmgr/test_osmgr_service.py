@@ -167,3 +167,33 @@ class TestNetworkService:
 
         # Result: Config with expected server was returned
         assert ntp_config.servers == ['127.0.0.1']
+
+    def test_get_dns_filled_config(self, client, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            dns_static_servers=['127.0.0.1', '1.1.1.1'],
+            dns_static_search_list=['exapmle.com', 'test.com']
+        )
+
+        # Get DNS config
+        dns_config = client.osmgr_service.get_dns_config()
+
+        # Result: DNS config with expected parameters was returned
+        assert dns_config.servers == ['127.0.0.1', '1.1.1.1']
+        assert dns_config.search_list == ['exapmle.com', 'test.com']
+
+    def test_get_dns_empty_config(self, client, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            dns_static_servers=[],
+            dns_static_search_list=[]
+        )
+
+        # Get DNS config
+        dns_config = client.osmgr_service.get_dns_config()
+
+        # Result: DNS config with expected parameters was returned
+        assert dns_config.servers == []
+        assert dns_config.search_list == []

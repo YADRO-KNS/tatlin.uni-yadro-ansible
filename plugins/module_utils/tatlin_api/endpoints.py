@@ -13,9 +13,9 @@ LDAP_CONFIG_ENDOPINT = '/'.join([LDAP_ENDPOINT, 'configuration'])
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
 PORTS_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION2, 'ports'])
-NTP_SERVERS_ENDPOINT = '/'.join(
-    [OSMGR_ENDPOINT, VERSION1, 'netconfig', 'ntp', 'servers']
-)
+NETCONFIG_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION1, 'netconfig'])
+NTP_SERVERS_ENDPOINT = '/'.join([NETCONFIG_ENDPOINT, 'ntp', 'servers'])
+DNS_CONFIG_ENDPOINT = '/'.join([NETCONFIG_ENDPOINT, 'dns', 'resolver'])
 
 
 # Notification service

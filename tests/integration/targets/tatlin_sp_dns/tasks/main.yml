@@ -1,0 +1,210 @@
+- name: Test DNS config | Ensure DNS config is empty
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    state: absent
+
+#### TEST 1
+- name: Test DNS config check mode | Set config
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+    search_list:
+      - example.com
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config check mode | Check config was not changed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+    search_list:
+      - example.com
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+#### TEST 2
+- name: Test DNS config | Set server
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+    state: present
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check config was changed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 3
+- name: Test DNS config | Set search list
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    search_list:
+      - example.com
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check config was changed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+    search_list:
+      - example.com
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 4
+- name: Test DNS config | Set two servers and two DNS suffixes
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.2
+      - 1.1.1.1
+    search_list:
+      - test.example.com
+      - test.com
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check config was changed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.2
+      - 1.1.1.1
+    search_list:
+      - test.example.com
+      - test.com
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 5
+- name: Test DNS config | Remove one server
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 1.1.1.1
+    state: absent
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check server was removed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.2
+    search_list:
+      - test.example.com
+      - test.com
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 6
+- name: Test DNS config | Remove one DNS suffix
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    search_list:
+      - test.com
+    state: absent
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check suffix was removed
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.2
+    search_list:
+      - test.example.com
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 7
+- name: Test DNS config | Clear config
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test DNS config | Check config is clear
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test DNS config | Check config is clear
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.2
+    search_list:
+      - test.example.com
+  check_mode: true
+  register: result
+
+- name: Test DNS config | Check state
+  assert:
+    that: "result.changed == true"

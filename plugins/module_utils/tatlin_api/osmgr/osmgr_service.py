@@ -11,6 +11,7 @@ __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.dns import DnsConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
 
@@ -27,11 +28,15 @@ class OsmgrService:
         self._client = client
         self._ports_endpoint = PORTS_ENDPOINT
 
+    def get_dns_config(self):
+        return DnsConfig(client=self._client)
+
     def get_ntp_config(self):
         return NtpConfig(client=self._client)
 
     def get_ports(self):  # type: () -> List[Port]
         rv = []
+
         ports_data = self._client.get(self._ports_endpoint).json
         for port_data in ports_data:
             port = Port(
