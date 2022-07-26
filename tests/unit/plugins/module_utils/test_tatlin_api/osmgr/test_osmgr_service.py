@@ -70,7 +70,7 @@ class TestNetworkService:
              'mtu': 1500,
              'nodes': {"sp-0": Node(client, p01_port, 'sp-0', []),
                        "sp-1": Node(client, p01_port, 'sp-1', [])},
-             'virtual_address': ''},
+             'virtual_address': None},
             {'name': 'mgmt',
              'type': 'ip',
              'gateway': '***REMOVED***',

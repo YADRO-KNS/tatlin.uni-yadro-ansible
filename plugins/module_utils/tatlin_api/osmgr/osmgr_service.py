@@ -33,11 +33,10 @@ class OsmgrService:
     def get_ports(self):  # type: () -> List[Port]
         rv = []
         ports_data = self._client.get(self._ports_endpoint).json
-        for item in ports_data:
+        for port_data in ports_data:
             port = Port(
                 client=self._client,
-                name=item['id'],
-                port_type=item['meta']['type'],
+                port_data=port_data,
             )
             rv.append(port)
 

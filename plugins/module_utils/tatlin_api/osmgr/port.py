@@ -58,24 +58,24 @@ def get_ip_only(addresses):
 
 class Port:
 
-    def __init__(
-        self,
-        client,
-        name,  # type: str
-        port_type,  # type: str
-    ):
+    def __init__(self, client, port_data):
         self._client = client
-        self.name = name
-        self.type = port_type
-        self.gateway = None
-        self.mtu = None
+        self.name = port_data['id']
+        self.type = port_data['meta']['type']
+        self.gateway = port_data['params']['gateway']
+        self.mtu = port_data['params']['mtu']
+        self.virtual_address = self._retrieve_virtual_address(
+            port_data['params']['failover']
+        )
+
         self.nodes = {}
-        self.virtual_address = None
+        self._init_nodes(
+            nodes_data=port_data['params']['nodes']
+        )
+
         self._changed_host = ChangedHost(self._client)
         self._ports_endpoint = PORTS_ENDPOINT
         self._endpoint = '/'.join([PORTS_ENDPOINT, self.type, self.name])
-
-        self.load()  # TODO: Надо это убрать
 
     def is_mgmt(self):  # type: () -> bool
         return self.name == 'mgmt'
@@ -87,15 +87,12 @@ class Port:
             item for item in all_ports_data if item['id'] == self.name
         )
 
-        failover_data = port_data['params']['failover']
-        ip = failover_data[0]['ipaddress'] if failover_data else None
-        mask = failover_data[0]['netmask'] if failover_data else None
-        self.virtual_address = '/'.join((ip, mask)) \
-            if None not in (ip, mask) else ''
-
         self.gateway = port_data['params']['gateway']
         self.mtu = port_data['params']['mtu']
-        self.nodes = self._init_nodes(port_data['params']['nodes'])
+        self.virtual_address = self._retrieve_virtual_address(
+            port_data['params']['failover']
+        )
+        self._init_nodes(port_data['params']['nodes'])
 
     def update(self, virtual_address=None, gateway=None, mtu=None, nodes=None):
         # type: (str, str, int, Dict[str, Union[str, List[str]]]) -> None
@@ -205,8 +202,8 @@ class Port:
                     return new_ips[0]
 
     def _init_nodes(self, nodes_data):
-        # type: (Dict) -> Dict[str, Node]
-        rv = {}
+        # type: (Dict) -> None
+        new_nodes = {}
 
         for node_name, addresses_data in nodes_data.items():
             addresses = []
@@ -217,17 +214,23 @@ class Port:
                 )
 
             if node_name in self.nodes:
-                rv[node_name] = self.nodes[node_name]
-                rv[node_name].addresses = addresses
+                new_nodes[node_name] = self.nodes[node_name]
+                new_nodes[node_name].addresses = addresses
             else:
-                rv[node_name] = Node(
+                new_nodes[node_name] = Node(
                     client=self._client,
                     port=self,
                     name=node_name,
                     addresses=addresses
                 )
 
-        return rv
+        self.nodes = new_nodes
+
+    def _retrieve_virtual_address(self, failover_data):
+        ip = failover_data[0]['ipaddress'] if failover_data else None
+        mask = failover_data[0]['netmask'] if failover_data else None
+        return '/'.join((ip, mask)) \
+            if None not in (ip, mask) else None
 
     def _wait_interfaces_up(self, new_virtual_address=None, nodes=None):
         # type: (str, Dict[str, Union[str, List]]) -> None

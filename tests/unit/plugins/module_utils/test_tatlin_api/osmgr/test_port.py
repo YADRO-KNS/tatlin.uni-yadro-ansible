@@ -102,11 +102,8 @@ class TestPort:
         assert client.get_host() == 'localhost'
 
     def test_port_is_mgmt_true(self, client, mock_method):
-        # Mock method load
-        mock_method(target=PORT_CLASS + '.load')
-
         # Create mgmt port
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Get port mgmt status
         is_mgmt = port.is_mgmt()
@@ -115,11 +112,8 @@ class TestPort:
         assert is_mgmt is True
 
     def test_port_is_mgmt_false(self, client, mock_method):
-        # Mock method load
-        mock_method(target=PORT_CLASS + '.load')
-
         # Create data port
-        port = Port(client=client, name='p01', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[0])
 
         # Get port mgmt status
         is_mgmt = port.is_mgmt()
@@ -128,23 +122,29 @@ class TestPort:
         assert is_mgmt is False
 
     def test_port_load_with_addresses(self, client, mock_method):
-        # Save load method for future use
-        init_load = Port.load
-
-        # Mock method load without data
-        mock_method(target=PORT_CLASS + '.load')
-
-        # Create port
-        port = Port(client=client, name='mgmt', port_type='ip')
+        # Create port with empty data
+        port = Port(client=client, port_data={
+            "id": "mgmt",
+            "meta": {"type": "ip"},
+            "params": {
+                "mtu": None,
+                "gateway": None,
+                "nodes": {
+                    "sp-0": [],
+                    "sp-1": []},
+                "failover": []}
+        })
 
         # Ensure that port has empty attributes
         check_object(
-            port,
-            dict(gateway=None, mtu=None, nodes={}, virtual_address=None),
+            port, dict(
+                gateway=None,
+                mtu=None,
+                nodes={'sp-0': Node(client, port, 'sp-0', []),
+                       'sp-1': Node(client, port, 'sp-1', [])},
+                virtual_address=None
+            ),
         )
-
-        # Restore load method
-        Port.load = init_load
 
         # Mock open_url with data
         mock_method(OPEN_URL_FUNC, *get_ports_response())
@@ -180,23 +180,29 @@ class TestPort:
         )
 
     def test_port_load_wo_addresses(self, client, mock_method):
-        # Save load method for future use
-        init_load = Port.load
-
-        # Mock method load without data
-        mock_method(target=PORT_CLASS + '.load')
-
-        # Create port
-        port = Port(client=client, name='p01', port_type='ip')
+        # Create port with empty data
+        port = Port(client=client, port_data={
+            "id": "p01",
+            "meta": {"type": "ip"},
+            "params": {
+                "mtu": None,
+                "gateway": None,
+                "nodes": {
+                    "sp-0": [],
+                    "sp-1": []},
+                "failover": []}
+        })
 
         # Ensure that port has empty attributes
         check_object(
-            port,
-            dict(gateway=None, mtu=None, nodes={}, virtual_address=None),
+            port, dict(
+                gateway=None,
+                mtu=None,
+                nodes={'sp-0': Node(client, port, 'sp-0', []),
+                       'sp-1': Node(client, port, 'sp-1', [])},
+                virtual_address=None
+            ),
         )
-
-        # Restore load method
-        Port.load = init_load
 
         # Mock open_url with data
         mock_method(OPEN_URL_FUNC, *get_ports_response())
@@ -212,7 +218,7 @@ class TestPort:
             'mtu': 1500,
             'nodes': {"sp-0": Node(client, port, 'sp-0', []),
                       "sp-1": Node(client, port, 'sp-1', [])},
-            'virtual_address': ''
+            'virtual_address': None
         }
 
         # Result: Port has expected attributes
@@ -234,11 +240,11 @@ class TestPort:
     def test_update_mtu(
         self, client, mock_method, open_url_kwargs, port_name, mocker,
     ):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name=port_name, port_type='ip')
+        port_data = next(data for data in get_ports_response()
+                         if data['id'] == port_name)
+
+        port = Port(client=client, port_data=port_data)
 
         # Mock load method without data
         mock_method(PORT_CLASS + '.load')
@@ -287,11 +293,11 @@ class TestPort:
     def test_update_gateway(
         self, client, mock_method, open_url_kwargs, port_name, mocker,
     ):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name=port_name, port_type='ip')
+        port_data = next(data for data in get_ports_response()
+                         if data['id'] == port_name)
+
+        port = Port(client=client, port_data=port_data)
 
         # Mock load method without data
         mock_method(PORT_CLASS + '.load')
@@ -339,11 +345,11 @@ class TestPort:
     def test_update_virtual_address(
         self, client, mock_method, open_url_kwargs, port_name, mocker,
     ):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name=port_name, port_type='ip')
+        port_data = next(data for data in get_ports_response()
+                         if data['id'] == port_name)
+
+        port = Port(client=client, port_data=port_data)
 
         # Mock load method without data
         mock_method(PORT_CLASS + '.load')
@@ -394,11 +400,11 @@ class TestPort:
     def test_update_sp_addresses(
         self, client, mock_method, open_url_kwargs, port_name, mocker
     ):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name=port_name, port_type='ip')
+        port_data = next(data for data in get_ports_response()
+                         if data['id'] == port_name)
+
+        port = Port(client=client, port_data=port_data)
 
         # Mock load method without data
         mock_method(PORT_CLASS + '.load')
@@ -456,11 +462,8 @@ class TestPort:
             '192.168.1.6/24',
         ]
 
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Mock sleeping
         mock_method(target=PORT_MODULE + '.time.sleep')
@@ -498,11 +501,8 @@ class TestPort:
     def test_waiting_for_connection_interface_was_not_up(
         self, client, mock_method, open_url_kwargs, new_address,
     ):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Mock sleeping
         mock_method(target=PORT_MODULE + '.time.sleep')
@@ -519,11 +519,8 @@ class TestPort:
             port._wait_interfaces_up(**new_address)
 
     def test_getting_ip_for_reconnect_virt_ip(self, client, mock_method):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Set client's host equal to port's virtual address
         virtual_ip = get_ip_only(port.virtual_address)
@@ -540,11 +537,8 @@ class TestPort:
         assert reconnect_ip == '192.168.11.1'
 
     def test_getting_ip_for_reconnect_sp(self, client, mock_method):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Set client's host equal to port's virtual address
         sp0_ip = get_ip_only(port.nodes['sp-0'].addresses[0])
@@ -561,11 +555,8 @@ class TestPort:
         assert reconnect_ip == '192.168.2.22'
 
     def test_getting_none_as_ip_for_reconnect(self, client, mock_method):
-        # Mock open_url with data
-        mock_method(OPEN_URL_FUNC, *get_ports_response())
-
         # Create port object
-        port = Port(client=client, name='mgmt', port_type='ip')
+        port = Port(client=client, port_data=get_ports_response()[1])
 
         # Get ip for reconnect
         reconnect_ip = port._get_ip_for_reconnect(
