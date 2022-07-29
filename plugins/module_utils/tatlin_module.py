@@ -53,7 +53,7 @@ class TatlinModule(AnsibleModule):
                     "timeout": {
                         "required": False,
                         "type": "int",
-                        "default": 30,
+                        "default": 60,
                     },
                 }
             },

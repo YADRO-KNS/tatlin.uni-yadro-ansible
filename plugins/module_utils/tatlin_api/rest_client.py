@@ -52,7 +52,7 @@ class RestClient:
         password=None,  # type: str
         validate_certs=True,  # type: bool
         login_path=None,  # type: str
-        timeout=10,  # type: int
+        timeout=60,  # type: int
         auth_method=AUTH_SESSION,
     ):  # type: (...) -> None
 

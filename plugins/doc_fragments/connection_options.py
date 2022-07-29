@@ -45,6 +45,6 @@ class ModuleDocFragment(object):
             description: Tatlin REST API endpoint for authorization
           timeout:
             type: int
-            default: 30
+            default: 60
             description: Tatlin REST API request timeout.
 """

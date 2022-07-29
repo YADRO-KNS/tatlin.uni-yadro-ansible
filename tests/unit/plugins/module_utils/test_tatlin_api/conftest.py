@@ -55,7 +55,7 @@ def open_url_kwargs():
         "data": None,
         "validate_certs": True,
         "use_proxy": True,
-        "timeout": 30,
+        "timeout": 60,
         "follow_redirects": "all",
         "headers": {},
         "force_basic_auth": False,

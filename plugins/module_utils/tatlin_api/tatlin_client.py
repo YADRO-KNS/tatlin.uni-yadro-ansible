@@ -41,7 +41,7 @@ class TatlinClient(RestClient):
         password=None,  # type: Optional[str]
         validate_certs=True,  # type: Optional[bool]
         login_path=LOGIN_PATH,  # type: Optional[str]
-        timeout=30,  # type: Optional[int]
+        timeout=60,  # type: Optional[int]
         auth_method=AUTH_SESSION,  # type: Optional[str]
     ):  # type: (...) -> None
 
