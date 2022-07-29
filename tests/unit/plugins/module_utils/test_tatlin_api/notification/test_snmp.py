@@ -14,7 +14,7 @@ import json
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SNMP_ENDPOINT
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, SNMP_CONFIG_CLASS,
 )
@@ -33,7 +33,7 @@ class TestSnmp:
         snmp_config = SnmpConfig(client)
 
         # Ensure that port has empty attributes
-        check_object(snmp_config, {'community': None, 'servers': []})
+        check_obj(snmp_config, {'community': None, 'servers': []})
 
         # Restore load method
         SnmpConfig.load = init_load
@@ -49,7 +49,7 @@ class TestSnmp:
         snmp_config.load()
 
         # Result: SNMP config with expected servers was returned
-        check_object(
+        check_obj(
             snmp_config,
             {'community': 'tatlin', 'servers': ['127.0.0.1:162']}
         )

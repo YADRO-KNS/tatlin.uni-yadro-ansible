@@ -11,7 +11,7 @@ __metaclass__ = type
 
 import pytest
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 
 
 class TestNotificationService:
@@ -60,4 +60,4 @@ class TestNotificationService:
         }
 
         # Result: Config with expected server was returned
-        check_object(smtp_config, exp_params)
+        check_obj(smtp_config, exp_params, ignore_order='recipients')

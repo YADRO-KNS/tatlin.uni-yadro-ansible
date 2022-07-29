@@ -11,7 +11,7 @@ __metaclass__ = type
 
 import json
 import pytest
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
@@ -61,9 +61,7 @@ class TestAuthService:
 
         # Result: 2 users with expected params was returned
         assert len(users) == 2
-        for user in users:
-            assert isinstance(user, User)
-            check_object(user, expected_users)
+        check_obj(users, expected_users)
 
     def test_get_user(self, client, mock_method):
         # Mock get_user method
@@ -88,7 +86,7 @@ class TestAuthService:
 
         # User with expected params was returned
         assert isinstance(user, User)
-        check_object(user, expected_user)
+        check_obj(user, expected_user)
 
     def test_create_user(self, client, mock_method, open_url_kwargs):
         # Mock get_users method with two users
@@ -167,9 +165,7 @@ class TestAuthService:
 
         # Result: 2 groups with expected params was returned
         assert len(groups) == 2
-        for group in groups:
-            assert isinstance(group, UserGroup)
-            check_object(group, expected_groups)
+        check_obj(groups, expected_groups)
 
     def test_get_group(self, client, mock_method):
         # Mock get_group method
@@ -193,7 +189,7 @@ class TestAuthService:
 
         # Result: Group with expected params was returned
         assert isinstance(group, UserGroup)
-        check_object(group, expected_group)
+        check_obj(group, expected_group)
 
     def test_create_group(self, client, mock_method, open_url_kwargs):
         # Mock get_group method
@@ -272,4 +268,4 @@ class TestAuthService:
         ldap_config = client.auth_service.get_ldap_config()
 
         # Result: LDAP config with expected params was returned
-        check_object(ldap_config, expected_config)
+        check_obj(ldap_config, expected_config)

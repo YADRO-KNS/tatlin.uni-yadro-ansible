@@ -12,7 +12,7 @@ __metaclass__ = type
 import json
 import pytest
 from hamcrest import assert_that, has_entries
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, PORT_CLASS, PORT_MODULE,
 )
@@ -136,7 +136,7 @@ class TestPort:
         })
 
         # Ensure that port has empty attributes
-        check_object(
+        check_obj(
             port, dict(
                 gateway=None,
                 mtu=None,
@@ -165,16 +165,16 @@ class TestPort:
         }
 
         # Result: Port has expected attributes
-        check_object(port, expected_port)
+        check_obj(port, expected_port)
 
         # Additional check, because addresses actually don't
         # checked at the above checking
         # Result: Nodes with expected params was returned
-        check_object(
+        check_obj(
             port.nodes['sp-0'],
             dict(name='sp-0', addresses=['***REMOVED***/24']),
         )
-        check_object(
+        check_obj(
             port.nodes['sp-1'],
             dict(name='sp-1', addresses=['***REMOVED***/24']),
         )
@@ -194,7 +194,7 @@ class TestPort:
         })
 
         # Ensure that port has empty attributes
-        check_object(
+        check_obj(
             port, dict(
                 gateway=None,
                 mtu=None,
@@ -222,16 +222,16 @@ class TestPort:
         }
 
         # Result: Port has expected attributes
-        check_object(port, expected_port)
+        check_obj(port, expected_port)
 
         # Additional check, because addresses actually don't
         # checked at the above checking
         # Result: Nodes with expected params was returned
-        check_object(
+        check_obj(
             port.nodes['sp-0'],
             dict(name='sp-0', addresses=[]),
         )
-        check_object(
+        check_obj(
             port.nodes['sp-1'],
             dict(name='sp-1', addresses=[]),
         )

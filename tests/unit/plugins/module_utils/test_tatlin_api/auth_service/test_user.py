@@ -11,7 +11,7 @@ __metaclass__ = type
 
 import pytest
 import json
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
@@ -156,8 +156,7 @@ class TestUser:
 
         # Result: 2 groups with expected params was returned
         assert len(user.groups) == 2
-        for group in user.groups:
-            check_object(group, expected_groups)
+        check_obj(user.groups, expected_groups)
 
     def test_delete(self, client, mock_method, open_url_kwargs):
         # Mock open_url method

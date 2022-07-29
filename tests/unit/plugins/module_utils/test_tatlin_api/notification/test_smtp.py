@@ -14,7 +14,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notificati
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SMTP_ENDPOINT
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import (
-    check_object, check_called_with,
+    check_obj, check_called_with,
 )
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, SMTP_CONFIG_CLASS,
@@ -34,7 +34,7 @@ class TestSmtp:
         smtp_config = SmtpConfig(client)
 
         # Ensure that port has empty attributes
-        check_object(smtp_config, {
+        check_obj(smtp_config, {
             'address': None,
             'port': None,
             'login': None,
@@ -65,7 +65,7 @@ class TestSmtp:
         smtp_config.load()
 
         # Result: SNMP config with expected servers was returned
-        check_object(smtp_config, {
+        check_obj(smtp_config, ignore_order='recipients', exp_params={
             'address': 'example.com',
             'port': 587,
             'encryption': 'tls',

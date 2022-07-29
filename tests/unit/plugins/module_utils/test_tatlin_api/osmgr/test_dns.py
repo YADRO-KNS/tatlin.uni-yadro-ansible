@@ -13,7 +13,7 @@ import json
 import pytest
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.dns import DnsConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import DNS_CONFIG_ENDPOINT
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     DNS_CONFIG_CLASS, OPEN_URL_FUNC)
 
@@ -31,7 +31,7 @@ class TestDns:
         dns_config = DnsConfig(client)
 
         # Ensure that dns_config has empty attributes
-        check_object(dns_config, {'servers': [], 'search_list': []})
+        check_obj(dns_config, {'servers': [], 'search_list': []})
 
         # Restore load method
         DnsConfig.load = init_load
@@ -47,7 +47,7 @@ class TestDns:
         dns_config.load()
 
         # Result: dns config with expected servers was returned
-        check_object(
+        check_obj(
             dns_config,
             {'servers': ['127.0.0.1'], 'search_list': ['exapmle.com']}
         )

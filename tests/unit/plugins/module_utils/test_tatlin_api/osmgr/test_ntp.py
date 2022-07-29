@@ -13,7 +13,7 @@ import json
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import NTP_SERVERS_ENDPOINT
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, NTP_CONFIG_CLASS,
 )
@@ -32,7 +32,7 @@ class TestNtp:
         ntp_config = NtpConfig(client)
 
         # Ensure that ntp_config has empty attributes
-        check_object(ntp_config, {'servers': None})
+        check_obj(ntp_config, {'servers': None})
 
         # Restore load method
         NtpConfig.load = init_load
@@ -44,7 +44,7 @@ class TestNtp:
         ntp_config.load()
 
         # Result: ntp config with expected servers was returned
-        check_object(ntp_config, {'servers': ['yadro.com']})
+        check_obj(ntp_config, {'servers': ['yadro.com']})
 
     def test_set_servers(self, client, mock_method, open_url_kwargs):
         # Mock open_url with servers data

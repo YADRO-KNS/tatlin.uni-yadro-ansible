@@ -14,11 +14,50 @@ from hamcrest import assert_that, has_item, has_entries
 from ansible_collections.yadro.tatlin.tests.unit.compat.mock import ANY
 
 
-def check_object(obj, exp_params):
+def check_obj(objects, exp_params, ignore_order=None):
+    """Check objects attributes
+
+    Args:
+        objects(object, list[object]): Object or list of objects, which
+            will be checked
+        exp_params(dict, list): Expected object parameters. May be a list
+            if it's required to check multiple objects
+        ignore_order(str, list): If passed, listed parameters will be compared
+            without order. Actual for lists only. Can resort initial values,
+            so be careful, if you want to use objects or expected parameters
+            after such checking
+
+        Note:
+            All entry in exp_params should have same keys, because keys for
+            checking are chosen from first entry in exp_params
+    """
+
     exp_params = exp_params if isinstance(exp_params, list) else [exp_params]
-    fact_params = dict((k, v) for k, v in obj.__dict__.items()
-                       if k in exp_params[0])
-    assert_that(exp_params, has_item(fact_params))
+    objects = objects if isinstance(objects, list) else [objects]
+
+    fact_params_list = [
+        dict((k, v) for k, v in obj.__dict__.items()
+             if k in exp_params[0]) for obj in objects
+    ]
+
+    if ignore_order is not None:
+        ignore_order = [ignore_order] \
+            if isinstance(ignore_order, str) else [ignore_order]
+
+        for exp_item, fact_item in zip(exp_params, fact_params_list):
+            for param in ignore_order:
+                if not isinstance(exp_item[param], list) \
+                        or not isinstance(fact_item[param], list):
+                    raise TypeError(
+                        'Parameter for ignoring order must be a list. '
+                        '{0} is not a list'.format(exp_item[param])
+                    )
+
+                exp_item[param].sort()
+                fact_item[param].sort()
+
+    for fact_params in fact_params_list:
+        assert_that(exp_params, has_item(fact_params))
 
 
 def check_called_with(mock, **exp_call_params):

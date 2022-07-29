@@ -13,7 +13,7 @@ import pytest
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Node
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_object
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 
 
 def get_ports_response():
@@ -83,24 +83,24 @@ class TestNetworkService:
 
         # Result: Ports with expected params was returned
         for port in ports:
-            check_object(port, expected_ports)
+            check_obj(port, expected_ports)
 
         # Additional check, because addresses actually don't
         # checked at the above checking
         # Result: Nodes with expected params was returned
-        check_object(
+        check_obj(
             mgmt_port.nodes['sp-0'],
             dict(name='sp-0', addresses=['***REMOVED***/24']),
         )
-        check_object(
+        check_obj(
             mgmt_port.nodes['sp-1'],
             dict(name='sp-1', addresses=['***REMOVED***/24']),
         )
-        check_object(
+        check_obj(
             p01_port.nodes['sp-0'],
             dict(name='sp-0', addresses=[]),
         )
-        check_object(
+        check_obj(
             p01_port.nodes['sp-1'],
             dict(name='sp-1', addresses=[]),
         )
@@ -128,16 +128,16 @@ class TestNetworkService:
         ]
 
         # Result: Port with expected params was returned
-        check_object(mgmt_port, expected_ports)
+        check_obj(mgmt_port, expected_ports)
 
         # Additional check, because addresses actually don't
         # checked at the above checking
         # Result: Nodes with expected params was returned
-        check_object(
+        check_obj(
             mgmt_port.nodes['sp-0'],
             dict(name='sp-0', addresses=['***REMOVED***/24']),
         )
-        check_object(
+        check_obj(
             mgmt_port.nodes['sp-1'],
             dict(name='sp-1', addresses=['***REMOVED***/24']),
         )
