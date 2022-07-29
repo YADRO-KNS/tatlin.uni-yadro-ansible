@@ -30,5 +30,9 @@ class RESTClientUnauthorized(Exception):
     pass
 
 
+class RESTClientBadRequest(Exception):
+    pass
+
+
 class TatlinClientError(Exception):
     pass

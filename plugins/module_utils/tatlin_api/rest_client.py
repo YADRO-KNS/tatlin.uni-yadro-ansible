@@ -21,6 +21,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
     RESTClientRequestError,
     RESTClientConnectionError,
     RESTClientUnauthorized,
+    RESTClientBadRequest,
 )
 
 import json
@@ -122,6 +123,9 @@ class RestClient:
                 raise RESTClientNotFoundError('Not found: {0}'.format(e.url))
             elif e.code == 401:
                 raise RESTClientUnauthorized('Unauthorized error')
+            elif e.code == 400:
+                err_msg = e.read().decode()
+                raise RESTClientBadRequest(err_msg)
             else:
                 try:
                     msg = json.load(e)

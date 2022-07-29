@@ -1,0 +1,243 @@
+- name: Test SMTP config | Ensure SMTP is empty
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    state: absent
+
+#### TEST 1
+- name: Test SMTP config | Test check mode
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    encryption: tls
+    login: admin
+    password: ***REMOVED***
+    sender: test@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check config was not changed
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    encryption: tls
+    login: admin
+    password: ***REMOVED***
+    sender: test@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+#### TEST 2
+- name: Test SMTP config | Set SMTP config
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    login: admin
+    password: ***REMOVED***
+    sender: smtp@example.com
+    state: present
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check config was changed
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    sender: smtp@example.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 3
+- name: Test SMTP config | Add recipients
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+      - third@recipient.com
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check recipients was added
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+      - third@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 4
+- name: Test SMTP config | Change port and address
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    port: 587
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check address and port were changed
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    port: 587
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+      - third@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 5
+- name: Test SMTP config | Change password
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    password: ChangedPassword
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check other parameters was not changed
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    port: 587
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+      - third@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 6
+- name: Test SMTP config | Remove recipient
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    recipients:
+      - second@recipient.com
+    state: absent
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check recipients was removed
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    port: 587
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - third@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"
+
+#### TEST 7
+- name: Test SMTP config | Pass address with state absent
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    state: absent
+  register: result
+  ignore_errors: true
+
+- name: Test SMTP config | Check error raised
+  assert:
+    that:
+      - "result.failed == true"
+      - "result.changed == false"
+      - "result.error == 'Mutually exclusive parameters'"
+
+#### TEST 8
+- name: Test SMTP config | Clear config
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check config was cleared
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: example.com
+    port: 587
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - third@recipient.com
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test SMTP config | Check config was cleared
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test SMTP config | Check state
+  assert:
+    that: "result.changed == false"

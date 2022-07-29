@@ -10,6 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.smtp import SmtpConfig
 
 try:
     from typing import List, Dict
@@ -23,5 +24,8 @@ class NotificationService:
     def __init__(self, client):
         self._client = client
 
-    def get_snmp_config(self):
+    def get_snmp_config(self):  # type: () -> SnmpConfig
         return SnmpConfig(client=self._client)
+
+    def get_smtp_config(self):  # type: () -> SmtpConfig
+        return SmtpConfig(client=self._client)
