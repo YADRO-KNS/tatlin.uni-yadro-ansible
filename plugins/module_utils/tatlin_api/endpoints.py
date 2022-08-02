@@ -20,22 +20,22 @@ VERSION2 = 'v2'
 
 # Auth service
 AUTH_ENDPOINT = 'auth'
-USERS_ENDPOINT = '/'.join([AUTH_ENDPOINT, 'users'])
-GROUPS_ENDPOINT = '/'.join([AUTH_ENDPOINT, 'groups'])
-LDAP_ENDPOINT = '/'.join([AUTH_ENDPOINT, 'ldap'])
-LDAP_CONFIG_ENDOPINT = '/'.join([LDAP_ENDPOINT, 'configuration'])
+USERS_ENDPOINT = build_url(AUTH_ENDPOINT, 'users')
+GROUPS_ENDPOINT = build_url(AUTH_ENDPOINT, 'groups')
+LDAP_ENDPOINT = build_url(AUTH_ENDPOINT, 'ldap')
+LDAP_CONFIG_ENDOPINT = build_url(LDAP_ENDPOINT, 'configuration')
 
 
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
-PORTS_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION2, 'ports'])
-NETCONFIG_ENDPOINT = '/'.join([OSMGR_ENDPOINT, VERSION1, 'netconfig'])
-NTP_SERVERS_ENDPOINT = '/'.join([NETCONFIG_ENDPOINT, 'ntp', 'servers'])
-DNS_CONFIG_ENDPOINT = '/'.join([NETCONFIG_ENDPOINT, 'dns', 'resolver'])
+PORTS_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION2, 'ports')
+NETCONFIG_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION1, 'netconfig')
+NTP_SERVERS_ENDPOINT = build_url(NETCONFIG_ENDPOINT, 'ntp', 'servers')
+DNS_CONFIG_ENDPOINT = build_url(NETCONFIG_ENDPOINT, 'dns', 'resolver')
 
 
 # Notification service
 NOTIFICATION_ENDPOINT = 'notification'
-SNMP_ENDPOINT = '/'.join([NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp'])
+SNMP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp')
 SMTP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'smtp')
 SYSLOG_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'syslog')
