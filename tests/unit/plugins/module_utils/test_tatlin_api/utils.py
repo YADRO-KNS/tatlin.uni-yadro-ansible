@@ -68,10 +68,11 @@ def check_obj(objects, exp_params, ignore_order=None):
 
 def check_called_with(mock, **exp_call_params):
     """
-    Requests send data to Tatlin in json format and it requires dict keys in
+    open_url sends data to Tatlin in json format, and it requires dict keys in
     specific order. In most cases we don't need any order. Besides, Python 2
-    doesn't have ordered dicts, so we need to retrieve request's doct from json
-    manually. To avoid this and reduce code in tests this checker was written
+    doesn't have ordered dicts, so we have to retrieve request's dict from
+    json manually. To avoid this and to reduce code in tests this checker was
+    written
     """
 
     if exp_call_params['data'] is not None:

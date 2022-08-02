@@ -11,6 +11,7 @@ __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.smtp import SmtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.syslog import SyslogConfig
 
 try:
     from typing import List, Dict
@@ -29,3 +30,6 @@ class NotificationService:
 
     def get_smtp_config(self):  # type: () -> SmtpConfig
         return SmtpConfig(client=self._client)
+
+    def get_syslog_config(self):  # type: () -> SyslogConfig
+        return SyslogConfig(client=self._client)

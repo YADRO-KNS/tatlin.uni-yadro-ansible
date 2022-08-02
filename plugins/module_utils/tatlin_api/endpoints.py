@@ -38,3 +38,4 @@ DNS_CONFIG_ENDPOINT = '/'.join([NETCONFIG_ENDPOINT, 'dns', 'resolver'])
 NOTIFICATION_ENDPOINT = 'notification'
 SNMP_ENDPOINT = '/'.join([NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp'])
 SMTP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'smtp')
+SYSLOG_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'syslog')

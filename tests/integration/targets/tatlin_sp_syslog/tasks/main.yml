@@ -1,0 +1,340 @@
+- name: Test Syslog config | Ensure Syslog config is empty
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    state: absent
+
+#################################################
+#### TEST 1
+################################################
+- name: Test Syslog config | Test check mode
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: udp
+        facility: 10
+        severity: critical
+        audit: false
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was not changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: udp
+        facility: 10
+        severity: critical
+        audit: false
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 2
+################################################
+- name: Test Syslog config | Set Syslog recipients
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: udp
+        facility: 10
+        severity: critical
+        audit: false
+      - address: example.com
+        port: 601
+        protocol: tcp
+        facility: 15
+        severity: warning
+        audit: true
+    state: present
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: udp
+        facility: 10
+        severity: critical
+        audit: false
+      - address: example.com
+        port: 601
+        protocol: tcp
+        facility: 15
+        severity: warning
+        audit: true
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 3
+################################################
+- name: Test Syslog config | Update Syslog config
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: tcp
+        facility: 11
+        severity: warning
+        audit: true
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+      - address: 127.0.0.1
+        port: 601
+        protocol: tls
+        facility: 20
+        severity: info
+        audit: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: tcp
+        facility: 11
+        severity: warning
+        audit: true
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+      - address: 127.0.0.1
+        port: 601
+        protocol: tls
+        facility: 20
+        severity: info
+        audit: true
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 4
+################################################
+- name: Test Syslog config | Remove recipients by address
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+    state: absent
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 5
+################################################
+- name: Test Syslog config | Restore recipients
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: tcp
+        facility: 11
+        severity: warning
+        audit: true
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+      - address: 127.0.0.1
+        port: 601
+        protocol: tls
+        facility: 20
+        severity: info
+        audit: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+
+- name: Test Syslog config | Remove recipient by address and non-existing port
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 1
+    state: absent
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test Syslog config | Remove recipient by address and port
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 601
+    state: absent
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 601
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: tcp
+        facility: 11
+        severity: warning
+        audit: true
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 6
+################################################
+- name: Test Syslog config | Reset config
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    state: absent
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test Syslog config | Check config was changed
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: tcp
+        facility: 11
+        severity: warning
+        audit: true
+      - address: example.com
+        port: 601
+        protocol: tls
+        facility: 16
+        severity: info
+        audit: false
+  check_mode: true
+  register: result
+
+- name: Test Syslog config | Check state
+  assert:
+    that: "result.changed == true"

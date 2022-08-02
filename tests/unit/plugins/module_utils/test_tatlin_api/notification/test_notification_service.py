@@ -61,3 +61,45 @@ class TestNotificationService:
 
         # Result: Config with expected server was returned
         check_obj(smtp_config, exp_params, ignore_order='recipients')
+
+    def test_get_syslog_config(self, client, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            recipients={
+                '127.0.0.1:514': {
+                    'protocol': 'udp',
+                    'audit': False,
+                    'facility': 21,
+                    'severity': 'INFO'
+                },
+                'example.com:601': {
+                    'protocol': 'tls',
+                    'audit': True,
+                    'facility': 11,
+                    'severity': 'CRITICAL'
+                },
+            }
+        )
+
+        # Call get_syslog_config
+        syslog_config = client.notification_service.get_syslog_config()
+
+        # Define expected params
+        exp_params = {'recipients': [
+            dict(address='127.0.0.1',
+                 port='514',
+                 protocol='udp',
+                 audit=False,
+                 facility=21,
+                 severity='INFO'),
+            dict(address='example.com',
+                 port='601',
+                 protocol='tls',
+                 audit=True,
+                 facility=11,
+                 severity='CRITICAL'),
+        ]}
+
+        # Result: Config with expected server was returned
+        check_obj(syslog_config, exp_params, ignore_order='recipients')

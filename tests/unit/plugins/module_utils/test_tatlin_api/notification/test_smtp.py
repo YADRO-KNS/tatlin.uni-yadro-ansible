@@ -33,7 +33,7 @@ class TestSmtp:
         # Create SmtpConfig object
         smtp_config = SmtpConfig(client)
 
-        # Ensure that port has empty attributes
+        # Ensure that config object has empty attributes
         check_obj(smtp_config, {
             'address': None,
             'port': None,
@@ -64,7 +64,7 @@ class TestSmtp:
         # Load config
         smtp_config.load()
 
-        # Result: SNMP config with expected servers was returned
+        # Result: SMTP config with expected servers was returned
         check_obj(smtp_config, ignore_order='recipients', exp_params={
             'address': 'example.com',
             'port': 587,
