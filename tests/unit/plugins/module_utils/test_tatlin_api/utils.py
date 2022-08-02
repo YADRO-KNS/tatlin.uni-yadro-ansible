@@ -32,19 +32,25 @@ def check_obj(objects, exp_params, ignore_order=None):
             checking are chosen from first entry in exp_params
     """
 
-    exp_params = exp_params if isinstance(exp_params, list) else [exp_params]
-    objects = objects if isinstance(objects, list) else [objects]
+    exp_params_list = exp_params \
+        if isinstance(exp_params, list) else [exp_params]
 
+    objects = objects if isinstance(objects, list) else [objects]
     fact_params_list = [
         dict((k, v) for k, v in obj.__dict__.items()
-             if k in exp_params[0]) for obj in objects
+             if k in exp_params_list[0]) for obj in objects
     ]
 
     if ignore_order is not None:
-        ignore_order = [ignore_order] \
-            if isinstance(ignore_order, str) else [ignore_order]
+        ignore_order = ignore_order \
+            if isinstance(ignore_order, list) else [ignore_order]
 
-        for exp_item, fact_item in zip(exp_params, fact_params_list):
+        def sortkey(element):
+            if isinstance(element, dict):
+                element = sorted(element.items())
+            return repr(element)
+
+        for exp_item, fact_item in zip(exp_params_list, fact_params_list):
             for param in ignore_order:
                 if not isinstance(exp_item[param], list) \
                         or not isinstance(fact_item[param], list):
@@ -53,11 +59,11 @@ def check_obj(objects, exp_params, ignore_order=None):
                         '{0} is not a list'.format(exp_item[param])
                     )
 
-                exp_item[param].sort()
-                fact_item[param].sort()
+                exp_item[param].sort(key=sortkey)
+                fact_item[param].sort(key=sortkey)
 
     for fact_params in fact_params_list:
-        assert_that(exp_params, has_item(fact_params))
+        assert_that(exp_params_list, has_item(fact_params))
 
 
 def check_called_with(mock, **exp_call_params):
