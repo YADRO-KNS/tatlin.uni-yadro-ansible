@@ -180,6 +180,7 @@ class TatlinMgmtPort(TatlinModule):
 
             if param_name == 'virtual_address' and new_val is not None:
                 new_val = '/'.join((new_val['ip'], new_val['mask']))
+                old_val = str(port.virtual_address)
 
             if new_val is not None and new_val != old_val:
                 rv[param_name] = new_val
@@ -195,7 +196,7 @@ class TatlinMgmtPort(TatlinModule):
                         changed=False,
                     )
 
-                old_addresses = port.nodes[node['name']].addresses
+                old_addresses = port.nodes[node['name']].addresses_str
                 new_addresses = ['/'.join((address['ip'], address['mask']))
                                  for address in node['addresses']]
 

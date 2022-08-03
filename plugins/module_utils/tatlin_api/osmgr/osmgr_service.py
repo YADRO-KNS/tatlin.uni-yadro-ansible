@@ -13,7 +13,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.dns import DnsConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_STATUS_ENDPOINT
 
 try:
     from typing import List, Dict
@@ -26,7 +26,7 @@ class OsmgrService:
 
     def __init__(self, client):
         self._client = client
-        self._ports_endpoint = PORTS_ENDPOINT
+        self._ep_ports_status = PORTS_STATUS_ENDPOINT
 
     def get_dns_config(self):
         return DnsConfig(client=self._client)
@@ -36,15 +36,13 @@ class OsmgrService:
 
     def get_ports(self):  # type: () -> List[Port]
         rv = []
-
-        ports_data = self._client.get(self._ports_endpoint).json
+        ports_data = self._client.get(self._ep_ports_status).json
         for port_data in ports_data:
             port = Port(
                 client=self._client,
                 port_data=port_data,
             )
             rv.append(port)
-
         return rv
 
     def get_port(self, name):  # type: (str) -> Port

@@ -29,6 +29,7 @@ LDAP_CONFIG_ENDOPINT = build_url(LDAP_ENDPOINT, 'configuration')
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
 PORTS_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION2, 'ports')
+PORTS_STATUS_ENDPOINT = build_url(PORTS_ENDPOINT, 'status')
 NETCONFIG_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION1, 'netconfig')
 NTP_SERVERS_ENDPOINT = build_url(NETCONFIG_ENDPOINT, 'ntp', 'servers')
 DNS_CONFIG_ENDPOINT = build_url(NETCONFIG_ENDPOINT, 'dns', 'resolver')

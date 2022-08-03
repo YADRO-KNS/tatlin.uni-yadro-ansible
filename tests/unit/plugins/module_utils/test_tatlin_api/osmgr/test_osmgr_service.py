@@ -10,48 +10,21 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Node
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Node, VirtualAddress
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 
 
-def get_ports_response():
-    return [{"id": "p01",
-             "meta": {
-                 "type": "ip",
-                 "data_role": False,
-                 "replication_role": False},
-             "params": {
-                 "mtu": 1500,
-                 "gateway": "",
-                 "nodes": {"sp-0": [], "sp-1": []},
-                 "failover": None}},
-            {"id": "mgmt",
-             "meta": {
-                 "type": "ip",
-                 "data_role": False,
-                 "replication_role": False},
-             "params": {
-                 "mtu": 1500,
-                 "gateway": "***REMOVED***",
-                 "nodes": {
-                     "sp-0": [{"ipaddress": "***REMOVED***",
-                               "netmask": "24"}],
-                     "sp-1": [{"ipaddress": "***REMOVED***",
-                               "netmask": "24"}]},
-                 "failover": [{"ipaddress": "***REMOVED***",
-                               "netmask": "24"}]}}
-            ]
-
-
 class TestNetworkService:
 
-    def test_get_ports(self, client, mock_method):
+    def test_get_ports(
+        self, client, mock_method, ports_response, exp_addrs_sp0, exp_addrs_sp1,
+    ):
         # Mock open_url response for get_ports
         mock_method(
             OPEN_URL_FUNC,
-            *get_ports_response()
+            *ports_response
         )
 
         # Call get_ports
@@ -76,9 +49,10 @@ class TestNetworkService:
              'gateway': '***REMOVED***',
              'mtu': 1500,
              'nodes': {
-                 "sp-0": Node(client, mgmt_port, 'sp-0', ['***REMOVED***/24']),
-                 "sp-1": Node(client, mgmt_port, 'sp-1', ['***REMOVED***/24'])},
-             'virtual_address': '***REMOVED***/24'}
+                 "sp-0": Node(client, mgmt_port, 'sp-0', exp_addrs_sp0),
+                 "sp-1": Node(client, mgmt_port, 'sp-1', exp_addrs_sp1),
+             },
+             'virtual_address': VirtualAddress(ip='***REMOVED***', mask='24')}
         ]
 
         # Result: Ports with expected params was returned
@@ -90,11 +64,11 @@ class TestNetworkService:
         # Result: Nodes with expected params was returned
         check_obj(
             mgmt_port.nodes['sp-0'],
-            dict(name='sp-0', addresses=['***REMOVED***/24']),
+            dict(name='sp-0', addresses=exp_addrs_sp0),
         )
         check_obj(
             mgmt_port.nodes['sp-1'],
-            dict(name='sp-1', addresses=['***REMOVED***/24']),
+            dict(name='sp-1', addresses=exp_addrs_sp1),
         )
         check_obj(
             p01_port.nodes['sp-0'],
@@ -105,26 +79,27 @@ class TestNetworkService:
             dict(name='sp-1', addresses=[]),
         )
 
-    def test_get_port(self, client, mock_method):
+    def test_get_port(
+        self, client, mock_method, ports_response, exp_addrs_sp0, exp_addrs_sp1,
+    ):
         # Mock open_url response for get_ports
         mock_method(
             OPEN_URL_FUNC,
-            *get_ports_response()
+            *ports_response
         )
 
         # Call get_port
         mgmt_port = client.osmgr_service.get_port('mgmt')
 
-        # Define expected port
         expected_ports = [
             {'name': 'mgmt',
              'type': 'ip',
              'gateway': '***REMOVED***',
              'mtu': 1500,
              'nodes': {
-                 "sp-0": Node(client, mgmt_port, 'sp-0', ['***REMOVED***/24']),
-                 "sp-1": Node(client, mgmt_port, 'sp-1', ['***REMOVED***/24'])},
-             'virtual_address': '***REMOVED***/24'}
+                 "sp-0": Node(client, mgmt_port, 'sp-0', exp_addrs_sp0),
+                 "sp-1": Node(client, mgmt_port, 'sp-1', exp_addrs_sp1)},
+             'virtual_address': VirtualAddress(ip='***REMOVED***', mask='24')}
         ]
 
         # Result: Port with expected params was returned
@@ -135,18 +110,18 @@ class TestNetworkService:
         # Result: Nodes with expected params was returned
         check_obj(
             mgmt_port.nodes['sp-0'],
-            dict(name='sp-0', addresses=['***REMOVED***/24']),
+            dict(name='sp-0', addresses=exp_addrs_sp0),
         )
         check_obj(
             mgmt_port.nodes['sp-1'],
-            dict(name='sp-1', addresses=['***REMOVED***/24']),
+            dict(name='sp-1', addresses=exp_addrs_sp1),
         )
 
-    def test_get_non_existing_port(self, client, mock_method):
+    def test_get_non_existing_port(self, client, mock_method, ports_response):
         # Mock open_url response for get_ports
         mock_method(
             OPEN_URL_FUNC,
-            *get_ports_response()
+            *ports_response
         )
 
         # Call get_port

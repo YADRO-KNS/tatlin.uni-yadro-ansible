@@ -17,7 +17,8 @@ except ImportError:
 import sys
 import time
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
+    build_url, PORTS_ENDPOINT)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     TatlinClientError, RESTClientConnectionError, RESTClientUnauthorized,
 )
@@ -32,12 +33,12 @@ def get_ip_and_mask(address):  # type: (str) -> Tuple[str, str]
     except ValueError:
         raise TatlinClientError(
             'Wrong format of ip address. It should be in '
-            '"x.x.x.x/x" format, but was {0}'.format(address)
+            '"x.x.x.x/x" format, but was "{0}"'.format(address)
         )
     return ip, mask
 
 
-def get_ip_only(addresses):
+def get_ip(addresses):
     # type: (Union[str, List[str]]) -> Union[List[str], str]
     """
     Extracts ip from ip and mask str in 'x.x.x.x/24' format.
@@ -74,18 +75,16 @@ class Port:
         )
 
         self._changed_host = ChangedHost(self._client)
-        self._ports_endpoint = PORTS_ENDPOINT
-        self._endpoint = '/'.join([PORTS_ENDPOINT, self.type, self.name])
+        self._ep = build_url(PORTS_ENDPOINT, self.type, self.name)
+        self._ep_status = build_url(
+            PORTS_ENDPOINT, self.type, self.name, 'status',
+        )
 
     def is_mgmt(self):  # type: () -> bool
         return self.name == 'mgmt'
 
     def load(self):  # type: () -> None
-        all_ports_data = self._client.get(self._ports_endpoint).json
-
-        port_data = next(
-            item for item in all_ports_data if item['id'] == self.name
-        )
+        port_data = self._client.get(self._ep_status).json
 
         self.gateway = port_data['params']['gateway']
         self.mtu = port_data['params']['mtu']
@@ -116,14 +115,13 @@ class Port:
         virtual_ip = virtual_mask = None
         if virtual_address or self.virtual_address:
             virtual_ip, virtual_mask = get_ip_and_mask(
-                virtual_address or self.virtual_address)
+                virtual_address or str(self.virtual_address)
+            )
 
         body_nodes = {}
         for node in self.nodes.values():
             # replace nodes addresses by new addresses if they were passed
-            addresses = updating_nodes.pop(node.name) \
-                if node.name in updating_nodes else node.addresses
-
+            addresses = updating_nodes.pop(node.name, node.addresses_str)
             addresses = [addresses] \
                 if isinstance(addresses, str) else addresses
 
@@ -144,7 +142,7 @@ class Port:
             )
 
         self._client.post(
-            path=self._endpoint,
+            path=self._ep,
             body={
                 'params': {
                     'nodes': body_nodes,
@@ -183,8 +181,8 @@ class Port:
             return
 
         if new_virtual_address is not None:
-            old_virtual_ip = get_ip_only(self.virtual_address)
-            new_virtual_ip = get_ip_only(new_virtual_address)
+            old_virtual_ip = getattr(self.virtual_address, 'ip', None)
+            new_virtual_ip = get_ip(new_virtual_address)
 
             if host == old_virtual_ip and new_virtual_ip != old_virtual_ip:
                 return new_virtual_ip
@@ -195,8 +193,8 @@ class Port:
                 new_addresses = new_addresses if \
                     isinstance(new_addresses, list) else [new_addresses]
 
-                old_ips = get_ip_only(old_addresses)
-                new_ips = get_ip_only(new_addresses)
+                old_ips = [addr.ip for addr in old_addresses]
+                new_ips = [get_ip(addr) for addr in new_addresses]
 
                 if host in old_ips and host not in new_ips:
                     return new_ips[0]
@@ -209,9 +207,28 @@ class Port:
             addresses = []
             for addr in addresses_data:
                 ip, mask = addr.get('ipaddress'), addr.get('netmask')
-                addresses.append(
-                    '/'.join((ip, mask)) if None not in (ip, mask) else '',
-                )
+
+                valid_address = ip and mask
+                # Error if only one parameter is filled
+                non_valid_address = not valid_address and (ip or mask)
+
+                if valid_address:
+                    addresses.append(NodeAddress(
+                        ip=ip,
+                        mask=mask,
+                        address_id=addr.get('ipaddressid'),
+                        status=addr.get('status'),
+                    ))
+                elif non_valid_address:
+                    msg = 'empty ipaddress' if not ip else 'empty netmask'
+                    raise TatlinClientError(
+                        'Failed parse ip address on node {node} '
+                        'on port {port}. Wrong format: {msg} '.format(
+                            node=node_name,
+                            port=self.name,
+                            msg=msg,
+                        )
+                    )
 
             if node_name in self.nodes:
                 new_nodes[node_name] = self.nodes[node_name]
@@ -227,10 +244,25 @@ class Port:
         self.nodes = new_nodes
 
     def _retrieve_virtual_address(self, failover_data):
+        # type: (List[Dict]) -> Optional[VirtualAddress]
         ip = failover_data[0]['ipaddress'] if failover_data else None
         mask = failover_data[0]['netmask'] if failover_data else None
-        return '/'.join((ip, mask)) \
-            if None not in (ip, mask) else None
+
+        valid_address = ip and mask
+        # Error if only one parameter is filled
+        non_valid_address = not valid_address and (ip or mask)
+
+        if valid_address:
+            return VirtualAddress(ip, mask)
+        elif non_valid_address:
+            msg = 'empty ipaddress' if not ip else 'empty netmask'
+            raise TatlinClientError(
+                'Failed parse virtual address on port {port}. '
+                'Wrong format: {msg} '.format(
+                    port=self.name,
+                    msg=msg,
+                )
+            )
 
     def _wait_interfaces_up(self, new_virtual_address=None, nodes=None):
         # type: (str, Dict[str, Union[str, List]]) -> None
@@ -240,10 +272,10 @@ class Port:
             for addresses in nodes.values():
                 if isinstance(addresses, str):
                     addresses = [addresses]
-                new_ips.extend(get_ip_only(addresses))
+                new_ips.extend(get_ip(addresses))
 
         if new_virtual_address is not None:
-            new_ips.append(get_ip_only(new_virtual_address))
+            new_ips.append(get_ip(new_virtual_address))
 
         if len(new_ips) == 0:
             return
@@ -265,7 +297,7 @@ class Port:
             with self._changed_host(ip):
                 for attempt in range(attempts):
                     try:
-                        self._client.get(self._ports_endpoint)
+                        self._client.get(self._ep_status)
                         is_up = True
                     except RESTClientUnauthorized:
                         is_up = True
@@ -289,17 +321,16 @@ class Port:
 
 class Node:
 
-    def __init__(
-        self,
-        client,
-        port,  # type: Port
-        name,  # type: str
-        addresses,  # type: List[str]
-    ):
+    def __init__(self, client, port, name, addresses):
+        # type: ('TatlinClient', Port, str, List[NodeAddress]) -> None
         self._client = client
         self.port = port
         self.name = name
-        self.addresses = addresses  # TODO: make address an str object with ip and mask attrs
+        self.addresses = addresses or []
+
+    @property
+    def addresses_str(self):  # type: () -> List[str]
+        return [str(addr) for addr in self.addresses]
 
     def __eq__(self, other):
         if not isinstance(other, Node):
@@ -308,6 +339,37 @@ class Node:
 
     def __repr__(self):
         return 'Node {0} on Port {1}'.format(self.name, self.port.name)
+
+
+class BaseAddress:
+    def __init__(self, ip, mask):  # type: (str, str) -> None
+        self.ip = ip
+        self.mask = mask
+
+    def __str__(self):
+        return '/'.join((self.ip, self.mask))
+
+
+class NodeAddress(BaseAddress):
+
+    def __init__(self, ip, mask, address_id, status):
+        # type: (str, str, str, str) -> None
+        super(NodeAddress, self).__init__(ip, mask)
+        self.address_id = address_id
+        self.status = status
+
+    def __eq__(self, other):
+        if not isinstance(other, NodeAddress):
+            return False
+        return self.address_id == other.address_id
+
+
+class VirtualAddress(BaseAddress):
+
+    def __eq__(self, other):
+        if not isinstance(other, VirtualAddress):
+            return False
+        return self.ip == other.ip and self.mask == other.mask
 
 
 class ChangedHost:
