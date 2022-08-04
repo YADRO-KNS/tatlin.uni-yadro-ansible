@@ -26,6 +26,8 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.auth_
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.osmgr_service import OsmgrService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.notification_service import NotificationService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
+    SYSTEM_NAME_ENDPOINT, SYSTEM_VERSION_ENDPOINT)
 
 
 LOGIN_PATH = 'auth/login'
@@ -58,6 +60,12 @@ class TatlinClient(RestClient):
         self._auth_service = None
         self._osmgr_service = None
         self._notification_service = None
+
+        self._system_name = None
+        self._system_version = None
+
+        self._ep_system_name = SYSTEM_NAME_ENDPOINT
+        self._ep_system_version = SYSTEM_VERSION_ENDPOINT
 
     def __enter__(self):
         self.authorize(self._username, self._password, self._auth_method)
@@ -128,6 +136,34 @@ class TatlinClient(RestClient):
         if not self._notification_service:
             self._notification_service = NotificationService(self)
         return self._notification_service
+
+    @property
+    def system_name(self):  # type: () -> str
+        if self._system_name is None:
+            self._system_name = self._get_system_name()
+        return self._system_name
+
+    @property
+    def system_version(self):  # type: () -> str
+        if self._system_version is None:
+            self._system_version = self._get_system_version()
+        return self._system_version
+
+    def _get_system_name(self):
+        data = self.get(self._ep_system_name).json
+        try:
+            name = data['value']
+        except (KeyError, TypeError):
+            raise TatlinClientError('Failed to parse system name')
+        return name
+
+    def _get_system_version(self):
+        data = self.get(self._ep_system_version).json
+        try:
+            version = data['tatlin-version']['L2']
+        except (KeyError, TypeError):
+            raise TatlinClientError('Failed to parse tatlin version')
+        return version
 
 
 class TatlinAuthorizationError(Exception):

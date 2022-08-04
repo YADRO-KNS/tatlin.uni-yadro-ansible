@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+
+# YADRO Tatlin Ansible Collection
+# Version 1.0.0
+# Copyright (c) 2022 YADRO (KNS Group LLC)
+
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import pytest
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import NodeAddress
 

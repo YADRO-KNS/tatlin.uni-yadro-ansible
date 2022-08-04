@@ -26,6 +26,12 @@ LDAP_ENDPOINT = build_url(AUTH_ENDPOINT, 'ldap')
 LDAP_CONFIG_ENDOPINT = build_url(LDAP_ENDPOINT, 'configuration')
 
 
+# Configuration service
+CONFIGURATION_ENDPOINT = 'configuration'
+PROPERTIES_ENDPOINT = build_url(CONFIGURATION_ENDPOINT, VERSION1, 'properties')
+SYSTEM_NAME_ENDPOINT = build_url(PROPERTIES_ENDPOINT, 'system', 'name')
+
+
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
 PORTS_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION2, 'ports')
@@ -40,3 +46,8 @@ NOTIFICATION_ENDPOINT = 'notification'
 SNMP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp')
 SMTP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'smtp')
 SYSLOG_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'syslog')
+
+
+# Upmgr service
+UPMGR_ENDPOINT = 'upmgr'
+SYSTEM_VERSION_ENDPOINT = build_url(UPMGR_ENDPOINT, VERSION1, 'version')

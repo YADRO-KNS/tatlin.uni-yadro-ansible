@@ -32,7 +32,7 @@ class TestNtp:
         ntp_config = NtpConfig(client)
 
         # Ensure that ntp_config has empty attributes
-        check_obj(ntp_config, {'servers': None})
+        check_obj(ntp_config, {'servers': []})
 
         # Restore load method
         NtpConfig.load = init_load

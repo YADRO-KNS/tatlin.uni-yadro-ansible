@@ -1,0 +1,275 @@
+#################################################
+#### Configuration Tatlin for test
+##############################################
+
+- name: Test get tatlin info | Set mtu for mgmt port
+  yadro.tatlin.tatlin_sp_mgmt_port:
+    connection: "{{ connection }}"
+    mtu: 1500
+
+- name: Test get tatlin info | Set ldap config
+  yadro.tatlin.tatlin_sp_ldap:
+    connection: "{{ connection }}"
+    host: "{{ ldap_host }}"
+    port: 389
+    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ***REMOVED***
+    base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
+    search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
+    encryption: off
+    user_attribute: cn
+    group_attribute: cn
+    type: custom
+
+- name: Test get tatlin info | Set ntp servers
+  yadro.tatlin.tatlin_sp_ntp:
+    connection: "{{ connection }}"
+    servers:
+      - example.com
+      - 127.0.0.1
+
+- name: Test get tatlin info | Set SNMP config
+  yadro.tatlin.tatlin_sp_snmp:
+    connection: "{{ connection }}"
+    community: tatlin
+    servers:
+      - ip: example.com
+        port: 162
+
+- name: Test get tatlin info | Set SMTP config
+  yadro.tatlin.tatlin_sp_smtp:
+    connection: "{{ connection }}"
+    address: 127.0.0.1
+    port: 25
+    encryption: tls
+    login: admin
+    password: ***REMOVED***
+    sender: smtp@example.com
+    recipients:
+      - first@recipient.com
+      - second@recipient.com
+
+- name: Test get tatlin info | Set DNS config
+  yadro.tatlin.tatlin_sp_dns:
+    connection: "{{ connection }}"
+    servers:
+      - 127.0.0.1
+      - 1.1.1.1
+    search_list:
+      - test.example.com
+      - test.com
+
+- name: Test get tatlin info | Set Syslog recipients
+  yadro.tatlin.tatlin_sp_syslog:
+    connection: "{{ connection }}"
+    recipients:
+      - address: 127.0.0.1
+        port: 514
+        protocol: udp
+        facility: 10
+        severity: critical
+        audit: false
+
+#################################################
+#### Getting Tatlin info
+################################################
+
+- name: Test get tatlin info | Get tatlin info
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+
+- set_fact:
+    tatlin_info: "{{ result.tatlin_info }}"
+
+
+#################################################
+#### Setting expected params
+################################################
+
+- set_fact:
+    exp_mgmt_port: {
+      port_type: 'ip',
+      gateway: "{{ ip.management.gateway }}",
+      mtu: 1500,
+      virtual_address: {
+        ip: "{{ ip.management.ip3 }}",
+        mask: "{{ ip.management.mask }}"
+      },
+      nodes: {
+        sp-0: [
+          {ip: "{{ ip.management.ip1 }}",
+           mask: "{{ ip.management.mask }}",
+           status: online}
+        ],
+        sp-1: [
+          {ip: "{{ ip.management.ip5 }}",
+           mask: "{{ ip.management.mask }}",
+           status: online}
+        ]
+      }
+    }
+    exp_data_port: {
+      port_type: 'ip',
+      gateway: "",
+      mtu: 1500,
+      virtual_address: null,
+      nodes: {
+        sp-0: [],
+        sp-1: []
+      }
+    }
+    exp_ldap_info: {
+      host: "{{ ldap_host }}",
+      port: "389",
+      lookup_user: "cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com",
+      base_dn: "dc=testldap,dc=spb,dc=yadro,dc=com",
+      search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)",
+      encryption: "off",
+      user_attribute: cn,
+      group_attribute: cn,
+      type: custom,
+    }
+    exp_ntp_info: {
+      servers: ["127.0.0.1", "example.com"]
+    }
+    exp_snmp_info: {
+      community: "tatlin",
+      servers: [{ip: "example.com", port: "162"}]
+    }
+    exp_smtp_info: {
+      address: "127.0.0.1",
+      port: 25,
+      login: "admin",
+      encryption: "tls",
+      sender: "smtp@example.com",
+      recipients: ["first@recipient.com", "second@recipient.com"]
+    }
+    exp_dns_info: {
+      servers: ["127.0.0.1", "1.1.1.1"],
+      search_list: ["test.example.com", "test.com"]
+    }
+    exp_syslog_info: {
+      recipients: [{
+        address: "127.0.0.1",
+        port: "514",
+        protocol: "udp",
+        facility: 10,
+        severity: "critical",
+        audit: false
+      }]
+    }
+
+#################################################
+#### Checking results
+################################################
+
+- name: Test get tatlin info | Show system info
+  debug:
+    msg:
+      - "System name: {{ tatlin_info.system_name }}"
+      - "System version: {{ tatlin_info.system_version }}"
+
+- name: Test get tatlin info | Check system info
+  assert:
+    that:
+      - tatlin_info.system_name != None
+      - tatlin_info.system_version != None
+
+- name: Test get tatlin info | Show mgmt port info
+  debug:
+    msg:
+      - "Fact mgmt port config: {{ tatlin_info.ports.mgmt }}"
+      - "Expected mgmt port config: {{ exp_mgmt_port }}"
+
+- name: Test get tatlin info | Check mgmt port
+  assert:
+    that:
+      - tatlin_info.ports.mgmt.port_type == exp_mgmt_port.port_type
+      - tatlin_info.ports.mgmt.gateway == exp_mgmt_port.gateway
+      - tatlin_info.ports.mgmt.mtu == exp_mgmt_port.mtu
+      - tatlin_info.ports.mgmt.virtual_address == exp_mgmt_port.virtual_address
+      - tatlin_info.ports.mgmt.nodes == exp_mgmt_port.nodes
+
+- name: Test get tatlin info | Show data port info
+  debug:
+    msg:
+      - "Fact data port config: {{ tatlin_info.ports.p01 }}"
+      - "Expected data port config: {{ exp_data_port }}"
+
+- name: Test get tatlin info | Check data port
+  assert:
+    that:
+      - tatlin_info.ports.p01.port_type == exp_data_port.port_type
+      - tatlin_info.ports.p01.gateway == exp_data_port.gateway
+      - tatlin_info.ports.p01.mtu == exp_data_port.mtu
+      - tatlin_info.ports.p01.virtual_address == exp_data_port.virtual_address
+      - tatlin_info.ports.p01.nodes == exp_data_port.nodes
+
+- name: Test get tatlin info | Show ldap info
+  debug:
+    msg:
+      - "Fact ldap info: {{ tatlin_info.ldap }}"
+      - "Expected ldap info: {{ exp_ldap_info }}"
+
+- name: Test get tatlin info | Check ldap info
+  assert:
+    that: tatlin_info.ldap == exp_ldap_info
+
+- name: Test get tatlin info | Show ntp info
+  debug:
+    msg:
+      - "Fact ntp info: {{ tatlin_info.ntp }}"
+      - "Expected ntp info: {{ exp_ntp_info }}"
+
+- name: Test get tatlin info | Check ntp info
+  assert:
+    that: tatlin_info.ntp.servers | sort == exp_ntp_info.servers | sort
+
+- name: Test get tatlin info | Show snmp info
+  debug:
+    msg:
+      - "Fact snmp info: {{ tatlin_info.snmp }}"
+      - "Expected snmp info: {{ exp_snmp_info }}"
+
+- name: Test get tatlin info | Check snmp info
+  assert:
+    that: tatlin_info.snmp == exp_snmp_info
+
+- name: Test get tatlin info | Show smtp info
+  debug:
+    msg:
+      - "Fact smtp info: {{ tatlin_info.smtp }}"
+      - "Expected smtp info: {{ exp_smtp_info }}"
+
+- name: Test get tatlin info | Check smtp info
+  assert:
+    that:
+      - tatlin_info.smtp.address == exp_smtp_info.address
+      - tatlin_info.smtp.port == exp_smtp_info.port
+      - tatlin_info.smtp.encryption == exp_smtp_info.encryption
+      - tatlin_info.smtp.login == exp_smtp_info.login
+      - tatlin_info.smtp.sender == exp_smtp_info.sender
+      - tatlin_info.smtp.recipients | sort == exp_smtp_info.recipients | sort
+
+- name: Test get tatlin info | Show dns info
+  debug:
+    msg:
+      - "Fact dns info: {{ tatlin_info.dns }}"
+      - "Expected dns info: {{ exp_dns_info }}"
+
+- name: Test get tatlin info | Check dns info
+  assert:
+    that:
+      - tatlin_info.dns.servers | sort == exp_dns_info.servers | sort
+      - tatlin_info.dns.search_list | sort == exp_dns_info.search_list | sort
+
+- name: Test get tatlin info | Show syslog info
+  debug:
+    msg:
+      - "Fact syslog info: {{ tatlin_info.syslog }}"
+      - "Expected syslog info: {{ exp_syslog_info }}"
+
+- name: Test get tatlin info | Check syslog info
+  assert:
+    that: tatlin_info.syslog == exp_syslog_info

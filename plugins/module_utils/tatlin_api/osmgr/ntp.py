@@ -22,7 +22,7 @@ class NtpConfig:
 
     def __init__(self, client):
         self._client = client
-        self.servers = None
+        self.servers = []
         self._servers_endpoint = NTP_SERVERS_ENDPOINT
 
         self.load()

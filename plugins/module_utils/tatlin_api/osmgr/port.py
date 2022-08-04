@@ -65,6 +65,8 @@ class Port:
         self.type = port_data['meta']['type']
         self.gateway = port_data['params']['gateway']
         self.mtu = port_data['params']['mtu']
+        self.mac = port_data['params'].get('mac')
+        self.wwpn = port_data['params'].get('wwpn')
         self.virtual_address = self._retrieve_virtual_address(
             port_data['params']['failover']
         )
