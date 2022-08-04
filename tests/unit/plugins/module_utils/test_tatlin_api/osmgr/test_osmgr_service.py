@@ -11,7 +11,9 @@ __metaclass__ = type
 
 import pytest
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Node, VirtualAddress
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+    TatlinClientError, TatlinNodeNotFoundError, RESTClientNotFoundError)
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import REBOOT_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 
@@ -172,3 +174,33 @@ class TestNetworkService:
         # Result: DNS config with expected parameters was returned
         assert dns_config.servers == []
         assert dns_config.search_list == []
+
+    @pytest.mark.parametrize(
+        'node_name', ['sp-0', 'sp-1']
+    )
+    def test_reboot_node(self, client, mock_method, open_url_kwargs, node_name):
+        # Mock open_url without data
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Reboot node
+        client.osmgr_service.reboot_node(node_name)
+
+        # Defining expected call parameters
+        open_url_kwargs.update(
+            method='PUT',
+            url='https://localhost/{0}'.format(
+                REBOOT_ENDPOINT.format(node=node_name)
+            ),
+        )
+
+        # Result: open_url was called with expected parameters
+        open_url_mock.assert_called_with(**open_url_kwargs)
+
+    def test_reboot_non_existing_node(self, client, mock_method, open_url_kwargs):
+        # Mock open_url with not found error
+        mock_method(target=OPEN_URL_FUNC, side_effects=RESTClientNotFoundError)
+
+        # Reboot non-existing node
+        # Result: TatlinNodeNotFoundError was raised
+        with pytest.raises(TatlinNodeNotFoundError):
+            client.osmgr_service.reboot_node('test-node')

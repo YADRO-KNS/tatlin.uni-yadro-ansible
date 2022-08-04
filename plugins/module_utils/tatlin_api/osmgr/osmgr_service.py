@@ -12,8 +12,10 @@ __metaclass__ = type
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.dns import DnsConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_STATUS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+    TatlinClientError, RESTClientNotFoundError, TatlinNodeNotFoundError)
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
+    PORTS_STATUS_ENDPOINT, REBOOT_ENDPOINT)
 
 try:
     from typing import List, Dict
@@ -55,3 +57,11 @@ class OsmgrService:
             )
 
         return port
+
+    def reboot_node(self, name):  # type: (str) -> None
+        try:
+            self._client.put(REBOOT_ENDPOINT.format(node=name))
+        except RESTClientNotFoundError:
+            raise TatlinNodeNotFoundError(
+                'Not found node with name {0}'.format(name)
+            )

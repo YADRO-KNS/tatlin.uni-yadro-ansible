@@ -36,3 +36,7 @@ class RESTClientBadRequest(Exception):
 
 class TatlinClientError(Exception):
     pass
+
+
+class TatlinNodeNotFoundError(Exception):
+    pass

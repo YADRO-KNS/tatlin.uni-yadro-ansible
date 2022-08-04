@@ -1,0 +1,120 @@
+---
+
+#################################################
+#### Prepare
+################################################
+
+- name: Test SP restart | Get Tatlin info
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+
+- name: Test SP restart | Save addresses of sp-0
+  set_fact:
+    ip_sp0: "{{ result.tatlin_info.ports.mgmt.nodes['sp-0'][0].ip }}"
+
+- name: Test SP restart | Save addresses of sp-1
+  set_fact:
+    ip_sp1: "{{ result.tatlin_info.ports.mgmt.nodes['sp-1'][0].ip }}"
+
+- name: Test SP restart | Save initial connection address
+  set_fact:
+    init_connect_ip: "{{ connection.base_url }}"
+
+##################################################
+##### First restart
+#################################################
+
+- name: Test SP restart | Set address sp-1 as connection
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': ip_sp1 }, recursive=true) }}"
+    loop: "{{ connection|list }}"
+
+- name: Test SP restart | Restart sp-0
+  yadro.tatlin.tatlin_sp_restart:
+    connection: "{{ connection }}"
+    node_name: sp-0
+
+- name: Test SP restart | Wait sp-0 offline
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until:  not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-0'][0].status == "offline"
+  retries: 30
+  delay: 2
+
+- name: Test SP restart | Wait sp-0 online
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-0'][0].status == "online"
+  retries: 45
+  delay: 3
+
+##################################################
+##### Second restart
+#################################################
+
+- name: Test SP restart | Set address sp-0 as connection
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': ip_sp0 }, recursive=true) }}"
+    loop: "{{ connection|list }}"
+
+- name: Test SP restart | Wait interface sp-0 up
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed
+  retries: 30
+  delay: 3
+
+- name: Test SP restart | Restart sp-1
+  yadro.tatlin.tatlin_sp_restart:
+    connection: "{{ connection }}"
+    node_name: sp-1
+
+- name: Test SP restart | Wait sp-1 offline
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-1'][0].status == "offline"
+  retries: 30
+  delay: 2
+
+- name: Test SP restart | Wait sp-1 online
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-1'][0].status == "online"
+  retries: 45
+  delay: 3
+
+- name: Test SP restart | Set address sp-1 as connection
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': ip_sp1 }, recursive=true) }}"
+    loop: "{{ connection|list }}"
+
+- name: Test SP restart | Wait interface sp-1 up
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed
+  retries: 30
+  delay: 3
+
+##################################################
+##### Restore connection
+#################################################
+
+- name: Test SP restart | Restore connection ip
+  set_fact:
+    connection: "{{ connection | combine({ 'base_url': init_connect_ip }, recursive=true) }}"
+    loop: "{{ connection|list }}"
+
+- name: Test SP restart | Wait initial interface up
+  yadro.tatlin.tatlin_sp_info:
+    connection: "{{ connection }}"
+  register: result
+  until: not result.failed
+  retries: 30
+  delay: 3

@@ -34,6 +34,8 @@ SYSTEM_NAME_ENDPOINT = build_url(PROPERTIES_ENDPOINT, 'system', 'name')
 
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
+REBOOT_ENDPOINT = build_url(
+    OSMGR_ENDPOINT, VERSION1, 'shutdown', '{node}', 'reboot')
 PORTS_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION2, 'ports')
 PORTS_STATUS_ENDPOINT = build_url(PORTS_ENDPOINT, 'status')
 NETCONFIG_ENDPOINT = build_url(OSMGR_ENDPOINT, VERSION1, 'netconfig')
