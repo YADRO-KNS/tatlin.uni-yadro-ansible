@@ -223,7 +223,7 @@ class TatlinLdapModule(TatlinModule):
                 changed=False,
             )
 
-        ldap_config = self.tatlin_api.auth_service.get_ldap_config()
+        ldap_config = self.tatlin.auth_service.get_ldap_config()
         action = None
 
         if self.params['state'] == 'present':

@@ -71,7 +71,7 @@ class TatlinRestartModule(TatlinModule):
     def _run(self):
         try:
             if not self.check_mode:
-                self.tatlin_api.osmgr_service.reboot_node(
+                self.tatlin.osmgr_service.reboot_node(
                     self.params['node_name'],
                 )
         except TatlinNodeNotFoundError:

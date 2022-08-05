@@ -68,12 +68,12 @@ class TatlinModule(AnsibleModule):
             mutually_exclusive=mutually_exclusive,
         )
 
-        self.tatlin_api = None  # type: TatlinClient
+        self.tatlin = None  # type: TatlinClient
 
     def run(self):  # type: () -> None
         connection = self.params["connection"]
 
-        self.tatlin_api = TatlinClient(
+        self.tatlin = TatlinClient(
             base_url=connection['base_url'],
             username=connection['username'],
             password=connection['password'],
@@ -83,7 +83,7 @@ class TatlinModule(AnsibleModule):
         )
 
         try:
-            self.tatlin_api.authorize()
+            self.tatlin.authorize()
             self._run()
         except Exception as e:
             self.fail_json(

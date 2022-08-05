@@ -135,7 +135,7 @@ class TatlinSnmpModule(TatlinModule):
 
     def _run(self):
         action = None
-        snmp_config = self.tatlin_api.notification_service.get_snmp_config()
+        snmp_config = self.tatlin.notification_service.get_snmp_config()
 
         if self.params['state'] == 'absent' and \
            self.params['servers'] is None and \

@@ -153,7 +153,7 @@ class TatlinSmtpModule(TatlinModule):
 
     def _run(self):
         action = None
-        smtp_config = self.tatlin_api.notification_service.get_smtp_config()
+        smtp_config = self.tatlin.notification_service.get_smtp_config()
         self.check_parameters(smtp_config)
 
         # Consider that if host address is not empty, SMTP is configured
