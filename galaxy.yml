@@ -1,0 +1,18 @@
+namespace: yadro
+name: tatlin
+version: 1.0.0
+readme: README.md
+authors:
+  - Sergey Kovalev <s.kovalev@yadro.com>
+description: Yadro Tatlin Ansible Collection
+license:
+  - GPL-3.0-or-later
+license_file: COPYING
+tags: []
+dependencies: {}
+repository: empty
+documentation: empty
+homepage: empty
+issues: empty
+build_ignore:
+  - '.*'
