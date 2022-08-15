@@ -25,7 +25,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
 )
 
 import json
-from ansible.module_utils.urls import open_url
+from ansible.module_utils.urls import open_url, prepare_multipart
 from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.six.moves.http_client import HTTPResponse
 from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
@@ -82,8 +82,14 @@ class RestClient:
         return self._host
 
     def make_request(
-        self, path, method, query_params=None, body=None, headers=None,
-    ):  # type: (str, str, Dict, Union[Dict, bytes], Dict) -> RestResponse
+        self,
+        path,  # type: str
+        method,  # type: str
+        query_params=None,  # type: Dict
+        body=None,  # type: Union[Dict, bytes]
+        headers=None,  # type: Dict
+        files=None,  # type: Dict
+    ):  # type: (...) -> RestResponse
 
         request_kwargs = {
             "follow_redirects": "all",
@@ -95,7 +101,18 @@ class RestClient:
             "validate_certs": self.validate_certs,
         }
 
-        if body:
+        if files and body:
+            raise RESTClientError(
+                'body and fields arguments are mutually exclusive'
+            )
+
+        if files:
+            prepared_files = {}
+            for name, file in files.items():
+                prepared_files[name] = {'filename': name, 'content': file}
+            content_type, request_body = prepare_multipart(prepared_files)
+            request_kwargs["headers"]["Content-Type"] = content_type
+        elif body:
             if isinstance(body, dict) or isinstance(body, list):
                 request_kwargs["headers"]["Content-Type"] = "application/json"
                 request_body = json.dumps(body)
@@ -144,25 +161,25 @@ class RestClient:
         return self.make_request(
             path, method="GET", query_params=query_params, headers=headers)
 
-    def post(self, path, body=None, headers=None):
-        # type: (str, Union[Dict, bytes], Dict) -> RestResponse
+    def post(self, path, body=None, headers=None, files=None):
+        # type: (str, Union[Dict, bytes], Dict, Dict) -> RestResponse
         return self.make_request(
-            path, method="POST", body=body, headers=headers)
+            path, method="POST", body=body, headers=headers, files=files)
 
     def delete(self, path, headers=None):
         # type: (str, Dict) -> RestResponse
         return self.make_request(
             path, method="DELETE", headers=headers)
 
-    def patch(self, path, body=None, headers=None):
-        # type: (str, Dict, Dict) -> RestResponse
+    def patch(self, path, body=None, headers=None, files=None):
+        # type: (str, Dict, Dict, Dict) -> RestResponse
         return self.make_request(
-            path, method="PATCH", body=body, headers=headers)
+            path, method="PATCH", body=body, headers=headers, files=files)
 
-    def put(self, path, body=None, headers=None):
-        # type: (str, Dict, Dict) -> RestResponse
+    def put(self, path, body=None, headers=None, files=None):
+        # type: (str, Dict, Dict, Dict) -> RestResponse
         return self.make_request(
-            path, method="PUT", body=body, headers=headers)
+            path, method="PUT", body=body, headers=headers, files=files)
 
     def _get_headers(self):
         headers = {}
