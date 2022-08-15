@@ -103,7 +103,7 @@ class RestClient:
 
         if files and body:
             raise RESTClientError(
-                'body and fields arguments are mutually exclusive'
+                'body and files arguments are mutually exclusive'
             )
 
         if files:

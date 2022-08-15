@@ -25,9 +25,10 @@ class TatlinModule(AnsibleModule):
         argument_spec=None,
         supports_check_mode=False,
         required_if=None,
+        required_one_of=None,
         mutually_exclusive=None,
     ):
-        # type: (Dict, bool, Sequence, List) -> None
+        # type: (Dict, bool, Sequence, Sequence, Sequence) -> None
         _argument_spec = {
             "connection": {
                 "required": True,
@@ -65,6 +66,7 @@ class TatlinModule(AnsibleModule):
             argument_spec=_argument_spec,
             supports_check_mode=supports_check_mode,
             required_if=required_if,
+            required_one_of=required_one_of,
             mutually_exclusive=mutually_exclusive,
         )
 

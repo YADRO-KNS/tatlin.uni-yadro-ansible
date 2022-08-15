@@ -15,16 +15,11 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
-    USERS_ENDPOINT, GROUPS_ENDPOINT,
-)
+    USERS_ENDPOINT, GROUPS_ENDPOINT, CERTIFICATE_ENDPOINT)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError, RESTClientNotFoundError,
-)
+    TatlinClientError, RESTClientNotFoundError)
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC,
-    AUTH_SERVICE_CLASS,
-    REST_CLIENT_CLASS,
-)
+    OPEN_URL_FUNC, AUTH_SERVICE_CLASS, REST_CLIENT_CLASS)
 
 
 class TestAuthService:
@@ -269,3 +264,50 @@ class TestAuthService:
 
         # Result: LDAP config with expected params was returned
         check_obj(ldap_config, expected_config)
+
+    def test_upload_ssl_certificate(
+        self, client, mock_method, open_url_kwargs,
+    ):
+        # Mock open_url method
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        client.auth_service.upload_ssl_certificate(
+            crt='crt_content', key='key_content'
+        )
+
+        # Get request's content type
+        call_args, call_kwargs = open_url_mock.call_args
+        content_type = call_kwargs['headers'].get('Content-Type')
+
+        # Check that header is correct
+        assert content_type is not None, \
+            'Not found Content-Type in request headers'
+        assert 'boundary="' in content_type, \
+            'Not found boundary in Content-Type'
+
+        # Get boundary
+        boundary = content_type.split('boundary="')[1][:-1]
+
+        # Define expected data
+        data = \
+            '--{boundary}\r\n' \
+            'Content-Type: application/octet-stream\r\n' \
+            'Content-Disposition: form-data; ' \
+            'name="crt"; filename="crt"\r\n\r\ncrt_content\r\n' \
+            '--{boundary}' \
+            '\r\nContent-Type: application/octet-stream\r\n' \
+            'Content-Disposition: form-data; ' \
+            'name="key"; filename="key"\r\n\r\nkey_content\r\n' \
+            '--{boundary}--\r\n'.format(boundary=boundary).encode()
+
+        # Defining expected call parameters
+        open_url_kwargs.update(
+            method='PUT',
+            url='https://localhost/{0}'.format(
+                CERTIFICATE_ENDPOINT),
+            data=data,
+            headers={'Content-Type': 'multipart/form-data; boundary="{boundary}"'.format(boundary=boundary)},
+        )
+
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)

@@ -24,6 +24,7 @@ USERS_ENDPOINT = build_url(AUTH_ENDPOINT, 'users')
 GROUPS_ENDPOINT = build_url(AUTH_ENDPOINT, 'groups')
 LDAP_ENDPOINT = build_url(AUTH_ENDPOINT, 'ldap')
 LDAP_CONFIG_ENDOPINT = build_url(LDAP_ENDPOINT, 'configuration')
+CERTIFICATE_ENDPOINT = build_url(AUTH_ENDPOINT, 'certificate')
 
 
 # Configuration service

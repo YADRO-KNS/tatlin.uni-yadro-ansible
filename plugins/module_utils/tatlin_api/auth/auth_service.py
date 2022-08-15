@@ -22,7 +22,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
     TatlinClientError, RESTClientNotFoundError,
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
-    GROUPS_ENDPOINT, USERS_ENDPOINT,
+    GROUPS_ENDPOINT, USERS_ENDPOINT, CERTIFICATE_ENDPOINT,
 )
 
 
@@ -163,3 +163,7 @@ class AuthService:
             self._ldap_config = LdapConfig(self._client)
         self._ldap_config.load()
         return self._ldap_config
+
+    def upload_ssl_certificate(self, crt, key):
+        # type: (Union[str, bytes], Union[str, bytes]) -> None
+        self._client.put(CERTIFICATE_ENDPOINT, files={'crt': crt, 'key': key})
