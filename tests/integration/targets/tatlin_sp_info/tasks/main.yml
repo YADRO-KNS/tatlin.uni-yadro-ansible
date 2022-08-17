@@ -7,6 +7,28 @@
     connection: "{{ connection }}"
     mtu: 1500
 
+- name: Test get tatlin info | Reset port p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    state: absent
+
+- name: Test get tatlin info | Update port p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    gateway: "{{ ip.data.p01.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p01.ip1 }}"
+          mask: "{{ ip.data.p01.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p01.ip2 }}"
+          mask: "{{ ip.data.p01.mask }}"
+  register: result
+
 - name: Test get tatlin info | Set ldap config
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
@@ -111,12 +133,20 @@
     }
     exp_data_port: {
       port_type: 'ip',
-      gateway: "",
+      gateway: "{{ ip.data.p01.gateway }}",
       mtu: 1500,
       virtual_address: null,
       nodes: {
-        sp-0: [],
-        sp-1: []
+        sp-0: [{
+          ip: "{{ ip.data.p01.ip1 }}",
+          mask: "{{ ip.data.p01.mask }}",
+          status: online
+        }],
+        sp-1: [{
+          ip: "{{ ip.data.p01.ip2 }}",
+          mask: "{{ ip.data.p01.mask }}",
+          status: online
+        }]
       }
     }
     exp_ldap_info: {
