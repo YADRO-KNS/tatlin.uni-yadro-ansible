@@ -1,0 +1,311 @@
+- name: Test port change | Reset configuration p00
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    state: absent
+
+- name: Test port change | Reset configuration p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    state: absent
+
+#################################################
+#### TEST 1
+#################################################
+- name: Test port change | Test check mode
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: "{{ ip.data.p00.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p00.ip1 }}"
+          mask: "{{ ip.data.p00.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p00.ip2 }}"
+          mask: "{{ ip.data.p00.mask }}"
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Check port was not changed
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: "{{ ip.data.p00.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p00.ip1 }}"
+          mask: "{{ ip.data.p00.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p00.ip2 }}"
+          mask: "{{ ip.data.p00.mask }}"
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 2
+#################################################
+- name: Test port change | Set p00
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: "{{ ip.data.p00.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p00.ip1 }}"
+          mask: "{{ ip.data.p00.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p00.ip2 }}"
+          mask: "{{ ip.data.p00.mask }}"
+    state: present
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Check port was changed
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: "{{ ip.data.p00.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p00.ip1 }}"
+          mask: "{{ ip.data.p00.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p00.ip2 }}"
+          mask: "{{ ip.data.p00.mask }}"
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 3
+#################################################
+- name: Test port change | Set p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    gateway: "{{ ip.data.p01.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p01.ip1 }}"
+          mask: "{{ ip.data.p01.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p01.ip2 }}"
+          mask: "{{ ip.data.p01.mask }}"
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Set p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    gateway: "{{ ip.data.p01.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p01.ip1 }}"
+          mask: "{{ ip.data.p01.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p01.ip2 }}"
+          mask: "{{ ip.data.p01.mask }}"
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 4
+#################################################
+- name: Test port change | Change gateway on p00
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: ""
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Change gateway was changed
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    gateway: ""
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p00.ip1 }}"
+          mask: "{{ ip.data.p00.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p00.ip2 }}"
+          mask: "{{ ip.data.p00.mask }}"
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 5
+#################################################
+- name: Test port change | Swap ips on p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p01.ip2 }}"
+          mask: "{{ ip.data.p01.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p01.ip1 }}"
+          mask: "{{ ip.data.p01.mask }}"
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Check port was changed
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    gateway: "{{ ip.data.p01.gateway }}"
+    nodes:
+      - name: sp-0
+        address:
+          ip: "{{ ip.data.p01.ip2 }}"
+          mask: "{{ ip.data.p01.mask }}"
+      - name: sp-1
+        address:
+          ip: "{{ ip.data.p01.ip1 }}"
+          mask: "{{ ip.data.p01.mask }}"
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 6
+#################################################
+- name: Test port change | Test reset p00
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    state: absent
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Check p00 was reset
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test port change | Check p00 was reset
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p00
+    nodes:
+    - name: sp-0
+      address:
+        ip: "{{ ip.data.p00.ip1 }}"
+        mask: "{{ ip.data.p00.mask }}"
+    - name: sp-1
+      address:
+        ip: "{{ ip.data.p00.ip2 }}"
+        mask: "{{ ip.data.p00.mask }}"
+    state: present
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 7
+#################################################
+- name: Test port change | Check reset p01
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    state: absent
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test port change | Check p01 was reset
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    state: absent
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test port change | Check p01 was reset
+  yadro.tatlin.tatlin_sp_port:
+    connection: "{{ connection }}"
+    name: p01
+    gateway: "{{ ip.data.p01.gateway }}"
+  check_mode: true
+  register: result
+
+- name: Test port change | Check state
+  assert:
+    that: "result.changed == true"

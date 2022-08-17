@@ -76,6 +76,10 @@ class Port:
             nodes_data=port_data['params']['nodes']
         )
 
+        self._data_role = port_data['meta'].get('data_role', False)
+        self._replication_role = port_data['meta'].get(
+            'replication_role', False)
+
         self._changed_host = ChangedHost(self._client)
         self._ep = build_url(PORTS_ENDPOINT, self.type, self.name)
         self._ep_status = build_url(
@@ -95,6 +99,10 @@ class Port:
         )
         self._init_nodes(port_data['params']['nodes'])
 
+        self._data_role = port_data['meta'].get('data_role', False)
+        self._replication_role = port_data['meta'].get(
+            'replication_role', False)
+
     def update(self, virtual_address=None, gateway=None, mtu=None, nodes=None):
         # type: (str, str, int, Dict[str, Union[str, List[str]]]) -> None
         """
@@ -112,7 +120,7 @@ class Port:
             addresses list will contain single 192.168.0.20
         """
 
-        updating_nodes = nodes.copy() if nodes else {}
+        processing_nodes = nodes.copy() if nodes else {}
 
         virtual_ip = virtual_mask = None
         if virtual_address or self.virtual_address:
@@ -120,39 +128,43 @@ class Port:
                 virtual_address or str(self.virtual_address)
             )
 
-        body_nodes = {}
+        nodes_to_send = {}
         for node in self.nodes.values():
             # replace nodes addresses by new addresses if they were passed
-            addresses = updating_nodes.pop(node.name, node.addresses_str)
+            addresses = processing_nodes.pop(node.name, node.addresses_str)
             addresses = [addresses] \
                 if isinstance(addresses, str) else addresses
 
-            body_nodes[node.name] = []
+            nodes_to_send[node.name] = []
             for addr in addresses:
                 ip, mask = get_ip_and_mask(addr)
-                body_nodes[node.name].append(
+                nodes_to_send[node.name].append(
                     {'ipaddress': ip, 'netmask': mask}
                 )
 
-        if len(updating_nodes) > 0:
-            is_plural = len(updating_nodes) > 1
+        if len(processing_nodes) > 0:
+            is_plural = len(processing_nodes) > 1
             raise TatlinClientError(
                 'There is no {0} {1} on port {2}'.format(
                     'nodes' if is_plural else 'node',
-                    ', '.join(updating_nodes.keys()),
+                    ', '.join(processing_nodes.keys()),
                     self.name)
             )
 
         self._client.post(
             path=self._ep,
             body={
+                'meta': {
+                    'data_role': self._data_role,
+                    'replication_role': self._replication_role,
+                },
                 'params': {
-                    'nodes': body_nodes,
+                    'nodes': nodes_to_send,
                     'failover': [{
                         'ipaddress': virtual_ip,
                         'netmask': virtual_mask,
                     }],
-                    'gateway': gateway or self.gateway,
+                    'gateway': gateway if gateway is not None else self.gateway,
                     'mtu': mtu or self.mtu,
                 }
             }
