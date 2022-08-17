@@ -107,7 +107,7 @@ class TatlinSslModule(TatlinModule):
             mutually_exclusive=mutually_exclusive,
         )
 
-    def _run(self):
+    def run(self):
         crt = self.get_cert_content()
         key = self.get_key_content()
 
@@ -140,7 +140,7 @@ class TatlinSslModule(TatlinModule):
 
 
 def main():
-    TatlinSslModule().run()
+    TatlinSslModule()
 
 
 if __name__ == "__main__":

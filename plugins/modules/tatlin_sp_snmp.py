@@ -133,7 +133,7 @@ class TatlinSnmpModule(TatlinModule):
                     'as not None and state as absent',
             )
 
-    def _run(self):
+    def run(self):
         action = None
         snmp_config = self.tatlin.notification_service.get_snmp_config()
 
@@ -188,7 +188,7 @@ def same_servers(servers1, servers2):
 
 
 def main():
-    TatlinSnmpModule().run()
+    TatlinSnmpModule()
 
 
 if __name__ == "__main__":

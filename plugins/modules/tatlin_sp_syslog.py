@@ -191,7 +191,7 @@ class TatlinSyslogModule(TatlinModule):
                         changed=False,
                     )
 
-    def _run(self):
+    def run(self):
         action = None
         syslog_config = self.tatlin.notification_service.get_syslog_config()
 
@@ -291,7 +291,7 @@ class TatlinSyslogModule(TatlinModule):
 
 
 def main():
-    TatlinSyslogModule().run()
+    TatlinSyslogModule()
 
 
 if __name__ == "__main__":

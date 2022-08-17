@@ -151,7 +151,7 @@ class TatlinSmtpModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         action = None
         smtp_config = self.tatlin.notification_service.get_smtp_config()
         self.check_parameters(smtp_config)
@@ -266,7 +266,7 @@ def same_lists(list1, list2):
 
 
 def main():
-    TatlinSmtpModule().run()
+    TatlinSmtpModule()
 
 
 if __name__ == "__main__":

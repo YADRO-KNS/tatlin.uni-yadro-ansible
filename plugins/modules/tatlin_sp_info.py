@@ -133,7 +133,7 @@ class TatlinInfoModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         tatlin_info = {
             'system_name': self.tatlin.system_name,
             'system_version': self.tatlin.system_version,
@@ -236,7 +236,7 @@ class TatlinInfoModule(TatlinModule):
 
 
 def main():
-    TatlinInfoModule().run()
+    TatlinInfoModule()
 
 
 if __name__ == "__main__":

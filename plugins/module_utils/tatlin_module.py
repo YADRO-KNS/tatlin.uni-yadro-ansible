@@ -70,10 +70,7 @@ class TatlinModule(AnsibleModule):
             mutually_exclusive=mutually_exclusive,
         )
 
-        self.tatlin = None  # type: TatlinClient
-
-    def run(self):  # type: () -> None
-        connection = self.params["connection"]
+        connection = self.params['connection']
 
         self.tatlin = TatlinClient(
             base_url=connection['base_url'],
@@ -86,12 +83,12 @@ class TatlinModule(AnsibleModule):
 
         try:
             self.tatlin.authorize()
-            self._run()
+            self.run()
         except Exception as e:
             self.fail_json(
                 msg='Operation failed',
                 error='{0}: {1}'.format(type(e).__name__, e),
             )
 
-    def _run(self):  # type: () -> None
+    def run(self):  # type: () -> None
         raise NotImplementedError('Method not implemented!')

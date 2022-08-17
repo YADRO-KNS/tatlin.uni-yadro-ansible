@@ -68,7 +68,7 @@ class TatlinRestartModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         try:
             if not self.check_mode:
                 self.tatlin.osmgr_service.reboot_node(
@@ -86,7 +86,7 @@ class TatlinRestartModule(TatlinModule):
 
 
 def main():
-    TatlinRestartModule().run()
+    TatlinRestartModule()
 
 
 if __name__ == "__main__":

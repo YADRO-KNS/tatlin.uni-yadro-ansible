@@ -101,7 +101,7 @@ class TatlinNtpModule(TatlinModule):
             required_if=[('state', 'present', ('servers',))],
         )
 
-    def _run(self):
+    def run(self):
         action = None
         ntp_config = self.tatlin.osmgr_service.get_ntp_config()
 
@@ -138,7 +138,7 @@ def same_servers(servers1, servers2):
 
 
 def main():
-    TatlinNtpModule().run()
+    TatlinNtpModule()
 
 
 if __name__ == "__main__":

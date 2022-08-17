@@ -86,14 +86,14 @@ EXAMPLES = r"""
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
 
 
-class TatlinPortInfo(TatlinModule):
+class TatlinPortInfoModule(TatlinModule):
 
     def __init__(self):
-        super(TatlinPortInfo, self).__init__(
+        super(TatlinPortInfoModule, self).__init__(
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         all_ports = self.tatlin.osmgr_service.get_ports()
         data_ports = [port for port in all_ports if not port.is_mgmt()]
 
@@ -122,7 +122,7 @@ class TatlinPortInfo(TatlinModule):
 
 
 def main():
-    TatlinPortInfo().run()
+    TatlinPortInfoModule()
 
 
 if __name__ == "__main__":

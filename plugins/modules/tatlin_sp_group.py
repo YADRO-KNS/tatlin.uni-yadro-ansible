@@ -114,7 +114,7 @@ class TatlinUserGroupModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         action = None
         group = self.tatlin.auth_service.get_group(
             self.params['name'],
@@ -158,7 +158,7 @@ class TatlinUserGroupModule(TatlinModule):
 
 
 def main():
-    TatlinUserGroupModule().run()
+    TatlinUserGroupModule()
 
 
 if __name__ == "__main__":

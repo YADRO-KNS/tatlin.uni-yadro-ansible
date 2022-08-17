@@ -121,7 +121,7 @@ class TatlinUserModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         action = None
         user = self.tatlin.auth_service.get_user(self.params['name'])
         user_exists = user is not None
@@ -181,7 +181,7 @@ class TatlinUserModule(TatlinModule):
 
 
 def main():
-    TatlinUserModule().run()
+    TatlinUserModule()
 
 
 if __name__ == "__main__":

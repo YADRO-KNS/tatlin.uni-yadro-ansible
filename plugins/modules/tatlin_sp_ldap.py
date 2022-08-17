@@ -212,7 +212,7 @@ class TatlinLdapModule(TatlinModule):
             mutually_exclusive=mutually_exclusive,
         )
 
-    def _run(self):
+    def run(self):
         if self.params['type'] == 'ad' \
                 and self.params['user_attribute'] is not None \
                 and self.params['group_attribute'] is not None:
@@ -287,7 +287,7 @@ class TatlinLdapModule(TatlinModule):
 
 
 def main():
-    TatlinLdapModule().run()
+    TatlinLdapModule()
 
 
 if __name__ == "__main__":

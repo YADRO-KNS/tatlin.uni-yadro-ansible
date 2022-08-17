@@ -116,7 +116,7 @@ class TatlinDnsModule(TatlinModule):
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         action = None
         dns_config = self.tatlin.osmgr_service.get_dns_config()
 
@@ -180,7 +180,7 @@ def same_lists(list1, list2):
 
 
 def main():
-    TatlinDnsModule().run()
+    TatlinDnsModule()
 
 
 if __name__ == "__main__":

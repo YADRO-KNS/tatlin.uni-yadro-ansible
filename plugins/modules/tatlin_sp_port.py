@@ -104,7 +104,7 @@ EXAMPLES = r"""
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
 
 
-class TatlinPort(TatlinModule):
+class TatlinPortModule(TatlinModule):
 
     def __init__(self):
         argument_spec = {
@@ -134,12 +134,12 @@ class TatlinPort(TatlinModule):
             },
         }
 
-        super(TatlinPort, self).__init__(
+        super(TatlinPortModule, self).__init__(
             argument_spec=argument_spec,
             supports_check_mode=True,
         )
 
-    def _run(self):
+    def run(self):
         port = self.tatlin.osmgr_service.get_port(self.params['name'])
         port_changes = self.get_port_changes(port)
 
@@ -203,7 +203,7 @@ class TatlinPort(TatlinModule):
 
 
 def main():
-    TatlinPort().run()
+    TatlinPortModule()
 
 
 if __name__ == "__main__":
