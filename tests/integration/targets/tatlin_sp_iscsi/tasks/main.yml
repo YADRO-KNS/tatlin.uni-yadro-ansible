@@ -1,0 +1,35 @@
+- name: Test set iscsi auth | Set none auth
+  yadro.tatlin.tatlin_sp_iscsi:
+    connection: "{{ connection }}"
+    auth: none
+  register: result
+
+- name: Test set iscsi auth | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test set iscsi auth | Set oneway auth
+  yadro.tatlin.tatlin_sp_iscsi:
+    connection: "{{ connection }}"
+    auth: oneway
+    username: user1
+    password: user1
+  register: result
+
+- name: Test set iscsi auth | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test set iscsi auth | Set mutual auth
+  yadro.tatlin.tatlin_sp_iscsi:
+    connection: "{{ connection }}"
+    auth: mutual
+    username: user1
+    password: user1
+    mutual_username: user2
+    mutual_password: user2
+  register: result
+
+- name: Test set iscsi auth | Check state
+  assert:
+    that: "result.changed == true"

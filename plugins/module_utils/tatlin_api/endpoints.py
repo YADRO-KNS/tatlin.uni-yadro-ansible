@@ -48,7 +48,15 @@ DNS_CONFIG_ENDPOINT = build_url(NETCONFIG_ENDPOINT, 'dns', 'resolver')
 NOTIFICATION_ENDPOINT = 'notification'
 SNMP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'snmp')
 SMTP_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'smtp')
-SYSLOG_ENDPOINT = build_url(NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'syslog')
+SYSLOG_ENDPOINT = build_url(
+    NOTIFICATION_ENDPOINT, VERSION1, 'handlers', 'syslog')
+
+
+# Personalities service
+PERSONALITIES_ENDPOINT = 'personalities'
+PERSONALITIES_BLOCK_ENDPOINT = build_url(
+    PERSONALITIES_ENDPOINT, VERSION1, 'personalities', 'block')
+PERSONALITIES_AUTH_ENDPOINT = build_url(PERSONALITIES_BLOCK_ENDPOINT, 'auth')
 
 
 # Upmgr service

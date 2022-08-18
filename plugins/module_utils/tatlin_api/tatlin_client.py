@@ -25,6 +25,7 @@ from base64 import b64encode
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.auth_service import AuthService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.osmgr_service import OsmgrService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.notification_service import NotificationService
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.personalities.personalities_service import PersonalitiesService
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
     SYSTEM_NAME_ENDPOINT, SYSTEM_VERSION_ENDPOINT)
@@ -60,6 +61,7 @@ class TatlinClient(RestClient):
         self._auth_service = None
         self._osmgr_service = None
         self._notification_service = None
+        self._personalities_service = None
 
         self._system_name = None
         self._system_version = None
@@ -136,6 +138,12 @@ class TatlinClient(RestClient):
         if not self._notification_service:
             self._notification_service = NotificationService(self)
         return self._notification_service
+
+    @property
+    def personalities_service(self):  # type: () -> PersonalitiesService
+        if not self._personalities_service:
+            self._personalities_service = PersonalitiesService(self)
+        return self._personalities_service
 
     @property
     def system_name(self):  # type: () -> str
