@@ -21,7 +21,17 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestNtp:
 
-    def test_load(self, client, mock_method):
+    def test_get_ntp_config(self, tatlin, mock_method):
+        # Mock open_url response for get_ports
+        mock_method(OPEN_URL_FUNC, ntp_server_list=['127.0.0.1'])
+
+        # Call get_ntp_config
+        ntp_config = tatlin.get_ntp_config()
+
+        # Result: Config with expected server was returned
+        assert ntp_config.servers == ['127.0.0.1']
+
+    def test_load(self, tatlin, mock_method):
         # Save load method for future use
         init_load = NtpConfig.load
 
@@ -29,7 +39,7 @@ class TestNtp:
         mock_method(target=NTP_CONFIG_CLASS + '.load')
 
         # Create NtpConfig object
-        ntp_config = NtpConfig(client)
+        ntp_config = NtpConfig(tatlin)
 
         # Ensure that ntp_config has empty attributes
         check_obj(ntp_config, {'servers': []})
@@ -46,7 +56,7 @@ class TestNtp:
         # Result: ntp config with expected servers was returned
         check_obj(ntp_config, {'servers': ['yadro.com']})
 
-    def test_set_servers(self, client, mock_method, open_url_kwargs):
+    def test_set_servers(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -54,7 +64,7 @@ class TestNtp:
         )
 
         # Create NtpConfig object
-        ntp_config = NtpConfig(client)
+        ntp_config = NtpConfig(tatlin)
 
         # Mock load method without data
         mock_method(NTP_CONFIG_CLASS + '.load')
@@ -76,12 +86,12 @@ class TestNtp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_add_server(self, client, mock_method, open_url_kwargs):
+    def test_add_server(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(target=OPEN_URL_FUNC, ntp_server_list=['yadro.com'])
 
         # Create NtpConfig object
-        ntp_config = NtpConfig(client)
+        ntp_config = NtpConfig(tatlin)
 
         # Mock load method without data
         mock_method(NTP_CONFIG_CLASS + '.load')
@@ -103,7 +113,7 @@ class TestNtp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server(self, client, mock_method, open_url_kwargs):
+    def test_remove_server(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -111,7 +121,7 @@ class TestNtp:
         )
 
         # Create NtpConfig object
-        ntp_config = NtpConfig(client)
+        ntp_config = NtpConfig(tatlin)
 
         # Mock load method without data
         mock_method(NTP_CONFIG_CLASS + '.load')
@@ -133,7 +143,7 @@ class TestNtp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_reset_servers(self, client, mock_method, open_url_kwargs):
+    def test_reset_servers(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -141,7 +151,7 @@ class TestNtp:
         )
 
         # Create NtpConfig object
-        ntp_config = NtpConfig(client)
+        ntp_config = NtpConfig(tatlin)
 
         # Mock load method without data
         mock_method(NTP_CONFIG_CLASS + '.load')

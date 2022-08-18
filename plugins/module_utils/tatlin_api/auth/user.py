@@ -75,7 +75,7 @@ class User:
         user_groups = []
         self.reload()
 
-        all_groups = self._client.auth_service.get_groups()
+        all_groups = self._client.get_user_groups()
         for group in all_groups:
             if group.name in self._member_of:
                 user_groups.append(group)

@@ -20,7 +20,37 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestDns:
 
-    def test_load(self, client, mock_method):
+    def test_get_dns_filled_config(self, tatlin, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            dns_static_servers=['127.0.0.1', '1.1.1.1'],
+            dns_static_search_list=['exapmle.com', 'test.com']
+        )
+
+        # Get DNS config
+        dns_config = tatlin.get_dns_config()
+
+        # Result: DNS config with expected parameters was returned
+        assert dns_config.servers == ['127.0.0.1', '1.1.1.1']
+        assert dns_config.search_list == ['exapmle.com', 'test.com']
+
+    def test_get_dns_empty_config(self, tatlin, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            dns_static_servers=[],
+            dns_static_search_list=[]
+        )
+
+        # Get DNS config
+        dns_config = tatlin.get_dns_config()
+
+        # Result: DNS config with expected parameters was returned
+        assert dns_config.servers == []
+        assert dns_config.search_list == []
+
+    def test_load(self, tatlin, mock_method):
         # Save load method for future use
         init_load = DnsConfig.load
 
@@ -28,7 +58,7 @@ class TestDns:
         mock_method(target=DNS_CONFIG_CLASS + '.load')
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Ensure that dns_config has empty attributes
         check_obj(dns_config, {'servers': [], 'search_list': []})
@@ -56,7 +86,7 @@ class TestDns:
         'new_servers', [['2.2.2.2', '3.3.3.3'], '2.2.2.2']
     )
     def test_update_servers(
-        self, client, mock_method, open_url_kwargs, new_servers,
+        self, tatlin, mock_method, open_url_kwargs, new_servers,
     ):
         # Mock open_url with servers data
         mock_method(
@@ -66,7 +96,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -98,7 +128,7 @@ class TestDns:
         'new_suffixes', [['example.com', 'test.com'], 'example.com']
     )
     def test_update_search_list(
-        self, client, mock_method, open_url_kwargs, new_suffixes
+        self, tatlin, mock_method, open_url_kwargs, new_suffixes
     ):
         # Mock open_url with servers data
         mock_method(
@@ -108,7 +138,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -136,7 +166,7 @@ class TestDns:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_reset(self, client, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -145,7 +175,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -170,7 +200,7 @@ class TestDns:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_add_server(self, client, mock_method, open_url_kwargs):
+    def test_add_server(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -179,7 +209,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -204,7 +234,7 @@ class TestDns:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_add_suffix(self, client, mock_method, open_url_kwargs):
+    def test_add_suffix(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -213,7 +243,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -238,7 +268,7 @@ class TestDns:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server(self, client, mock_method, open_url_kwargs):
+    def test_remove_server(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -247,7 +277,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')
@@ -272,7 +302,7 @@ class TestDns:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_suffix(self, client, mock_method, open_url_kwargs):
+    def test_remove_suffix(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -281,7 +311,7 @@ class TestDns:
         )
 
         # Create DnsConfig object
-        dns_config = DnsConfig(client)
+        dns_config = DnsConfig(tatlin)
 
         # Mock load method without data
         mock_method(DNS_CONFIG_CLASS + '.load')

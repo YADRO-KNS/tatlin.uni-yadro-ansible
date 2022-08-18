@@ -116,7 +116,7 @@ class TatlinUserGroupModule(TatlinModule):
 
     def run(self):
         action = None
-        group = self.tatlin.auth_service.get_group(
+        group = self.tatlin.get_user_group(
             self.params['name'],
         )
         group_exists = group is not None
@@ -139,7 +139,7 @@ class TatlinUserGroupModule(TatlinModule):
 
             else:  # creation
                 action = partial(
-                    self.tatlin.auth_service.create_group,
+                    self.tatlin.create_user_group,
                     name=self.params['name'],
                     parent_groups=self.params['parent_groups'],
                     comment=self.params['comment'],

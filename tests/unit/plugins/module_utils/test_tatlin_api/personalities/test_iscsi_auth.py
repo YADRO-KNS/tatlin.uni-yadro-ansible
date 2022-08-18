@@ -16,7 +16,7 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 
 
-class TestPersonalitiesService:
+class TestIscsiAuth:
 
     @pytest.mark.parametrize('auth_params, exp_data', [
         ({'auth': 'none'}, {'auth_type': 'none'}),
@@ -36,13 +36,13 @@ class TestPersonalitiesService:
           'external_password': 'pass3'})
     ])
     def test_set_iscsi_auth(
-        self, client, mock_method, open_url_kwargs, auth_params, exp_data,
+        self, tatlin, mock_method, open_url_kwargs, auth_params, exp_data,
     ):
         # Mock open_url without data
         open_url_mock = mock_method(OPEN_URL_FUNC)
 
         # Set iscsi auth
-        client.personalities_service.set_iscsi_auth(**auth_params)
+        tatlin.set_iscsi_auth(**auth_params)
 
         # Defining expected call parameters
         open_url_kwargs.update(
@@ -68,7 +68,7 @@ class TestPersonalitiesService:
         {'auth': 'mutual', 'mutual_username': 'user3', 'mutual_password': 'pass3'}
     ])
     def test_set_iscsi_auth_missing_parameters(
-        self, client, mock_method, auth_params,
+        self, tatlin, mock_method, auth_params,
     ):
         # Mock open_url without data
         mock_method(OPEN_URL_FUNC)
@@ -76,10 +76,10 @@ class TestPersonalitiesService:
         # Set iscsi auth
         # Result: TatlinClientError was raised
         with pytest.raises(TatlinClientError):
-            client.personalities_service.set_iscsi_auth(**auth_params)
+            tatlin.set_iscsi_auth(**auth_params)
 
     def test_set_iscsi_auth_wrong_auth_type(
-        self, client, mock_method,
+        self, tatlin, mock_method,
     ):
         # Mock open_url without data
         mock_method(OPEN_URL_FUNC)
@@ -87,4 +87,4 @@ class TestPersonalitiesService:
         # Set iscsi auth
         # Result: TatlinClientError was raised
         with pytest.raises(TatlinClientError):
-            client.personalities_service.set_iscsi_auth(auth='wrong_auth')
+            tatlin.set_iscsi_auth(auth='wrong_auth')

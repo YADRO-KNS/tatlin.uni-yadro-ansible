@@ -16,7 +16,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_cli
 
 
 @pytest.fixture()
-def client():
+def tatlin():
     return TatlinClient(
         base_url='localhost',
         username='admin',

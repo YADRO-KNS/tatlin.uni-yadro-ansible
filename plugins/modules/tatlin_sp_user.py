@@ -123,7 +123,7 @@ class TatlinUserModule(TatlinModule):
 
     def run(self):
         action = None
-        user = self.tatlin.auth_service.get_user(self.params['name'])
+        user = self.tatlin.get_user(self.params['name'])
         user_exists = user is not None
 
         if self.params['state'] == 'present':
@@ -148,7 +148,7 @@ class TatlinUserModule(TatlinModule):
             else:  # creation
                 self._check_creating_params()
                 action = partial(
-                    self.tatlin.auth_service.create_user,
+                    self.tatlin.create_user,
                     name=self.params['name'],
                     password=self.params['password'],
                     groups=self.params['groups'],

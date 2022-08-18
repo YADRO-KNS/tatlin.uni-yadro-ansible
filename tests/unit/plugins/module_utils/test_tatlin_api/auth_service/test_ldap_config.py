@@ -13,6 +13,7 @@ import json
 from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import LDAP_CONFIG_ENDOPINT
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, LDAP_CONFIG_CLASS,
 )
@@ -20,8 +21,47 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestLdapConfig:
 
+    def test_get_ldap_config(self, tatlin, mock_method):
+        # Mock open_url method
+        ldap_config = {
+            'host': '127.0.0.1',
+            'port': '389',
+            'lookUpUserName': 'TestLookupUser',
+            'baseDn': 'dc=yadro,dc=com',
+            'userBaseDn': '',
+            'groupBaseDn': '',
+            'usersFilter': '(memberof=cn=Users,dc=yadro,dc=com)',
+            'groupsFilter': '',
+            'attrLogin': 'cn',
+            'attrGroup': 'cn',
+            'useSsl': True,
+            'useStartTls': False,
+            'type': 'custom',
+        }
+
+        mock_method(target=OPEN_URL_FUNC, **ldap_config)
+
+        # Define expected parameters
+        expected_config = {
+            'host': '127.0.0.1',
+            'port': '389',
+            'lookup_user': 'TestLookupUser',
+            'base_dn': 'dc=yadro,dc=com',
+            'search_filter': '(memberof=cn=Users,dc=yadro,dc=com)',
+            'encryption': 'ssl',
+            'user_attribute': 'cn',
+            'group_attribute': 'cn',
+            'type': 'custom',
+        }
+
+        # Get LDAP config
+        ldap_config = tatlin.get_ldap_config()
+
+        # Result: LDAP config with expected params was returned
+        check_obj(ldap_config, expected_config)
+
     def test_new_ldap_config(
-        self, client, mock_method, open_url_kwargs, mocker
+        self, tatlin, mock_method, open_url_kwargs, mocker
     ):
         # Mock load method
         mock_method(target=LDAP_CONFIG_CLASS + '.load')
@@ -30,7 +70,7 @@ class TestLdapConfig:
         open_url_mock = mock_method(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
-        ldap_config = LdapConfig(client=client)
+        ldap_config = LdapConfig(client=tatlin)
 
         # Update LDAP config
         ldap_config.update(
@@ -79,7 +119,7 @@ class TestLdapConfig:
         assert_that(call_data, has_entries(expected_call_data))
 
     def test_update_existing_ldap_config(
-        self, client, mock_method, open_url_kwargs, mocker,
+        self, tatlin, mock_method, open_url_kwargs, mocker,
     ):
         # Mock load method
         mock_method(target=LDAP_CONFIG_CLASS + '.load')
@@ -88,7 +128,7 @@ class TestLdapConfig:
         open_url_mock = mock_method(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
-        ldap_config = LdapConfig(client=client)
+        ldap_config = LdapConfig(client=tatlin)
         ldap_config.host = '127.0.0.1'
         ldap_config.port = '636'
         ldap_config.lookup_user = 'LookupUser'
@@ -136,7 +176,7 @@ class TestLdapConfig:
         }
         assert_that(call_data, has_entries(expected_call_data))
 
-    def test_reset_ldap(self, client, mock_method, open_url_kwargs):
+    def test_reset_ldap(self, tatlin, mock_method, open_url_kwargs):
         # Mock load method
         mock_method(target=LDAP_CONFIG_CLASS + '.load')
 
@@ -144,7 +184,7 @@ class TestLdapConfig:
         open_url_mock = mock_method(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
-        ldap_config = LdapConfig(client=client)
+        ldap_config = LdapConfig(client=tatlin)
 
         # Reset LDAP config
         ldap_config.reset()

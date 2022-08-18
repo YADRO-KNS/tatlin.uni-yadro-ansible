@@ -22,7 +22,22 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSnmp:
 
-    def test_load(self, client, mock_method):
+    def test_get_snmp_config(self, tatlin, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            community='tatlin',
+            recipients={'127.0.0.1:162': {}}
+        )
+
+        # Call get_snmp_config
+        snmp_config = tatlin.get_snmp_config()
+
+        # Result: Config with expected server was returned
+        assert snmp_config.community == 'tatlin'
+        assert snmp_config.servers == ['127.0.0.1:162']
+
+    def test_load(self, tatlin, mock_method):
         # Save load method for future use
         init_load = SnmpConfig.load
 
@@ -30,7 +45,7 @@ class TestSnmp:
         mock_method(target=SNMP_CONFIG_CLASS + '.load')
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Ensure that port has empty attributes
         check_obj(snmp_config, {'community': None, 'servers': []})
@@ -54,7 +69,7 @@ class TestSnmp:
             {'community': 'tatlin', 'servers': ['127.0.0.1:162']}
         )
 
-    def test_update_community(self, client, mock_method, open_url_kwargs):
+    def test_update_community(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -62,7 +77,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -84,7 +99,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_update_servers(self, client, mock_method, open_url_kwargs):
+    def test_update_servers(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -93,7 +108,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -119,7 +134,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_update_all_attributes(self, client, mock_method, open_url_kwargs):
+    def test_update_all_attributes(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -128,7 +143,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -157,7 +172,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_reset(self, client, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -166,7 +181,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -187,7 +202,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_add_server(self, client, mock_method, open_url_kwargs):
+    def test_add_server(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -196,7 +211,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -223,7 +238,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server_with_port(self, client, mock_method, open_url_kwargs):
+    def test_remove_server_with_port(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -234,7 +249,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -259,7 +274,7 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server_without_port(self, client, mock_method, open_url_kwargs):
+    def test_remove_server_without_port(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with servers data
         mock_method(
             target=OPEN_URL_FUNC,
@@ -270,7 +285,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')
@@ -297,7 +312,7 @@ class TestSnmp:
 
     @pytest.mark.parametrize('new_server', ['1.1.1.1', 'test.com'])
     def test_update_servers_with_wrong_addresses(
-        self, client, mock_method, open_url_kwargs, new_server,
+        self, tatlin, mock_method, open_url_kwargs, new_server,
     ):
         # Mock open_url with servers data
         mock_method(
@@ -307,7 +322,7 @@ class TestSnmp:
         )
 
         # Create SnmpConfig object
-        snmp_config = SnmpConfig(client)
+        snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
         mock_method(SNMP_CONFIG_CLASS + '.load')

@@ -149,7 +149,7 @@ class TatlinInfoModule(TatlinModule):
         self.exit_json(msg="Operation successful.", tatlin_info=tatlin_info)
 
     def get_ports_info(self):
-        ports = self.tatlin.osmgr_service.get_ports()
+        ports = self.tatlin.get_ports()
         return dict(
             (port.name, {
                 'port_type': port.type,
@@ -172,7 +172,7 @@ class TatlinInfoModule(TatlinModule):
         )
 
     def get_ldap_info(self):
-        ldap_config = self.tatlin.auth_service.get_ldap_config()
+        ldap_config = self.tatlin.get_ldap_config()
         return {
             'host': ldap_config.host,
             'port': ldap_config.port,
@@ -186,11 +186,11 @@ class TatlinInfoModule(TatlinModule):
         }
 
     def get_ntp_info(self):
-        ntp_config = self.tatlin.osmgr_service.get_ntp_config()
+        ntp_config = self.tatlin.get_ntp_config()
         return {'servers': ntp_config.servers}
 
     def get_snmp_info(self):
-        snmp_config = self.tatlin.notification_service.get_snmp_config()
+        snmp_config = self.tatlin.get_snmp_config()
 
         servers = [
             {'ip': ip, 'port': port} for ip, port in (
@@ -204,7 +204,7 @@ class TatlinInfoModule(TatlinModule):
         }
 
     def get_smtp_info(self):
-        smtp_config = self.tatlin.notification_service.get_smtp_config()
+        smtp_config = self.tatlin.get_smtp_config()
         return {
             'address': smtp_config.address,
             'encryption': smtp_config.encryption,
@@ -215,14 +215,14 @@ class TatlinInfoModule(TatlinModule):
         }
 
     def get_dns_info(self):
-        dns_config = self.tatlin.osmgr_service.get_dns_config()
+        dns_config = self.tatlin.get_dns_config()
         return {
             'servers': dns_config.servers,
             'search_list': dns_config.search_list,
         }
 
     def get_syslog_info(self):
-        syslog_config = self.tatlin.notification_service.get_syslog_config()
+        syslog_config = self.tatlin.get_syslog_config()
 
         def lower_severity(recipient):
             rv = recipient.copy()

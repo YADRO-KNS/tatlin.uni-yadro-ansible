@@ -112,7 +112,7 @@ class TatlinSslModule(TatlinModule):
         key = self.get_key_content()
 
         if not self.check_mode:
-            self.tatlin.auth_service.upload_ssl_certificate(crt, key)
+            self.tatlin.upload_ssl_certificate(crt, key)
 
         self.exit_json(msg='Operation successful', changed=True)
 

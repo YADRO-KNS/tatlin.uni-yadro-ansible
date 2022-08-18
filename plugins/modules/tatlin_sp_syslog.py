@@ -193,7 +193,7 @@ class TatlinSyslogModule(TatlinModule):
 
     def run(self):
         action = None
-        syslog_config = self.tatlin.notification_service.get_syslog_config()
+        syslog_config = self.tatlin.get_syslog_config()
 
         need_reset = all([
             self.params['state'] == 'absent',

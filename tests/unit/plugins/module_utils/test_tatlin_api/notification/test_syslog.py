@@ -21,7 +21,49 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSyslog:
 
-    def test_load(self, client, mock_method):
+    def test_get_syslog_config(self, tatlin, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            recipients={
+                '127.0.0.1:514': {
+                    'protocol': 'udp',
+                    'audit': False,
+                    'facility': 21,
+                    'severity': 'INFO'
+                },
+                'example.com:601': {
+                    'protocol': 'tls',
+                    'audit': True,
+                    'facility': 11,
+                    'severity': 'CRITICAL'
+                },
+            }
+        )
+
+        # Call get_syslog_config
+        syslog_config = tatlin.get_syslog_config()
+
+        # Define expected params
+        exp_params = {'recipients': [
+            dict(address='127.0.0.1',
+                 port='514',
+                 protocol='udp',
+                 audit=False,
+                 facility=21,
+                 severity='INFO'),
+            dict(address='example.com',
+                 port='601',
+                 protocol='tls',
+                 audit=True,
+                 facility=11,
+                 severity='CRITICAL'),
+        ]}
+
+        # Result: Config with expected server was returned
+        check_obj(syslog_config, exp_params, ignore_order='recipients')
+
+    def test_load(self, tatlin, mock_method):
         # Save load method for future use
         init_load = SyslogConfig.load
 
@@ -29,7 +71,7 @@ class TestSyslog:
         mock_method(target=SYSLOG_CONFIG_CLASS + '.load')
 
         # Create SyslogConfig object
-        syslog_config = SyslogConfig(client)
+        syslog_config = SyslogConfig(tatlin)
 
         # Ensure that config object has empty attributes
         check_obj(syslog_config, {'recipients': []})
@@ -78,7 +120,7 @@ class TestSyslog:
         # Result: Syslog config with expected parameters was returned
         check_obj(syslog_config, exp_params, ignore_order='recipients')
 
-    def test_load_empty_data(self, client, mock_method):
+    def test_load_empty_data(self, tatlin, mock_method):
         # Save load method for future use
         init_load = SyslogConfig.load
 
@@ -86,7 +128,7 @@ class TestSyslog:
         mock_method(target=SYSLOG_CONFIG_CLASS + '.load')
 
         # Create SyslogConfig object
-        syslog_config = SyslogConfig(client)
+        syslog_config = SyslogConfig(tatlin)
 
         # Ensure that config object has empty attributes
         check_obj(syslog_config, exp_params={'recipients': []})
@@ -103,7 +145,7 @@ class TestSyslog:
         # Result: Syslog config with expected parameters was returned
         check_obj(syslog_config, exp_params={'recipients': []})
 
-    def test_set_recipients(self, client, mock_method, open_url_kwargs):
+    def test_set_recipients(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -118,7 +160,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
         mock_method(SYSLOG_CONFIG_CLASS + '.load')
@@ -168,7 +210,7 @@ class TestSyslog:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_add_recipient(self, client, mock_method, open_url_kwargs):
+    def test_add_recipient(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -183,7 +225,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
         mock_method(SYSLOG_CONFIG_CLASS + '.load')
@@ -240,7 +282,7 @@ class TestSyslog:
             ('127.0.0.1', '515', None)
         ]
     )
-    def test_get_recipient(self, client, mock_method, address, port, result):
+    def test_get_recipient(self, tatlin, mock_method, address, port, result):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -261,7 +303,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Request recipient
         recipient = syslog_config.get_recipient(address, port)
@@ -297,7 +339,7 @@ class TestSyslog:
     )
     def test_remove_recipient(
         self,
-        client,
+        tatlin,
         mock_method,
         open_url_kwargs,
         address,
@@ -324,7 +366,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
         mock_method(SYSLOG_CONFIG_CLASS + '.load')
@@ -346,7 +388,7 @@ class TestSyslog:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_reset(self, client, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -367,7 +409,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
         mock_method(SYSLOG_CONFIG_CLASS + '.load')
@@ -400,7 +442,7 @@ class TestSyslog:
         ]
     )
     def test_set_invalid_recipient(
-        self, client, mock_method, pop_param, new_param,
+        self, tatlin, mock_method, pop_param, new_param,
     ):
         # Mock open_url with data
         mock_method(
@@ -416,7 +458,7 @@ class TestSyslog:
         )
 
         # Create SyslogConfig object
-        syslog_config = client.notification_service.get_syslog_config()
+        syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
         mock_method(SYSLOG_CONFIG_CLASS + '.load')

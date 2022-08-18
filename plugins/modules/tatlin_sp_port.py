@@ -140,7 +140,7 @@ class TatlinPortModule(TatlinModule):
         )
 
     def run(self):
-        port = self.tatlin.osmgr_service.get_port(self.params['name'])
+        port = self.tatlin.get_port(self.params['name'])
         port_changes = self.get_port_changes(port)
 
         if len(port_changes) > 0:

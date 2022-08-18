@@ -23,7 +23,38 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSmtp:
 
-    def test_load(self, client, mock_method):
+    def test_get_smtp_config(self, tatlin, mock_method):
+        # Mock open_url response with data
+        mock_method(
+            OPEN_URL_FUNC,
+            host='127.0.0.1',
+            port=25,
+            protocol='',
+            login={'username': 'admin', 'password': '***REMOVED***'},
+            sender_email='smtp@example.com',
+            recipients={
+                'first@recipients.com': {},
+                'second@recipients.com': {},
+            }
+        )
+
+        # Call get_smtp_config
+        smtp_config = tatlin.get_smtp_config()
+
+        # Define expected params
+        exp_params = {
+            'address': '127.0.0.1',
+            'port': 25,
+            'encryption': 'off',
+            'login': 'admin',
+            'sender': 'smtp@example.com',
+            'recipients': ['first@recipients.com', 'second@recipients.com'],
+        }
+
+        # Result: Config with expected server was returned
+        check_obj(smtp_config, exp_params, ignore_order='recipients')
+
+    def test_load(self, tatlin, mock_method):
         # Save load method for future use
         init_load = SmtpConfig.load
 
@@ -31,7 +62,7 @@ class TestSmtp:
         mock_method(target=SMTP_CONFIG_CLASS + '.load')
 
         # Create SmtpConfig object
-        smtp_config = SmtpConfig(client)
+        smtp_config = SmtpConfig(tatlin)
 
         # Ensure that config object has empty attributes
         check_obj(smtp_config, {
@@ -78,7 +109,7 @@ class TestSmtp:
             ],
         })
 
-    def test_update_full(self, client, mock_method, open_url_kwargs):
+    def test_update_full(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -94,7 +125,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')
@@ -137,7 +168,7 @@ class TestSmtp:
     ])
     def test_update_encryption(
         self,
-        client,
+        tatlin,
         mock_method,
         open_url_kwargs,
         init_protocol,
@@ -159,7 +190,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')
@@ -186,7 +217,7 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_update_login_without_password(self, client, mock_method):
+    def test_update_login_without_password(self, tatlin, mock_method):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -202,7 +233,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')
@@ -218,7 +249,7 @@ class TestSmtp:
         assert str(exc_info.value) == 'Password is None. If login is ' \
                                       'passed, password is required'
 
-    def test_reset(self, client, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -234,7 +265,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')
@@ -255,7 +286,7 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_add_recipient(self, client, mock_method, open_url_kwargs):
+    def test_add_recipient(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -271,7 +302,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')
@@ -303,7 +334,7 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_remove_recipient(self, client, mock_method, open_url_kwargs):
+    def test_remove_recipient(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url with data
         mock_method(
             OPEN_URL_FUNC,
@@ -320,7 +351,7 @@ class TestSmtp:
         )
 
         # Create SmtpConfig object
-        smtp_config = client.notification_service.get_smtp_config()
+        smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
         mock_method(SMTP_CONFIG_CLASS + '.load')

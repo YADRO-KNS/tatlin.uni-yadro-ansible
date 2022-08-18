@@ -118,7 +118,7 @@ class TatlinDnsModule(TatlinModule):
 
     def run(self):
         action = None
-        dns_config = self.tatlin.osmgr_service.get_dns_config()
+        dns_config = self.tatlin.get_dns_config()
 
         if self.params['state'] == 'absent' and \
            self.params['servers'] is None and \

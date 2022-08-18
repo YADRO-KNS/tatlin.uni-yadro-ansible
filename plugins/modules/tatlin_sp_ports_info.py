@@ -94,7 +94,7 @@ class TatlinPortInfoModule(TatlinModule):
         )
 
     def run(self):
-        all_ports = self.tatlin.osmgr_service.get_ports()
+        all_ports = self.tatlin.get_ports()
         data_ports = [port for port in all_ports if not port.is_mgmt()]
 
         ports_info = dict(

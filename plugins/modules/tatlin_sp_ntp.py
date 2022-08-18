@@ -103,7 +103,7 @@ class TatlinNtpModule(TatlinModule):
 
     def run(self):
         action = None
-        ntp_config = self.tatlin.osmgr_service.get_ntp_config()
+        ntp_config = self.tatlin.get_ntp_config()
 
         if self.params['state'] == 'present':
             if not same_servers(self.params['servers'], ntp_config.servers):

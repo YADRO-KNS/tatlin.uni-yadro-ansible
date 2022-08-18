@@ -92,7 +92,7 @@ class UserGroup:
 
         parent_names = set(g['name'] for g in self._member_of)
 
-        all_groups = self._client.auth_service.get_groups()
+        all_groups = self._client.get_user_groups()
         for group in all_groups:
             if group.name in parent_names:
                 rv.append(group)

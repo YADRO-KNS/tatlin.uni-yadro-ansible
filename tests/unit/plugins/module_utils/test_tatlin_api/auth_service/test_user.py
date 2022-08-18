@@ -15,14 +15,122 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+    TatlinClientError, RESTClientNotFoundError)
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC, USER_CLASS,
-)
+    OPEN_URL_FUNC, USER_CLASS, TATLIN_API_CLIENT_CLASS, REST_CLIENT_CLASS)
 
 
 class TestUser:
 
-    def test_user_update(self, client, mock_method, open_url_kwargs):
+    def test_get_users(self, tatlin, mock_method):
+        # Mock get_users method with 2 users
+        mock_method(
+            target=OPEN_URL_FUNC,
+            admin={
+                'name': 'admin',
+                'enabled': True,
+                'uid': 1100,
+                'memberOf': ['admin'],
+            },
+            testuser={
+                'name': 'testuser',
+                'enabled': False,
+                'uid': 2000,
+                'memberOf': ['testuser', 'admin'],
+            }
+        )
+
+        # Define expected data
+        expected_users = [
+            dict(name='admin',
+                 enabled=True,
+                 uid=1100),
+            dict(name='testuser',
+                 enabled=False,
+                 uid=2000)]
+
+        # Get all users
+        users = tatlin.get_users()
+
+        # Result: 2 users with expected params was returned
+        assert len(users) == 2
+        check_obj(users, expected_users)
+
+    def test_get_user(self, tatlin, mock_method):
+        # Mock get_user method
+        user = {
+            'name': 'admin',
+            'enabled': True,
+            'uid': 1100,
+            'memberOf': ['admin'],
+        }
+
+        mock_method(target=OPEN_URL_FUNC, **user)
+
+        # Define expected data
+        expected_user = {
+            'name': 'admin',
+            'enabled': True,
+            'uid': 1100,
+        }
+
+        # Get tatlin user
+        user = tatlin.get_user('admin')
+
+        # User with expected params was returned
+        assert isinstance(user, User)
+        check_obj(user, expected_user)
+
+    def test_create_user(self, tatlin, mock_method, open_url_kwargs):
+        # Mock get_users method with two users
+        mock_method(target=TATLIN_API_CLIENT_CLASS + '.get_user')
+        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+
+        # Create tatlin user
+        tatlin.create_user(
+            name='testname',
+            password='password',
+            groups=[
+                'monitor',
+                UserGroup(client=tatlin, name='data', gid=2000)
+            ]
+        )
+
+        # Defining expected call parameters
+        open_url_kwargs.update(
+            method='PUT',
+            url='https://localhost/{0}/{1}'.format(
+                USERS_ENDPOINT, 'testname'),
+            data=json.dumps({
+                'secret': 'password',
+                'memberOf': ['monitor', 'data'],
+                'enabled': 'true',
+            }),
+            headers={'Content-Type': 'application/json'},
+        )
+
+        # Result: Request with expected parameters was sent to tatlin
+        open_url_mock.assert_called_with(**open_url_kwargs)
+
+    def test_user_not_found_after_creating(self, tatlin, mock_method):
+        # Mock PUT request
+        mock_method(target=REST_CLIENT_CLASS + '.put')
+
+        # Mock not found error for open_url"):
+        mock_method(
+            target=OPEN_URL_FUNC,
+            side_effects=RESTClientNotFoundError,
+        )
+
+        # Result: Correct exception was thrown by create_user
+        with pytest.raises(TatlinClientError):
+            tatlin.create_user(
+                name='usererror', password='pass',
+                groups=UserGroup(client=tatlin, name='testgroup', gid=2000)
+            )
+
+    def test_user_update(self, tatlin, mock_method, open_url_kwargs):
         # Mock reload method
         mock_method(target=USER_CLASS + '.reload')
 
@@ -31,7 +139,7 @@ class TestUser:
 
         # Create user
         user = User(
-            client=client,
+            client=tatlin,
             name='testuser',
             uid=11111,
             enabled=False,
@@ -44,7 +152,7 @@ class TestUser:
             enabled=True,
             groups=[
                 'admin',
-                UserGroup(client=client, name='testgroup', gid=2001),
+                UserGroup(client=tatlin, name='testgroup', gid=2001),
             ],
         )
 
@@ -65,7 +173,7 @@ class TestUser:
         open_url_mock.assert_called_with(**open_url_kwargs)
 
     def test_update_one_argument(
-        self, client, mock_method, open_url_kwargs
+        self, tatlin, mock_method, open_url_kwargs
     ):
         # Mock reload method
         mock_method(target=USER_CLASS + '.reload')
@@ -75,7 +183,7 @@ class TestUser:
 
         # Create user
         user = User(
-            client=client,
+            client=tatlin,
             name='testuser',
             uid=11111,
             enabled=True,
@@ -99,10 +207,10 @@ class TestUser:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_update_no_arguments(self, client):
+    def test_update_no_arguments(self, tatlin):
         # Create user
         user = User(
-            client=client,
+            client=tatlin,
             name='testuser',
             uid=11111,
             enabled=True,
@@ -113,7 +221,7 @@ class TestUser:
         with pytest.raises(TypeError):
             user.update()
 
-    def test_groups(self, client, mock_method):
+    def test_groups(self, tatlin, mock_method):
         # Mock reload method
         mock_method(target=USER_CLASS + '.reload')
 
@@ -147,7 +255,7 @@ class TestUser:
 
         # Create user
         user = User(
-            client=client,
+            client=tatlin,
             name='testuser',
             uid=11111,
             enabled=True,
@@ -158,13 +266,13 @@ class TestUser:
         assert len(user.groups) == 2
         check_obj(user.groups, expected_groups)
 
-    def test_delete(self, client, mock_method, open_url_kwargs):
+    def test_delete(self, tatlin, mock_method, open_url_kwargs):
         # Mock open_url method
         open_url_mock = mock_method(target=OPEN_URL_FUNC)
 
         # Create user
         user = User(
-            client=client,
+            client=tatlin,
             name='testuser',
             uid=11111,
             enabled=True,

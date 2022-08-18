@@ -129,7 +129,7 @@ class TatlinIscsiModule(TatlinModule):
 
     def run(self):
         if not self.check_mode:
-            self.tatlin.personalities_service.set_iscsi_auth(
+            self.tatlin.set_iscsi_auth(
                 auth=self.params['auth'],
                 username=self.params['username'],
                 password=self.params['password'],
