@@ -65,7 +65,7 @@
     connection: "{{ connection }}"
   register: result
   until: not result.failed
-  retries: 30
+  retries: 40
   delay: 3
 
 - name: Test SP restart | Restart sp-1
@@ -99,7 +99,7 @@
     connection: "{{ connection }}"
   register: result
   until: not result.failed
-  retries: 30
+  retries: 40
   delay: 3
 
 ##################################################
