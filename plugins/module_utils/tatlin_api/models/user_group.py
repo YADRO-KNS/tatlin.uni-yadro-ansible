@@ -14,7 +14,7 @@ try:
 except ImportError:
     Optional = Union = List = None
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import GROUPS_ENDPOINT
 
 

@@ -10,27 +10,28 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from base64 import b64encode
+import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ldap import LdapConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_client import (
+    RestClient, AUTH_BASIC, AUTH_SESSION,
+)
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+    TatlinClientError, TatlinNodeNotFoundError, RESTClientNotFoundError,
+)
+
 try:
     from typing import Optional, List, Union, Dict
 except ImportError:
     Optional = List = Union = Dict = None
-
-
-from base64 import b64encode
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_client import (
-    RestClient, AUTH_BASIC, AUTH_SESSION)
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.ldap_config import LdapConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.dns import DnsConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.ntp import NtpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import Port
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.smtp import SmtpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.snmp import SnmpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.notification.syslog import SyslogConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError, TatlinNodeNotFoundError, RESTClientNotFoundError)
-import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
 
 
 LOGIN_PATH = 'auth/login'

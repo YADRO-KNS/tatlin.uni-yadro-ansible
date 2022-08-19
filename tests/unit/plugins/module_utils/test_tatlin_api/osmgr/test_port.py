@@ -14,11 +14,11 @@ import pytest
 from hamcrest import assert_that, has_entries
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC, PORT_CLASS, PORT_MODULE,
+    OPEN_URL_FUNC, PORT_CLASS, MODELS_PACKAGE,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT, PORTS_STATUS_ENDPOINT
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.osmgr.port import (
-    get_ip_and_mask, get_ip, Port, Node, NodeAddress, VirtualAddress, ChangedHost)
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import (
+    get_ip_and_mask, get_ip, Port, Node, VirtualAddress, ChangedHost)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     RESTClientConnectionError, TatlinClientError)
 
@@ -547,7 +547,7 @@ class TestPort:
         port = Port(client=tatlin, port_data=ports_response[1])
 
         # Mock sleeping
-        mock_method(target=PORT_MODULE + '.time.sleep')
+        mock_method(target=MODELS_PACKAGE + '.port.time.sleep')
 
         # Mock open_url without data
         open_url_mock = mock_method(target=OPEN_URL_FUNC)
@@ -586,7 +586,7 @@ class TestPort:
         port = Port(client=tatlin, port_data=ports_response[1])
 
         # Mock sleeping
-        mock_method(target=PORT_MODULE + '.time.sleep')
+        mock_method(target=MODELS_PACKAGE + '.port.time.sleep')
 
         # Mock open_url with exception
         mock_method(

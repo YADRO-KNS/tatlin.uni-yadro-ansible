@@ -12,13 +12,15 @@ __metaclass__ = type
 import pytest
 import json
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.user import User
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError, RESTClientNotFoundError)
+    TatlinClientError, RESTClientNotFoundError,
+)
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    OPEN_URL_FUNC, USER_CLASS, TATLIN_API_CLIENT_CLASS, REST_CLIENT_CLASS)
+    OPEN_URL_FUNC, USER_CLASS, TATLIN_API_CLIENT_CLASS, REST_CLIENT_CLASS,
+)
 
 
 class TestUser:
