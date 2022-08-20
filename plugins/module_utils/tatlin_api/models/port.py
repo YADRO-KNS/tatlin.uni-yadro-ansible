@@ -330,7 +330,12 @@ class Port:
         return 'Port ' + self.name
 
     def __eq__(self, other):
-        return self.name == other.name
+        if isinstance(other, Port):
+            return self.name == other.name
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class Node:
@@ -347,9 +352,12 @@ class Node:
         return [str(addr) for addr in self.addresses]
 
     def __eq__(self, other):
-        if not isinstance(other, Node):
-            return False
-        return self.name == other.name and self.port == other.port
+        if isinstance(other, Node):
+            return self.name == other.name and self.port == other.port
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __repr__(self):
         return 'Node {0} on Port {1}'.format(self.name, self.port.name)
@@ -373,17 +381,23 @@ class NodeAddress(BaseAddress):
         self.status = status
 
     def __eq__(self, other):
-        if not isinstance(other, NodeAddress):
-            return False
-        return self.address_id == other.address_id
+        if isinstance(other, NodeAddress):
+            return self.address_id == other.address_id
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class VirtualAddress(BaseAddress):
 
     def __eq__(self, other):
-        if not isinstance(other, VirtualAddress):
-            return False
-        return self.ip == other.ip and self.mask == other.mask
+        if isinstance(other, VirtualAddress):
+            return self.ip == other.ip and self.mask == other.mask
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class ChangedHost:

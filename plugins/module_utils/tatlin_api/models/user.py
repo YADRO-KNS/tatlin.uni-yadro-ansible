@@ -17,7 +17,7 @@ except ImportError:
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
 
 if TYPE_CHECKING:
-    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.auth.group import UserGroup
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 
 
 class User:
@@ -83,4 +83,9 @@ class User:
         return user_groups
 
     def __eq__(self, other):
-        return type(self) is type(other) and self.uid == other.uid
+        if isinstance(other, User):
+            return self.uid == other.uid
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
