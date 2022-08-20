@@ -62,6 +62,9 @@ options:
     description:
       - C(present) configures port's corresponding parameters
       - C(absent) resets port's configuration
+notes:
+  - For configuring mgmt port it is recommended
+    to use M(yadro.tatlin.tatlin_sp_mgmt)
 """
 
 RETURN = r"""
