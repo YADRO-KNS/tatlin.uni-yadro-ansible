@@ -33,6 +33,12 @@ PROPERTIES_ENDPOINT = build_url(CONFIGURATION_ENDPOINT, VERSION1, 'properties')
 SYSTEM_NAME_ENDPOINT = build_url(PROPERTIES_ENDPOINT, 'system', 'name')
 
 
+# Health service
+HEALTH_ENDPOINT = 'health'
+HEALTH_MEDIAS_ENDPOINT = build_url(HEALTH_ENDPOINT, VERSION1, 'media')
+HEALTH_POOLS_ENDPOINT = build_url(HEALTH_ENDPOINT, VERSION1, 'pools')
+
+
 # Osmgr service
 OSMGR_ENDPOINT = 'osmgr'
 REBOOT_ENDPOINT = build_url(

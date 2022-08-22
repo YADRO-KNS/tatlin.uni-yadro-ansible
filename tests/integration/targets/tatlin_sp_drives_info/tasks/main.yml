@@ -1,0 +1,34 @@
+- name: Test get tatlin drives info | Get tatlin drives info
+  yadro.tatlin.tatlin_sp_drives_info:
+    connection: "{{ connection }}"
+  register: result
+
+- set_fact:
+    drives_info: "{{ result.drives_info[0] }}"
+
+- name: Test get tatlin drives info | Show fact drives info
+  debug:
+    msg:
+      - "Fact drives info: {{ drives_info }}"
+
+- name: Test get tatlin drives info | Check recieved info
+  assert:
+    that:
+      - drives_info.group_name != None
+      - drives_info.status == "Ready"
+      - drives_info.drive_type == "HDD"
+      - drives_info.space_total >= 0
+      - drives_info.space_used >= 0
+      - drives_info.space_available >= 0
+      - drives_info.space_failed >= 0
+      - drives_info.drive_capacity >= 0
+      - drives_info.drives_total >= 0
+      - drives_info.drives_used >= 0
+      - drives_info.drives_available >= 0
+      - drives_info.drives_failed >= 0
+      - drives_info.drives[0].model != None
+      - drives_info.drives[0].serial_number != None
+      - drives_info.drives[0].status == "Healthy"
+      - drives_info.drives[0].capacity >= 0
+      - drives_info.drives[0].bay != None
+      - drives_info.drives[0].slot != None

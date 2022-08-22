@@ -9,11 +9,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-try:
-    from typing import Union, List, Dict, Tuple, Optional
-except ImportError:
-    Union = List = Dict = Tuple = Optional = None
-
 import sys
 import time
 
@@ -22,6 +17,11 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     TatlinClientError, RESTClientConnectionError, RESTClientUnauthorized,
 )
+
+try:
+    from typing import Union, List, Dict, Tuple, Optional
+except ImportError:
+    Union = List = Dict = Tuple = Optional = None
 
 if sys.version_info[0] >= 3:
     unicode = str

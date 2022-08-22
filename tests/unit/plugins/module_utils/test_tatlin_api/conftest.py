@@ -12,6 +12,7 @@ __metaclass__ = type
 import pytest
 import json
 from ansible_collections.yadro.tatlin.tests.unit.compat.mock import MagicMock
+from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
 
 
@@ -33,8 +34,11 @@ def mock_method(mocker):
         if 'side_effects' in kwargs:
             side_effects = kwargs.pop('side_effects')
 
-        response_mock = MagicMock()
-        response_mock.read.return_value = json.dumps(args or kwargs)
+        if target == OPEN_URL_FUNC:
+            response_mock = MagicMock()
+            response_mock.read.return_value = json.dumps(args or kwargs)
+        else:
+            response_mock = args or kwargs
 
         mock = mocker.patch(
             target,
