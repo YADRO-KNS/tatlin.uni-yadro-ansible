@@ -25,6 +25,8 @@ extends_documentation_fragment:
   - yadro.tatlin.connection_options
 notes:
   - All capacity values are returned in bytes size
+  - There is no detail information about pools` resources. For information
+    about pools` resources use M(yadro.tatlin.tatlin_sp_pools_info)
 """
 
 RETURN = r"""
@@ -42,63 +44,57 @@ drives_info:
   description: Details of the drive groups
   returned: on success
   sample: [{
-      "drive_capacity":"209715200",
-      "drive_type":"HDD",
-      "drives_available":36,
-      "drives_failed":0,
-      "drives_total":40,
-      "drives_used":4,
-      "group_name":"HDD_209.71MB",
-      "space_available":"7549747200",
-      "space_failed":"0",
-      "space_total":"8388608000",
-      "space_used":"838860800",
-      "status":"Ready",
-      "drives":[
-        {
-          "bay":"1000000001",
-          "capacity":209715200,
-          "model":"YADRO-shared_disk-2.5+",
-          "serial_number":"0450513bb2bbd68fdc7cb9f2e38d00c0",
-          "slot":"4",
-          "status":"Healthy",
-          "pool":{
-            "available":"33554432",
-            "capacity":"402653184",
-            "failed":"0",
-            "health":"ok",
-            "id":"28118216-74eb-4ba2-8e01-be894b878de1",
-            "max_capacity":4898947072,
-            "max_disks_capacity":40,
-            "max_spare":"1",
-            "name":"testpool",
-            "real_spare":"1",
-            "recovery":false,
-            "reserved_capacity":"201326592",
-            "resource_max_size":0,
-            "spare":"1",
-            "status":"ready",
-            "stripe_size":8192,
-            "thinProvision":false,
-            "used":"369098752"
-          },
+    "drive_capacity":"209715200",
+    "drive_type":"HDD",
+    "drives_available":36,
+    "drives_failed":0,
+    "drives_total":40,
+    "drives_used":4,
+    "group_name":"HDD_209.71MB",
+    "capacity_available":"7549747200",
+    "capacity_failed":"0",
+    "capacity_total":"8388608000",
+    "capacity_used":"838860800",
+    "status":"Ready",
+    "drives":[
+      {
+        "bay":"1000000001",
+        "capacity":209715200,
+        "model":"YADRO-shared_disk-2.5+",
+        "serial_number":"0450513bb2bbd68fdc7cb9f2e38d00c0",
+        "slot":"4",
+        "status":"Healthy",
+        "pool":{
+          "capacity_available": 301989888,
+          "capacity_failed": 0,
+          "capacity_total": 301989888,
+          "capacity_used": 0,
+          "critical_threshold": 66,
+          "name": "testpool",
+          "protection": "1+1",
+          "provision": "thin",
+          "resources_count": 0,
+          "spare_count": 1,
+          "status": "ready",
+          "warning_threshold": 65
         },
-        {
-          "bay":"1000000002",
-          "capacity":209715200,
-          "model":"YADRO-shared_disk-2.5+",
-          "pool":null,
-          "serial_number":"28f1808838540d6b959ab0a1962d6443",
-          "slot":"1",
-          "status":"Healthy"
-        }
-      ],
+      },
+      {
+        "bay":"1000000002",
+        "capacity":209715200,
+        "model":"YADRO-shared_disk-2.5+",
+        "pool":null,
+        "serial_number":"28f1808838540d6b959ab0a1962d6443",
+        "slot":"1",
+        "status":"Healthy"
+      }
+    ],
 }]
 """
 
 EXAMPLES = r"""
 ---
-- name: Test get tatlin drives info | Get tatlin drives info
+- name: Get tatlin drives info
   yadro.tatlin.tatlin_sp_drives_info:
     connection: "{{ connection }}"
   register: result
@@ -122,10 +118,10 @@ class TatlinDrivesInfoModule(TatlinModule):
             drive_groups_info.append({
                 'group_name': group.name,
                 'status': group.status,
-                'space_total': group.space_total,
-                'space_used': group.space_used,
-                'space_available': group.space_available,
-                'space_failed': group.space_failed,
+                'capacity_total': group.capacity_total,
+                'capacity_used': group.capacity_used,
+                'capacity_available': group.capacity_available,
+                'capacity_failed': group.capacity_failed,
                 'drive_type': group.type,
                 'drive_capacity': group.drive_capacity,
                 'drives_total': group.drives_total,
@@ -137,9 +133,22 @@ class TatlinDrivesInfoModule(TatlinModule):
                     serial_number=drive.serial_number,
                     status=drive.status,
                     capacity=drive.size,
-                    pool=drive.pool,
                     bay=drive.bay,
                     slot=drive.slot,
+                    pool={
+                        'name': drive.pool.name,
+                        'provision': drive.pool.provision,
+                        'status': drive.pool.status,
+                        'resources_count': len(drive.pool.resources),
+                        'capacity_total': drive.pool.capacity_total,
+                        'capacity_available': drive.pool.capacity_available,
+                        'capacity_used': drive.pool.capacity_used,
+                        'capacity_failed': drive.pool.capacity_failed,
+                        'protection': drive.pool.protection,
+                        'spare_count': drive.pool.spare_count,
+                        'warning_threshold': drive.pool.warning_threshold,
+                        'critical_threshold': drive.pool.critical_threshold,
+                    } if drive.pool is not None else None,
                 ) for drive in group.drives],
             })
 

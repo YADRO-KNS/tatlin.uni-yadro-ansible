@@ -11,16 +11,16 @@
     msg:
       - "Fact drives info: {{ drives_info }}"
 
-- name: Test get tatlin drives info | Check recieved info
+- name: Test get tatlin drives info | Check received info
   assert:
     that:
       - drives_info.group_name != None
       - drives_info.status == "Ready"
       - drives_info.drive_type == "HDD"
-      - drives_info.space_total >= 0
-      - drives_info.space_used >= 0
-      - drives_info.space_available >= 0
-      - drives_info.space_failed >= 0
+      - drives_info.capacity_total >= 0
+      - drives_info.capacity_used >= 0
+      - drives_info.capacity_available >= 0
+      - drives_info.capacity_failed >= 0
       - drives_info.drive_capacity >= 0
       - drives_info.drives_total >= 0
       - drives_info.drives_used >= 0

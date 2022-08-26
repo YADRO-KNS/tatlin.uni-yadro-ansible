@@ -81,6 +81,8 @@ class TatlinModule(AnsibleModule):
             timeout=connection['timeout'],
         )
 
+        self.changed = False
+
         try:
             self.tatlin.authorize()
             self.run()

@@ -15,9 +15,10 @@ import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoint
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ldap import LdapConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive import DriveGroup
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive_group import DriveGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
@@ -169,17 +170,27 @@ class TatlinClient(RestClient):
 
         return group
 
+    def get_all_pools(self):  # type: () -> List[Pool]
+        rv = []
+        for drive_group in self.get_drive_groups():
+            rv.extend(drive_group.pools)
+        return rv
+
     def get_dns_config(self):  # type: () -> DnsConfig
         return DnsConfig(client=self)
 
     def get_drive_groups(self):  # type: () -> List[DriveGroup]
         rv = []
         drive_groups_data = self.get(eps.HEALTH_MEDIAS_ENDPOINT).json
-        pools = self.get_pools()
         for group_data in drive_groups_data.values():
-            group_data['pools'] = pools
             rv.append(DriveGroup(client=self, **group_data))
         return rv
+
+    def get_drive_group(self, name):  # type: (str) -> Optional[DriveGroup]
+        for drive_group in self.get_drive_groups():
+            if drive_group.name == name:
+                return drive_group
+        return None
 
     def get_ldap_config(self):  # type: () -> LdapConfig
         if self._ldap_config is None:
@@ -189,10 +200,6 @@ class TatlinClient(RestClient):
 
     def get_ntp_config(self):  # type: () -> NtpConfig
         return NtpConfig(client=self)
-
-    def get_pools(self):
-        pools_data = self.get(eps.HEALTH_POOLS_ENDPOINT).json
-        return pools_data
 
     def get_port(self, name):  # type: (str) -> Port
         ports = self.get_ports()
