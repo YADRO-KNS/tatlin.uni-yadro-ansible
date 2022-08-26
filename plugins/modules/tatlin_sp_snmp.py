@@ -124,6 +124,7 @@ class TatlinSnmpModule(TatlinModule):
             supports_check_mode=True,
         )
 
+    def run(self):
         if self.params['state'] == 'absent' \
                 and self.params['community'] is not None:
             self.fail_json(
@@ -133,7 +134,6 @@ class TatlinSnmpModule(TatlinModule):
                     'as not None and state as absent',
             )
 
-    def run(self):
         action = None
         snmp_config = self.tatlin.get_snmp_config()
 

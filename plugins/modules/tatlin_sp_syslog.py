@@ -169,6 +169,7 @@ class TatlinSyslogModule(TatlinModule):
             ]
         )
 
+    def run(self):
         if self.params['state'] == 'present':
             for recipient in self.params['recipients']:
                 missing_params = [
@@ -191,7 +192,6 @@ class TatlinSyslogModule(TatlinModule):
                         changed=False,
                     )
 
-    def run(self):
         action = None
         syslog_config = self.tatlin.get_syslog_config()
 
