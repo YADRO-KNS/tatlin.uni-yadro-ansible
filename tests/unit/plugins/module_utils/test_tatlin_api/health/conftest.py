@@ -9,10 +9,11 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import json
+import pytest
 
 
-def get_drives_groups_data():
+@pytest.fixture
+def drives_groups_data():
     return {
         "HDD_209715200": {
             "id": "HDD_209715200",
@@ -48,7 +49,8 @@ def get_drives_groups_data():
     }
 
 
-def get_pools_data():
+@pytest.fixture
+def pools_data():
     return [{
         "id": "28118216-74eb-4ba2-8e01-be894b878de1",
         "name": "testpool",
@@ -89,7 +91,8 @@ def get_pools_data():
     }]
 
 
-def get_resources_data():
+@pytest.fixture
+def resources_data():
     return [{
         "id": "c66dbc61-6e79-425b-b2ae-e396fd06ee68",
         "name": "rsrc",
@@ -122,8 +125,3 @@ def get_resources_data():
         },
         "ptyId": "c66dbc61-6e79-425b-b2ae-e396fd06ee68"
     }]
-
-
-def append_mock_data(*mock_data):
-    for item in mock_data:
-        yield json.dumps(item)

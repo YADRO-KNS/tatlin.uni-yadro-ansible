@@ -22,12 +22,14 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSnmp:
 
-    def test_get_snmp_config(self, tatlin, mock_method):
+    def test_get_snmp_config(self, tatlin, make_mock):
         # Mock open_url response with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'127.0.0.1:162': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'127.0.0.1:162': {}},
+            }
         )
 
         # Call get_snmp_config
@@ -37,12 +39,12 @@ class TestSnmp:
         assert snmp_config.community == 'tatlin'
         assert snmp_config.servers == ['127.0.0.1:162']
 
-    def test_load(self, tatlin, mock_method):
+    def test_load(self, tatlin, make_mock):
         # Save load method for future use
         init_load = SnmpConfig.load
 
         # Mock method load without data
-        mock_method(target=SNMP_CONFIG_CLASS + '.load')
+        make_mock(target=SNMP_CONFIG_CLASS + '.load')
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
@@ -54,10 +56,12 @@ class TestSnmp:
         SnmpConfig.load = init_load
 
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'127.0.0.1:162': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'127.0.0.1:162': {}},
+            }
         )
 
         # Load config
@@ -69,21 +73,21 @@ class TestSnmp:
             {'community': 'tatlin', 'servers': ['127.0.0.1:162']}
         )
 
-    def test_update_community(self, tatlin, mock_method, open_url_kwargs):
+    def test_update_community(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
+            return_value={'community': 'tatlin'},
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set community
         snmp_config.update(community='tatlin')
@@ -99,22 +103,24 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_update_servers(self, tatlin, mock_method, open_url_kwargs):
+    def test_update_servers(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'1.1.1.1:1': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'1.1.1.1:1': {}}
+            }
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set servers
         snmp_config.update(servers=['127.0.0.1:162', 'example.com:1'])
@@ -134,22 +140,24 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_update_all_attributes(self, tatlin, mock_method, open_url_kwargs):
+    def test_update_all_attributes(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'1.1.1.1:1': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'1.1.1.1:1': {}}
+            }
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set community and servers
         snmp_config.update(
@@ -172,22 +180,24 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_reset(self, tatlin, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'1.1.1.1:1': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'1.1.1.1:1': {}}
+            }
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Reset config
         snmp_config.reset()
@@ -202,22 +212,24 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_add_server(self, tatlin, mock_method, open_url_kwargs):
+    def test_add_server(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'127.0.0.1:162': {}, 'example.com:1': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'127.0.0.1:162': {}, 'example.com:1': {}}
+            }
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Add server
         snmp_config.add_server('test.com:162')
@@ -238,13 +250,15 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server_with_port(self, tatlin, mock_method, open_url_kwargs):
+    def test_remove_server_with_port(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={
-                '127.0.0.1:162': {}, 'example.com:1': {}, 'example.com:2': {},
+            return_value={
+                'community': 'tatlin',
+                'recipients': {
+                    '127.0.0.1:162': {}, 'example.com:1': {}, 'example.com:2': {},
+                }
             }
         )
 
@@ -252,10 +266,10 @@ class TestSnmp:
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Remove server
         snmp_config.remove_server('example.com:1')
@@ -274,13 +288,15 @@ class TestSnmp:
         # Result: open_url was called with expected params
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_remove_server_without_port(self, tatlin, mock_method, open_url_kwargs):
+    def test_remove_server_without_port(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={
-                '127.0.0.1:162': {}, 'example.com:1': {}, 'example.com:2': {},
+            return_value={
+                'community': 'tatlin',
+                'recipients': {
+                    '127.0.0.1:162': {}, 'example.com:1': {}, 'example.com:2': {},
+                }
             }
         )
 
@@ -288,10 +304,10 @@ class TestSnmp:
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Remove server
         snmp_config.remove_server('example.com')
@@ -312,20 +328,22 @@ class TestSnmp:
 
     @pytest.mark.parametrize('new_server', ['1.1.1.1', 'test.com'])
     def test_update_servers_with_wrong_addresses(
-        self, tatlin, mock_method, open_url_kwargs, new_server,
+        self, tatlin, make_mock, open_url_kwargs, new_server,
     ):
         # Mock open_url with servers data
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            community='tatlin',
-            recipients={'1.1.1.1:1': {}}
+            return_value={
+                'community': 'tatlin',
+                'recipients': {'1.1.1.1:1': {}}
+            }
         )
 
         # Create SnmpConfig object
         snmp_config = SnmpConfig(tatlin)
 
         # Mock load method without data
-        mock_method(SNMP_CONFIG_CLASS + '.load')
+        make_mock(SNMP_CONFIG_CLASS + '.load')
 
         # Set servers with exception
         with pytest.raises(TatlinClientError) as exc_info:

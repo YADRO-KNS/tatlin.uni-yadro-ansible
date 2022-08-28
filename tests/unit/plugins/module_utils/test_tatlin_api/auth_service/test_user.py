@@ -25,22 +25,25 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestUser:
 
-    def test_get_users(self, tatlin, mock_method):
+    def test_get_users(self, tatlin, make_mock):
         # Mock get_users method with 2 users
-        mock_method(
+        admin = {
+            'name': 'admin',
+            'enabled': True,
+            'uid': 1100,
+            'memberOf': ['admin'],
+        }
+
+        testuser = {
+            'name': 'testuser',
+            'enabled': False,
+            'uid': 2000,
+            'memberOf': ['testuser', 'admin'],
+        }
+
+        make_mock(
             target=OPEN_URL_FUNC,
-            admin={
-                'name': 'admin',
-                'enabled': True,
-                'uid': 1100,
-                'memberOf': ['admin'],
-            },
-            testuser={
-                'name': 'testuser',
-                'enabled': False,
-                'uid': 2000,
-                'memberOf': ['testuser', 'admin'],
-            }
+            return_value={'admin': admin, 'testuser': testuser}
         )
 
         # Define expected data
@@ -59,7 +62,7 @@ class TestUser:
         assert len(users) == 2
         check_obj(users, expected_users)
 
-    def test_get_user(self, tatlin, mock_method):
+    def test_get_user(self, tatlin, make_mock):
         # Mock get_user method
         user = {
             'name': 'admin',
@@ -68,7 +71,7 @@ class TestUser:
             'memberOf': ['admin'],
         }
 
-        mock_method(target=OPEN_URL_FUNC, **user)
+        make_mock(target=OPEN_URL_FUNC, return_value=user)
 
         # Define expected data
         expected_user = {
@@ -84,10 +87,10 @@ class TestUser:
         assert isinstance(user, User)
         check_obj(user, expected_user)
 
-    def test_create_user(self, tatlin, mock_method, open_url_kwargs):
+    def test_create_user(self, tatlin, make_mock, open_url_kwargs):
         # Mock get_users method with two users
-        mock_method(target=TATLIN_API_CLIENT_CLASS + '.get_user')
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=TATLIN_API_CLIENT_CLASS + '.get_user')
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create tatlin user
         tatlin.create_user(
@@ -115,14 +118,14 @@ class TestUser:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_user_not_found_after_creating(self, tatlin, mock_method):
+    def test_user_not_found_after_creating(self, tatlin, make_mock):
         # Mock PUT request
-        mock_method(target=REST_CLIENT_CLASS + '.put')
+        make_mock(target=REST_CLIENT_CLASS + '.put')
 
         # Mock not found error for open_url"):
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            side_effects=RESTClientNotFoundError,
+            side_effect=RESTClientNotFoundError,
         )
 
         # Result: Correct exception was thrown by create_user
@@ -132,12 +135,12 @@ class TestUser:
                 groups=UserGroup(client=tatlin, name='testgroup', gid=2000)
             )
 
-    def test_user_update(self, tatlin, mock_method, open_url_kwargs):
+    def test_user_update(self, tatlin, make_mock, open_url_kwargs):
         # Mock reload method
-        mock_method(target=USER_CLASS + '.reload')
+        make_mock(target=USER_CLASS + '.reload')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create user
         user = User(
@@ -175,13 +178,13 @@ class TestUser:
         open_url_mock.assert_called_with(**open_url_kwargs)
 
     def test_update_one_argument(
-        self, tatlin, mock_method, open_url_kwargs
+        self, tatlin, make_mock, open_url_kwargs
     ):
         # Mock reload method
-        mock_method(target=USER_CLASS + '.reload')
+        make_mock(target=USER_CLASS + '.reload')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create user
         user = User(
@@ -223,9 +226,9 @@ class TestUser:
         with pytest.raises(TypeError):
             user.update()
 
-    def test_groups(self, tatlin, mock_method):
+    def test_groups(self, tatlin, make_mock):
         # Mock reload method
-        mock_method(target=USER_CLASS + '.reload')
+        make_mock(target=USER_CLASS + '.reload')
 
         # Mock response with 3 groups
         admin = {
@@ -244,7 +247,10 @@ class TestUser:
             'displayName': 'Another group',
         }
 
-        mock_method(OPEN_URL_FUNC, admin, testuser, another_group)
+        make_mock(
+            target=OPEN_URL_FUNC,
+            return_value=[admin, testuser, another_group],
+        )
 
         # Define expected data
         expected_groups = [
@@ -268,9 +274,9 @@ class TestUser:
         assert len(user.groups) == 2
         check_obj(user.groups, expected_groups)
 
-    def test_delete(self, tatlin, mock_method, open_url_kwargs):
+    def test_delete(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create user
         user = User(

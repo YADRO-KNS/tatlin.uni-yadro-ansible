@@ -16,10 +16,10 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 class TestSslCertificate:
 
     def test_upload_ssl_certificate(
-        self, tatlin, mock_method, open_url_kwargs,
+        self, tatlin, make_mock, open_url_kwargs,
     ):
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         tatlin.upload_ssl_certificate(
             crt='crt_content', key='key_content'

@@ -15,25 +15,22 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import POOL_CLASS
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.health.mock_data import (
-    append_mock_data, get_drives_groups_data, get_pools_data)
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import (
     check_obj, check_called_with)
 
 
 class TestDrives:
 
-    def test_get_drive_group(self, tatlin, mocker):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            get_pools_data(),
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_get_drive_group(
+        self, tatlin, make_mock, drives_groups_data, pools_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            target=OPEN_URL_FUNC,
+            return_value=[drives_groups_data, pools_data],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
@@ -84,20 +81,18 @@ class TestDrives:
         assert pool.warning_threshold is None
         assert pool.critical_threshold is None
 
-    def test_warning_status(self, tatlin, mocker):
-        # Prepare mock object
-        drive_groups_info = get_drives_groups_data()
-        drive_groups_info['HDD_209715200']['warningDisks'] = 1
-        drive_groups_info['HDD_209715200']['disks'][0]['state'] = 'warning'
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            drive_groups_info,
-            get_pools_data(),
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_warning_status(
+        self, tatlin, make_mock, drives_groups_data, pools_data
+    ):
+        # Make mocks for drive group creation
+        drives_groups_data['HDD_209715200']['warningDisks'] = 1
+        drives_groups_data['HDD_209715200']['disks'][0]['state'] = 'warning'
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, pools_data],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
@@ -106,20 +101,18 @@ class TestDrives:
         assert drive_group.status == 'Warning', 'Drive group has wrong status'
         assert drive_group.drives[0].status == 'Warning', 'Drive has wrong status'
 
-    def test_error_status(self, tatlin, mocker):
-        # Prepare mock object
-        drive_groups_info = get_drives_groups_data()
-        drive_groups_info['HDD_209715200']['failedDisks'] = 1
-        drive_groups_info['HDD_209715200']['disks'][0]['state'] = 'error'
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            drive_groups_info,
-            get_pools_data(),
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_error_status(
+        self, tatlin, make_mock, drives_groups_data, pools_data
+    ):
+        # Make mocks for drive group creation
+        drives_groups_data['HDD_209715200']['failedDisks'] = 1
+        drives_groups_data['HDD_209715200']['disks'][0]['state'] = 'error'
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, pools_data],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
@@ -135,34 +128,30 @@ class TestDrives:
     def test_create_pool(
         self,
         tatlin,
-        mocker,
+        make_mock,
         open_url_kwargs,
+        drives_groups_data,
         provision,
         warning_threshold,
         critical_threshold,
         thin_provision,
     ):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
         # Mock open_url without data
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps({})
-        open_url_mock = mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
+        open_url_mock = make_mock(OPEN_URL_FUNC)
 
         # Mock Pool.load_resources()
-        mocker.patch(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool
         drive_group.create_pool(
@@ -202,28 +191,25 @@ class TestDrives:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_create_pool_format_sizes(self, tatlin, mocker, open_url_kwargs):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_create_pool_format_sizes(
+        self, tatlin, make_mock, open_url_kwargs, drives_groups_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
         # Mock open_url without data
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps({})
-        open_url_mock = mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
+        open_url_mock = make_mock(OPEN_URL_FUNC)
 
         # Mock Pool.load_resources()
-        mocker.patch(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool
         drive_group.create_pool(
@@ -261,17 +247,16 @@ class TestDrives:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_create_pool_wrong_provision(self, tatlin, mocker):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_create_pool_wrong_provision(
+        self, tatlin, make_mock, drives_groups_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
@@ -288,25 +273,22 @@ class TestDrives:
                 stripe_size='4 KiB',
             )
 
-    def test_get_real_pool_size(self, tatlin, mocker, open_url_kwargs):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_get_real_pool_size(
+        self, tatlin, make_mock, open_url_kwargs, drives_groups_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
         # Mock open_url without data
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps({})
-        open_url_mock = mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
+        open_url_mock = make_mock(OPEN_URL_FUNC)
 
         drive_group.get_real_pool_size(
             protection='1+1',
@@ -329,17 +311,16 @@ class TestDrives:
 
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_load_pools(self, tatlin, mocker):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_load_pools(
+        self, tatlin, make_mock, drives_groups_data, pools_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
@@ -348,10 +329,8 @@ class TestDrives:
         assert len(drive_group.pools) == 0
 
         # Mock open_url response with pools data
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps(get_pools_data())
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+        make_mock(OPEN_URL_FUNC, return_value=pools_data)
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Load pools
         drive_group.load_pools()

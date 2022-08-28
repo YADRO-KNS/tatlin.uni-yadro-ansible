@@ -18,29 +18,26 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_called_with
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     POOL_CLASS, OPEN_URL_FUNC)
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.health.mock_data import (
-    append_mock_data, get_pools_data, get_drives_groups_data, get_resources_data)
 
 
 class TestPool:
 
-    def test_load(self, tatlin, mocker):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            {},
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+    def test_load(
+        self, tatlin, make_mock, drives_groups_data, pools_data
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, {}],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
-        # Mock load_resources
-        mocker.patch(POOL_CLASS + '.load_resources')
+        # # Mock load_resources
+        # mocker.patch(POOL_CLASS + '.load_resources')
 
         # Create pool object
         pool = Pool(client=tatlin, drive_group=drive_group)
@@ -49,14 +46,11 @@ class TestPool:
         assert len(pool.drives) == 0
 
         # Mock open_url response with pools data
-        pools_data = get_pools_data()[0]
+        pools_data = pools_data[0]
         pools_data['thinProvision'] = True
         pools_data['soft_alert_threshold'] = 70
         pools_data['critical_alert_threshold'] = 90
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps(pools_data)
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-        mocker.patch(POOL_CLASS + '.load_resources')
+        make_mock(OPEN_URL_FUNC, return_value=pools_data)
 
         # Load pool
         pool.load()
@@ -79,11 +73,10 @@ class TestPool:
         assert len(pool.drives) > 0
         assert isinstance(pool.drives[0], Drive)
 
-    def test_load_resources(self, tatlin, mocker):
+    def test_load_resources(self, tatlin, make_mock, resources_data):
         # Mock load_resources
         init_load_resources = Pool.load_resources
-        mocker.patch(POOL_CLASS + '.load_resources')
-        resources_data = get_resources_data()
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool object
         pool = Pool(client=tatlin, drive_group=None)
@@ -93,9 +86,7 @@ class TestPool:
         assert len(pool.resources) == 0
 
         # Mock open_url with resources data
-        response_mock = mocker.MagicMock()
-        response_mock.read.return_value = json.dumps(resources_data)
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
+        make_mock(OPEN_URL_FUNC, return_value=resources_data)
 
         # Restore load_resources method
         Pool.load_resources = init_load_resources
@@ -106,15 +97,15 @@ class TestPool:
         # Result: pool has resources
         assert len(pool.resources) > 0
 
-    def test_remove(self, tatlin, mock_method, open_url_kwargs):
+    def test_remove(self, tatlin, make_mock, open_url_kwargs, pools_data):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool object
-        pool = Pool(client=tatlin, drive_group=None, **get_pools_data()[0])
+        pool = Pool(client=tatlin, drive_group=None, **pools_data[0])
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Remove pool
         pool.remove()
@@ -129,15 +120,15 @@ class TestPool:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_remove_fail(self, tatlin, mock_method):
+    def test_remove_fail(self, tatlin, make_mock, resources_data):
         # Mock load_resources
-        mock_method(OPEN_URL_FUNC, *get_resources_data())
+        make_mock(OPEN_URL_FUNC, return_value=resources_data)
 
         # Create pool object
         pool = Pool(
             client=tatlin,
             drive_group=None,
-            id=get_resources_data()[0]['poolId'],
+            id=resources_data[0]['poolId'],
         )
 
         # Ensure that pool has resources
@@ -148,9 +139,9 @@ class TestPool:
         with pytest.raises(TatlinClientError):
             pool.remove()
 
-    def test_is_ready(self, tatlin, mock_method):
+    def test_is_ready(self, tatlin, make_mock):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool object with ready status
         pool = Pool(client=tatlin, drive_group=None, status='ready')
@@ -164,29 +155,31 @@ class TestPool:
         # Result: is_ready method return False
         assert not pool.is_ready()
 
-    def test_set_drives_count(self, tatlin, mocker, open_url_kwargs):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            get_pools_data(),
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-
-        # Mock side pool methods
-        mocker.patch(POOL_CLASS + '.load_resources')
-        mocker.patch(POOL_CLASS + '.load')
+    def test_set_drives_count(
+        self,
+        tatlin,
+        make_mock,
+        open_url_kwargs,
+        drives_groups_data,
+        pools_data,
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, pools_data],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
         # Create pool object
-        pool = drive_group.get_pool(get_pools_data()[0]['name'])
+        pool = drive_group.get_pool(pools_data[0]['name'])
 
         # Mock open_url without data
-        open_url_mock = mocker.patch(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(OPEN_URL_FUNC)
 
         # Set pool drives count
         pool.set_drives_count(4)
@@ -202,45 +195,47 @@ class TestPool:
 
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_set_drives_count_fail(self, tatlin, mocker, open_url_kwargs):
-        # Prepare mock object
-        response_mock = mocker.MagicMock()
-        response_mock.read = append_mock_data(
-            get_drives_groups_data(),
-            get_pools_data(),
-        ).__next__
-
-        # Mock open_url response with prepared object
-        mocker.patch(OPEN_URL_FUNC, return_value=response_mock)
-
-        # Mock side pool methods
-        mocker.patch(POOL_CLASS + '.load_resources')
-        mocker.patch(POOL_CLASS + '.load')
+    def test_set_drives_count_fail(
+        self,
+        tatlin,
+        make_mock,
+        open_url_kwargs,
+        drives_groups_data,
+        pools_data,
+    ):
+        # Make mocks for drive group creation
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
+        make_mock(
+            OPEN_URL_FUNC,
+            return_value=[drives_groups_data, pools_data],
+            chain_calls=True,
+        )
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
         # Create pool object
-        pool = drive_group.get_pool(get_pools_data()[0]['name'])
+        pool = drive_group.get_pool(pools_data[0]['name'])
 
         # Mock open_url without data
-        mocker.patch(target=OPEN_URL_FUNC)
+        make_mock(OPEN_URL_FUNC)
 
         # Set pool drives count
         # Result: Error was raised
         with pytest.raises(TatlinClientError):
             pool.set_drives_count(1)
 
-    def test_set_size(self, tatlin, mock_method, open_url_kwargs):
+    def test_set_size(self, tatlin, make_mock, open_url_kwargs):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
         pool = Pool(client=tatlin, drive_group=None, capacity=201326592)
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set new pool size
         pool.set_size('288MiB')
@@ -257,32 +252,32 @@ class TestPool:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_set_size_fail(self, tatlin, mock_method):
+    def test_set_size_fail(self, tatlin, make_mock):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
         pool = Pool(client=tatlin, drive_group=None, capacity=201326592)
 
         # Mock open_url without data
-        mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=OPEN_URL_FUNC)
 
         # Set new pool size
         # Result: Error was raised
         with pytest.raises(TatlinClientError):
             pool.set_size('191MiB')
 
-    def test_set_spare_count(self, tatlin, mock_method, open_url_kwargs):
+    def test_set_spare_count(self, tatlin, make_mock, open_url_kwargs):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object
         pool = Pool(client=tatlin, drive_group=None)
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set new spare count
         pool.set_spare_count(10)
@@ -299,16 +294,16 @@ class TestPool:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_set_thresholds(self, tatlin, mock_method, open_url_kwargs):
+    def test_set_thresholds(self, tatlin, make_mock, open_url_kwargs):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thin provision
         pool = Pool(client=tatlin, drive_group=None, thinProvision=True)
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set new thresholds
         pool.set_thresholds(warning_threshold=55, critical_threshold=87)
@@ -328,32 +323,32 @@ class TestPool:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_set_thresholds_fail_no_args(self, tatlin, mock_method):
+    def test_set_thresholds_fail_no_args(self, tatlin, make_mock):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object thin provision
         pool = Pool(client=tatlin, drive_group=None, thinProvision=True)
 
         # Mock open_url without data
-        mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=OPEN_URL_FUNC)
 
         # Call method without arguments
         # Result: TypeError was raised
         with pytest.raises(TypeError):
             pool.set_thresholds()
 
-    def test_set_thresholds_fail_provision(self, tatlin, mock_method):
+    def test_set_thresholds_fail_provision(self, tatlin, make_mock):
         # Mock load_resources
-        mock_method(POOL_CLASS + '.load_resources')
-        mock_method(POOL_CLASS + '.load')
+        make_mock(POOL_CLASS + '.load_resources')
+        make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thick provision
         pool = Pool(client=tatlin, drive_group=None, thinProvision=False)
 
         # Mock open_url without data
-        mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=OPEN_URL_FUNC)
 
         # Set new thresholds
         # Result: Error was raised

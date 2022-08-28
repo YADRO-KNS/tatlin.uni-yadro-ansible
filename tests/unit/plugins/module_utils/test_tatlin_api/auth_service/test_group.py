@@ -24,7 +24,7 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestGroup:
 
-    def test_get_user_groups(self, tatlin, mock_method):
+    def test_get_user_groups(self, tatlin, make_mock):
         # Mock get_groups method with 2 groups
         admin = {
             'name': 'admin',
@@ -37,7 +37,7 @@ class TestGroup:
             'memberOf': [{'name': 'admin'}],
         }
 
-        mock_method(OPEN_URL_FUNC, admin, testgroup)
+        make_mock(OPEN_URL_FUNC, return_value=[admin, testgroup])
 
         # Define expected data
         expected_groups = [
@@ -55,7 +55,7 @@ class TestGroup:
         assert len(groups) == 2
         check_obj(groups, expected_groups)
 
-    def test_get_group(self, tatlin, mock_method):
+    def test_get_group(self, tatlin, make_mock):
         # Mock get_group method
         group = {
             'name': 'admin',
@@ -63,7 +63,7 @@ class TestGroup:
             'displayName': 'Administrative group',
         }
 
-        mock_method(target=OPEN_URL_FUNC, **group)
+        make_mock(target=OPEN_URL_FUNC, return_value=group)
 
         # Define expected data
         expected_group = {
@@ -79,12 +79,12 @@ class TestGroup:
         assert isinstance(group, UserGroup)
         check_obj(group, expected_group)
 
-    def test_create_user_group(self, tatlin, mock_method, open_url_kwargs):
+    def test_create_user_group(self, tatlin, make_mock, open_url_kwargs):
         # Mock get_group method
-        mock_method(target=TATLIN_API_CLIENT_CLASS + '.get_user_group')
+        make_mock(target=TATLIN_API_CLIENT_CLASS + '.get_user_group')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create user group
         tatlin.create_user_group(name='testgroup', comment='Test Group')
@@ -104,26 +104,26 @@ class TestGroup:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_group_not_found_after_creating(self, tatlin, mock_method):
+    def test_group_not_found_after_creating(self, tatlin, make_mock):
         # Mock PUT request
-        mock_method(target=REST_CLIENT_CLASS + '.put')
+        make_mock(target=REST_CLIENT_CLASS + '.put')
 
         # Mock not found error for open_url
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            side_effects=RESTClientNotFoundError,
+            side_effect=RESTClientNotFoundError,
         )
 
         # Result: Correct exception was thrown by create_group
         with pytest.raises(TatlinClientError):
             tatlin.create_user_group(name='grouperror')
 
-    def test_group_update(self, tatlin, mock_method, open_url_kwargs):
+    def test_group_update(self, tatlin, make_mock, open_url_kwargs):
         # Mock reload method
-        mock_method(target=USER_GROUP_CLASS + '.reload')
+        make_mock(target=USER_GROUP_CLASS + '.reload')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create group
         group = UserGroup(
@@ -162,7 +162,7 @@ class TestGroup:
         with pytest.raises(TypeError):
             group.update()
 
-    def test_users(self, tatlin, mock_method):
+    def test_users(self, tatlin, make_mock):
         # Mock response with 2 users
         first_user = {
             'name': 'first_user',
@@ -177,10 +177,12 @@ class TestGroup:
             'memberOf': ['testname', 'data']
         }
 
-        mock_method(
+        make_mock(
             target=OPEN_URL_FUNC,
-            first_user=first_user,
-            second_user=second_user,
+            return_value={
+                'first_user': first_user,
+                'second_user': second_user,
+            },
         )
 
         # Define expected data
@@ -199,9 +201,9 @@ class TestGroup:
         assert len(group.users) == 2
         check_obj(group.users, expected_users)
 
-    def test_delete(self, tatlin, mock_method, open_url_kwargs):
+    def test_delete(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create group
         group = UserGroup(
@@ -223,9 +225,9 @@ class TestGroup:
         # Result: Request with expected parameters was sent to tatlin
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_parent_groups(self, tatlin, mock_method):
+    def test_parent_groups(self, tatlin, make_mock):
         # Mock reload method
-        mock_method(target=USER_GROUP_CLASS + '.reload')
+        make_mock(target=USER_GROUP_CLASS + '.reload')
 
         # Mock response with 3 groups
         data = {
@@ -244,7 +246,7 @@ class TestGroup:
             'memberOf': [{'name': 'data'}, {'name': 'monitor'}],
         }
 
-        mock_method(OPEN_URL_FUNC, data, monitor, testgroup)
+        make_mock(OPEN_URL_FUNC, return_value=[data, monitor, testgroup])
 
         # Define expected data
         expected_groups = [

@@ -23,18 +23,20 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSmtp:
 
-    def test_get_smtp_config(self, tatlin, mock_method):
+    def test_get_smtp_config(self, tatlin, make_mock):
         # Mock open_url response with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='127.0.0.1',
-            port=25,
-            protocol='',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': '127.0.0.1',
+                'port': 25,
+                'protocol': '',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -54,12 +56,12 @@ class TestSmtp:
         # Result: Config with expected server was returned
         check_obj(smtp_config, exp_params, ignore_order='recipients')
 
-    def test_load(self, tatlin, mock_method):
+    def test_load(self, tatlin, make_mock):
         # Save load method for future use
         init_load = SmtpConfig.load
 
         # Mock method load without data
-        mock_method(target=SMTP_CONFIG_CLASS + '.load')
+        make_mock(target=SMTP_CONFIG_CLASS + '.load')
 
         # Create SmtpConfig object
         smtp_config = SmtpConfig(tatlin)
@@ -78,17 +80,19 @@ class TestSmtp:
         SmtpConfig.load = init_load
 
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='tls',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
-                'third@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': 'tls',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                    'third@recipients.com': {},
+                }
             }
         )
 
@@ -109,18 +113,20 @@ class TestSmtp:
             ],
         })
 
-    def test_update_full(self, tatlin, mock_method, open_url_kwargs):
+    def test_update_full(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='tls',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': 'tls',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -128,10 +134,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Update config
         smtp_config.update(
@@ -169,23 +175,25 @@ class TestSmtp:
     def test_update_encryption(
         self,
         tatlin,
-        mock_method,
+        make_mock,
         open_url_kwargs,
         init_protocol,
         new_encryption,
         sent_protocol,
     ):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol=init_protocol,
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': init_protocol,
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -193,10 +201,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Update encryption
         smtp_config.update(encryption=new_encryption)
@@ -217,18 +225,20 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_update_login_without_password(self, tatlin, mock_method):
+    def test_update_login_without_password(self, tatlin, make_mock):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='tls',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': 'tls',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -236,10 +246,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=OPEN_URL_FUNC)
 
         # Update login without password
         with pytest.raises(TatlinClientError) as exc_info:
@@ -249,18 +259,20 @@ class TestSmtp:
         assert str(exc_info.value) == 'Password is None. If login is ' \
                                       'passed, password is required'
 
-    def test_reset(self, tatlin, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='tls',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': 'tls',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -268,10 +280,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Reset Smtp config
         smtp_config.reset()
@@ -286,18 +298,20 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_add_recipient(self, tatlin, mock_method, open_url_kwargs):
+    def test_add_recipient(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': '',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                }
             }
         )
 
@@ -305,10 +319,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Add recipient
         smtp_config.add_recipient('third@recipients.com')
@@ -334,19 +348,21 @@ class TestSmtp:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_remove_recipient(self, tatlin, mock_method, open_url_kwargs):
+    def test_remove_recipient(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            host='example.com',
-            port=587,
-            protocol='',
-            login={'username': 'admin', 'password': '***REMOVED***'},
-            sender_email='smtp@example.com',
-            recipients={
-                'first@recipients.com': {},
-                'second@recipients.com': {},
-                'third@recipients.com': {},
+            return_value={
+                'host': 'example.com',
+                'port': 587,
+                'protocol': '',
+                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'sender_email': 'smtp@example.com',
+                'recipients': {
+                    'first@recipients.com': {},
+                    'second@recipients.com': {},
+                    'third@recipients.com': {},
+                }
             }
         )
 
@@ -354,10 +370,10 @@ class TestSmtp:
         smtp_config = tatlin.get_smtp_config()
 
         # Mock load method without data
-        mock_method(SMTP_CONFIG_CLASS + '.load')
+        make_mock(SMTP_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Remove recipient
         smtp_config.remove_recipient('second@recipients.com')

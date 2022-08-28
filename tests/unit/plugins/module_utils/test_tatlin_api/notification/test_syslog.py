@@ -21,23 +21,25 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestSyslog:
 
-    def test_get_syslog_config(self, tatlin, mock_method):
+    def test_get_syslog_config(self, tatlin, make_mock):
         # Mock open_url response with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
-                'example.com:601': {
-                    'protocol': 'tls',
-                    'audit': True,
-                    'facility': 11,
-                    'severity': 'CRITICAL'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                    'example.com:601': {
+                        'protocol': 'tls',
+                        'audit': True,
+                        'facility': 11,
+                        'severity': 'CRITICAL'
+                    },
+                }
             }
         )
 
@@ -63,12 +65,12 @@ class TestSyslog:
         # Result: Config with expected server was returned
         check_obj(syslog_config, exp_params, ignore_order='recipients')
 
-    def test_load(self, tatlin, mock_method):
+    def test_load(self, tatlin, make_mock):
         # Save load method for future use
         init_load = SyslogConfig.load
 
         # Mock method load without data
-        mock_method(target=SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(target=SYSLOG_CONFIG_CLASS + '.load')
 
         # Create SyslogConfig object
         syslog_config = SyslogConfig(tatlin)
@@ -80,21 +82,23 @@ class TestSyslog:
         SyslogConfig.load = init_load
 
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
-                'example.com:601': {
-                    'protocol': 'tls',
-                    'audit': True,
-                    'facility': 11,
-                    'severity': 'CRITICAL'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                    'example.com:601': {
+                        'protocol': 'tls',
+                        'audit': True,
+                        'facility': 11,
+                        'severity': 'CRITICAL'
+                    },
+                }
             }
         )
 
@@ -120,12 +124,12 @@ class TestSyslog:
         # Result: Syslog config with expected parameters was returned
         check_obj(syslog_config, exp_params, ignore_order='recipients')
 
-    def test_load_empty_data(self, tatlin, mock_method):
+    def test_load_empty_data(self, tatlin, make_mock):
         # Save load method for future use
         init_load = SyslogConfig.load
 
         # Mock method load without data
-        mock_method(target=SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(target=SYSLOG_CONFIG_CLASS + '.load')
 
         # Create SyslogConfig object
         syslog_config = SyslogConfig(tatlin)
@@ -137,7 +141,7 @@ class TestSyslog:
         SyslogConfig.load = init_load
 
         # Mock open_url with data
-        mock_method(OPEN_URL_FUNC)
+        make_mock(OPEN_URL_FUNC)
 
         # Load config
         syslog_config.load()
@@ -145,17 +149,19 @@ class TestSyslog:
         # Result: Syslog config with expected parameters was returned
         check_obj(syslog_config, exp_params={'recipients': []})
 
-    def test_set_recipients(self, tatlin, mock_method, open_url_kwargs):
+    def test_set_recipients(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.1.1.1:1': {
-                    'protocol': 'tcp',
-                    'audit': True,
-                    'facility': 1,
-                    'severity': 'WARNING'
-                },
+            return_value={
+                'recipients': {
+                    '127.1.1.1:1': {
+                        'protocol': 'tcp',
+                        'audit': True,
+                        'facility': 1,
+                        'severity': 'WARNING'
+                    },
+                }
             }
         )
 
@@ -163,10 +169,10 @@ class TestSyslog:
         syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
-        mock_method(SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(SYSLOG_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Set recipients
         syslog_config.set_recipients(recipients=[
@@ -210,17 +216,19 @@ class TestSyslog:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_add_recipient(self, tatlin, mock_method, open_url_kwargs):
+    def test_add_recipient(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                }
             }
         )
 
@@ -228,10 +236,10 @@ class TestSyslog:
         syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
-        mock_method(SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(SYSLOG_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Add recipient
         syslog_config.add_recipient(
@@ -282,23 +290,25 @@ class TestSyslog:
             ('127.0.0.1', '515', None)
         ]
     )
-    def test_get_recipient(self, tatlin, mock_method, address, port, result):
+    def test_get_recipient(self, tatlin, make_mock, address, port, result):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
-                'example.com:601': {
-                    'protocol': 'tls',
-                    'audit': True,
-                    'facility': 11,
-                    'severity': 'CRITICAL'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                    'example.com:601': {
+                        'protocol': 'tls',
+                        'audit': True,
+                        'facility': 11,
+                        'severity': 'CRITICAL'
+                    },
+                }
             }
         )
 
@@ -340,28 +350,30 @@ class TestSyslog:
     def test_remove_recipient(
         self,
         tatlin,
-        mock_method,
+        make_mock,
         open_url_kwargs,
         address,
         port,
         sent_recipients,
     ):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
-                'example.com:514': {
-                    'protocol': 'tls',
-                    'audit': True,
-                    'facility': 11,
-                    'severity': 'CRITICAL'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                    'example.com:514': {
+                        'protocol': 'tls',
+                        'audit': True,
+                        'facility': 11,
+                        'severity': 'CRITICAL'
+                    },
+                }
             }
         )
 
@@ -369,10 +381,10 @@ class TestSyslog:
         syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
-        mock_method(SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(SYSLOG_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Remove recipient
         syslog_config.remove_recipient(address, port)
@@ -388,23 +400,25 @@ class TestSyslog:
         # Result: open_url was called with expected params
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_reset(self, tatlin, mock_method, open_url_kwargs):
+    def test_reset(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
-                'example.com:514': {
-                    'protocol': 'tls',
-                    'audit': True,
-                    'facility': 11,
-                    'severity': 'CRITICAL'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                    'example.com:514': {
+                        'protocol': 'tls',
+                        'audit': True,
+                        'facility': 11,
+                        'severity': 'CRITICAL'
+                    },
+                }
             }
         )
 
@@ -412,10 +426,10 @@ class TestSyslog:
         syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
-        mock_method(SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(SYSLOG_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Reset config
         syslog_config.reset()
@@ -442,18 +456,20 @@ class TestSyslog:
         ]
     )
     def test_set_invalid_recipient(
-        self, tatlin, mock_method, pop_param, new_param,
+        self, tatlin, make_mock, pop_param, new_param,
     ):
         # Mock open_url with data
-        mock_method(
+        make_mock(
             OPEN_URL_FUNC,
-            recipients={
-                '127.0.0.1:514': {
-                    'protocol': 'udp',
-                    'audit': False,
-                    'facility': 21,
-                    'severity': 'INFO'
-                },
+            return_value={
+                'recipients': {
+                    '127.0.0.1:514': {
+                        'protocol': 'udp',
+                        'audit': False,
+                        'facility': 21,
+                        'severity': 'INFO'
+                    },
+                }
             }
         )
 
@@ -461,10 +477,10 @@ class TestSyslog:
         syslog_config = tatlin.get_syslog_config()
 
         # Mock load method without data
-        mock_method(SYSLOG_CONFIG_CLASS + '.load')
+        make_mock(SYSLOG_CONFIG_CLASS + '.load')
 
         # Mock open_url without data
-        mock_method(target=OPEN_URL_FUNC)
+        make_mock(target=OPEN_URL_FUNC)
 
         # Define new recipient params
         recipient = dict(

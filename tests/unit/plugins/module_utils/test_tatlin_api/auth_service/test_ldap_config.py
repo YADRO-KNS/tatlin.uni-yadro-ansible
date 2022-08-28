@@ -21,7 +21,7 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 
 class TestLdapConfig:
 
-    def test_get_ldap_config(self, tatlin, mock_method):
+    def test_get_ldap_config(self, tatlin, make_mock):
         # Mock open_url method
         ldap_config = {
             'host': '127.0.0.1',
@@ -39,7 +39,7 @@ class TestLdapConfig:
             'type': 'custom',
         }
 
-        mock_method(target=OPEN_URL_FUNC, **ldap_config)
+        make_mock(target=OPEN_URL_FUNC, return_value=ldap_config)
 
         # Define expected parameters
         expected_config = {
@@ -61,13 +61,13 @@ class TestLdapConfig:
         check_obj(ldap_config, expected_config)
 
     def test_new_ldap_config(
-        self, tatlin, mock_method, open_url_kwargs, mocker
+        self, tatlin, make_mock, open_url_kwargs, mocker
     ):
         # Mock load method
-        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+        make_mock(target=LDAP_CONFIG_CLASS + '.load')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
         ldap_config = LdapConfig(client=tatlin)
@@ -119,13 +119,13 @@ class TestLdapConfig:
         assert_that(call_data, has_entries(expected_call_data))
 
     def test_update_existing_ldap_config(
-        self, tatlin, mock_method, open_url_kwargs, mocker,
+        self, tatlin, make_mock, open_url_kwargs, mocker,
     ):
         # Mock load method
-        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+        make_mock(target=LDAP_CONFIG_CLASS + '.load')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
         ldap_config = LdapConfig(client=tatlin)
@@ -176,12 +176,12 @@ class TestLdapConfig:
         }
         assert_that(call_data, has_entries(expected_call_data))
 
-    def test_reset_ldap(self, tatlin, mock_method, open_url_kwargs):
+    def test_reset_ldap(self, tatlin, make_mock, open_url_kwargs):
         # Mock load method
-        mock_method(target=LDAP_CONFIG_CLASS + '.load')
+        make_mock(target=LDAP_CONFIG_CLASS + '.load')
 
         # Mock open_url method
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Create LDAP config object
         ldap_config = LdapConfig(client=tatlin)

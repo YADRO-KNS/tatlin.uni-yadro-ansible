@@ -36,10 +36,10 @@ class TestIscsiAuth:
           'external_password': 'pass3'})
     ])
     def test_set_iscsi_auth(
-        self, tatlin, mock_method, open_url_kwargs, auth_params, exp_data,
+        self, tatlin, make_mock, open_url_kwargs, auth_params, exp_data,
     ):
         # Mock open_url without data
-        open_url_mock = mock_method(OPEN_URL_FUNC)
+        open_url_mock = make_mock(OPEN_URL_FUNC)
 
         # Set iscsi auth
         tatlin.set_iscsi_auth(**auth_params)
@@ -68,10 +68,10 @@ class TestIscsiAuth:
         {'auth': 'mutual', 'mutual_username': 'user3', 'mutual_password': 'pass3'}
     ])
     def test_set_iscsi_auth_missing_parameters(
-        self, tatlin, mock_method, auth_params,
+        self, tatlin, make_mock, auth_params,
     ):
         # Mock open_url without data
-        mock_method(OPEN_URL_FUNC)
+        make_mock(OPEN_URL_FUNC)
 
         # Set iscsi auth
         # Result: TatlinClientError was raised
@@ -79,10 +79,10 @@ class TestIscsiAuth:
             tatlin.set_iscsi_auth(**auth_params)
 
     def test_set_iscsi_auth_wrong_auth_type(
-        self, tatlin, mock_method,
+        self, tatlin, make_mock,
     ):
         # Mock open_url without data
-        mock_method(OPEN_URL_FUNC)
+        make_mock(OPEN_URL_FUNC)
 
         # Set iscsi auth
         # Result: TatlinClientError was raised

@@ -26,27 +26,33 @@ def tatlin():
 
 
 @pytest.fixture
-def mock_method(mocker):
+def make_mock(mocker):
 
-    def f(target, *args, **kwargs):
-        # Python 2 does not support Keyword-Only Arguments (PEP 3102)
-        side_effects = None
-        if 'side_effects' in kwargs:
-            side_effects = kwargs.pop('side_effects')
+    def f(target, return_value=None, side_effect=None, chain_calls=False):
+        if return_value is None:
+            return_value = {}
 
         if target == OPEN_URL_FUNC:
-            response_mock = MagicMock()
-            response_mock.read.return_value = json.dumps(args or kwargs)
-        else:
-            response_mock = args or kwargs
+            return_value = _mock_open_url(return_value, chain_calls)
 
         mock = mocker.patch(
             target,
-            side_effect=side_effects,
-            return_value=response_mock,
+            side_effect=side_effect,
+            return_value=return_value,
         )
 
         return mock
+
+    def _mock_open_url(return_value, chain_calls):
+        response_mock = MagicMock()
+        if chain_calls and return_value is not None:
+            gen = (json.dumps(d) for d in return_value)
+            # Python 2 generators have next instead of __next__
+            response_mock.read = gen.__next__ \
+                if hasattr(gen, '__next__') else gen.next
+        else:
+            response_mock.read.return_value = json.dumps(return_value)
+        return response_mock
 
     return f
 

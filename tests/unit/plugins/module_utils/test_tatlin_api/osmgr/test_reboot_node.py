@@ -21,9 +21,9 @@ class TestRebootNode:
     @pytest.mark.parametrize(
         'node_name', ['sp-0', 'sp-1']
     )
-    def test_reboot_node(self, tatlin, mock_method, open_url_kwargs, node_name):
+    def test_reboot_node(self, tatlin, make_mock, open_url_kwargs, node_name):
         # Mock open_url without data
-        open_url_mock = mock_method(target=OPEN_URL_FUNC)
+        open_url_mock = make_mock(target=OPEN_URL_FUNC)
 
         # Reboot node
         tatlin.reboot_node(node_name)
@@ -39,9 +39,9 @@ class TestRebootNode:
         # Result: open_url was called with expected parameters
         open_url_mock.assert_called_with(**open_url_kwargs)
 
-    def test_reboot_non_existing_node(self, tatlin, mock_method, open_url_kwargs):
+    def test_reboot_non_existing_node(self, tatlin, make_mock, open_url_kwargs):
         # Mock open_url with not found error
-        mock_method(target=OPEN_URL_FUNC, side_effects=RESTClientNotFoundError)
+        make_mock(target=OPEN_URL_FUNC, side_effect=RESTClientNotFoundError)
 
         # Reboot non-existing node
         # Result: TatlinNodeNotFoundError was raised
