@@ -152,7 +152,11 @@ class TatlinDrivesInfoModule(TatlinModule):
                 ) for drive in group.drives],
             })
 
-        self.exit_json(msg="Operation successful.", drives_info=drive_groups_info)
+        self.exit_json(
+            msg="Operation successful.",
+            drives_info=drive_groups_info,
+            changed=False,
+        )
 
 
 def main():

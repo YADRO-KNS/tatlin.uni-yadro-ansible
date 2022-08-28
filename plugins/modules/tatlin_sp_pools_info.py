@@ -134,7 +134,11 @@ class TatlinDrivesInfoModule(TatlinModule):
             'resources': pool.resources,
         } for pool in self.tatlin.get_all_pools()]
 
-        self.exit_json(msg="Operation successful.", pools_info=pools_info)
+        self.exit_json(
+            msg="Operation successful.",
+            pools_info=pools_info,
+            changed=False,
+        )
 
 
 def main():

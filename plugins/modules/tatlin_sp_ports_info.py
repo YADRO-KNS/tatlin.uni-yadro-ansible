@@ -118,7 +118,11 @@ class TatlinPortInfoModule(TatlinModule):
             }) for port in data_ports
         )
 
-        self.exit_json(msg="Operation successful.", data_ports=ports_info)
+        self.exit_json(
+            msg="Operation successful.",
+            data_ports=ports_info,
+            changed=False,
+        )
 
 
 def main():

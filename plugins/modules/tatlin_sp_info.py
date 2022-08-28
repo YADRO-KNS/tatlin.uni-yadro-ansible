@@ -146,7 +146,11 @@ class TatlinInfoModule(TatlinModule):
             'syslog': self.get_syslog_info(),
         }
 
-        self.exit_json(msg="Operation successful.", tatlin_info=tatlin_info)
+        self.exit_json(
+            msg="Operation successful.",
+            tatlin_info=tatlin_info,
+            changed=False,
+        )
 
     def get_ports_info(self):
         ports = self.tatlin.get_ports()
