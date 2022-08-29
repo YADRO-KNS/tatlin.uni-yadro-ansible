@@ -153,6 +153,11 @@ class RestClient:
         except (URLError, SSLValidationError, ConnectionError) as e:
             raise RESTClientConnectionError(
                 'Cannot connect to server: {0}'.format(str(e)))
+        except OSError as e:
+            if type(e).__name__ == 'timeout':
+                raise RESTClientConnectionError(
+                    'Timeout Error: {0}'.format(str(e)))
+            raise
         else:
             return response
 
