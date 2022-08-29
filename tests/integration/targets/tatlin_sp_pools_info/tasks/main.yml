@@ -1,0 +1,60 @@
+- name: Test pools info | Create new pool
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pools_info
+    protection: '1+1'
+    provision: 'thin'
+    size: 192 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 65
+    critical_threshold: 66
+
+- name: Test get tatlin pools info | Get tatlin pools info
+  yadro.tatlin.tatlin_sp_pools_info:
+    connection: "{{ connection }}"
+  until: "{{ result.pools_info 
+    | selectattr('name','equalto', 'tatlin_sp_pools_info') 
+    | selectattr('status','equalto', 'ready') 
+    | list 
+    | count > 0 }}"
+  register: result
+  delay: 2
+  retries: 10
+
+- set_fact:
+    pool_info: "{{ result.pools_info 
+      | selectattr('name','equalto', 'tatlin_sp_pools_info') 
+      | list 
+      | last }}"
+
+- name: Test get tatlin pools info | Show fact pools info
+  debug:
+    msg:
+      - "Fact pool info: {{ pool_info }}"
+
+- name: Test get tatlin pools info | Check received info
+  assert:
+    that:
+      - pool_info.name == 'tatlin_sp_pools_info'
+      - pool_info.provision == 'thin'
+      - pool_info.status == 'ready'
+      - pool_info.resources_count == 0
+      - pool_info.capacity_total == 201326592
+      - pool_info.capacity_available == 201326592
+      - pool_info.capacity_used == 0
+      - pool_info.capacity_failed == 0
+      - pool_info.protection == '1+1'
+      - pool_info.spare_count == 1
+      - pool_info.stripe_size == 4096
+      - pool_info.warning_threshold == 65
+      - pool_info.critical_threshold == 66
+      - pool_info.resources == []
+
+- name: Test get tatlin pools info | Remove created pool
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pools_info
+    state: absent
