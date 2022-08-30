@@ -1,0 +1,254 @@
+- name: Test pool | Ensure that pool is absent
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    state: absent
+
+- name: Test pool | Wait until pool will be removed
+  yadro.tatlin.tatlin_sp_pools_info:
+    connection: "{{ connection }}"
+  register: result
+  until: "{{ result.pools_info
+    | selectattr('name','equalto', 'tatlin_sp_pool')
+    | list
+    | count == 0 }}"
+  delay: 2
+  retries: 10
+
+#################################################
+#### TEST 1
+#################################################
+- name: Test pool | Test check mode
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    size: 192 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 65
+    critical_threshold: 66
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 201326592"
+
+- name: Test pool | Check pool was not created
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    size: 192 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 65
+    critical_threshold: 66
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 201326592"
+
+#################################################
+#### TEST 2
+#################################################
+- name: Test pool | Create new pool
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    size: 192.1 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 65
+    critical_threshold: 66
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 301989888"
+
+- name: Test pool | Check pool was created
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    size: 192.1 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 65
+    critical_threshold: 66
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == false"
+      - "result.real_size == 301989888"
+
+#################################################
+#### TEST 3
+#################################################
+- name: Test pool | Update thresholds
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    warning_threshold: 75
+    critical_threshold: 76
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 301989888"
+
+- name: Test pool | Check thresholds were updated
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    size: 192.1 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+    warning_threshold: 75
+    critical_threshold: 76
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == false"
+      - "result.real_size == 301989888"
+
+#################################################
+#### TEST 4
+#################################################
+- name: Test pool | Update drives count and spare count
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    drives_count: 5
+    spare_count: 2
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 285212672"
+
+- name: Test pool | Check drives and spare count were updated
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    drives_count: 5
+    spare_count: 2
+    stripe_size: 4KiB
+    warning_threshold: 75
+    critical_threshold: 76
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == false"
+      - "result.real_size == 285212672"
+
+#################################################
+#### TEST 5
+#################################################
+- name: Test pool | Update pool size
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    size: 274 MiB
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == 402653184"
+
+- name: Test pool | Check pool size was updated
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    protection: '1+1'
+    provision: 'thin'
+    drives_count: 6
+    spare_count: 2
+    stripe_size: 4KiB
+    warning_threshold: 75
+    critical_threshold: 76
+  check_mode: true
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == false"
+      - "result.real_size == 402653184"
+
+#################################################
+#### TEST 6
+#################################################
+- name: Test pool | Pool remove
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    state: absent
+  register: result
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == true"
+      - "result.real_size == None"
+
+- name: Test pool | Check pool was removed
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: tatlin_sp_pool
+    state: absent
+  register: result
+  check_mode: true
+
+- name: Test pool | Check state
+  assert:
+    that:
+      - "result.changed == false"
+      - "result.real_size == None"
