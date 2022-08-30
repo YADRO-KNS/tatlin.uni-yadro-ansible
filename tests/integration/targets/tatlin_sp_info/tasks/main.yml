@@ -2,10 +2,19 @@
 #### Configuration Tatlin for test
 ##############################################
 
-- name: Test get tatlin info | Set mtu for mgmt port
+- name: Test get tatlin info | Set mgmt port
   yadro.tatlin.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     mtu: 1500
+    nodes:
+      - name: sp-0
+        addresses:
+          - ip: "{{ ip.management.ip1 }}"
+            mask: "{{ ip.management.mask }}"
+      - name: sp-1
+        addresses:
+          - ip: "{{ ip.management.ip5 }}"
+            mask: "{{ ip.management.mask }}"
 
 - name: Test get tatlin info | Reset port p01
   yadro.tatlin.tatlin_sp_port:
