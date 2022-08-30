@@ -29,6 +29,7 @@ class Pool:
     def __init__(self, client, drive_group, **pool_data):
         self._client = client
         self._data = pool_data
+        self._ep = '{0}/{1}'.format(eps.HEALTH_POOLS_ENDPOINT, self.id)
 
         self.drive_group = drive_group
         self.resources = []
@@ -121,10 +122,7 @@ class Pool:
         return self._data['resizing']
 
     def load(self):  # type: () -> None
-        self._data = self._client.get(
-            path='{0}/{1}'.format(eps.HEALTH_POOLS_ENDPOINT, self.id)
-        ).json
-
+        self._data = self._client.get(self._ep).json
         self.load_resources()
 
     def load_resources(self):
@@ -145,8 +143,7 @@ class Pool:
                 'It is prohibited to remove pool with existing resources'
             )
 
-        self._client.delete('{ep}/{pool_id}'.format(
-            ep=eps.HEALTH_POOLS_ENDPOINT, pool_id=self.id))
+        self._client.delete(self._ep)
 
     def set_drives_count(self, drives_count):  # type: (int) -> None
         if drives_count <= len(self.drives):
@@ -156,12 +153,7 @@ class Pool:
                     len(self.drives), drives_count)
             )
 
-        self._client.put(
-            path='{ep}/{pool_id}/resize'.format(
-                ep=eps.HEALTH_POOLS_ENDPOINT, pool_id=self.id),
-            body={'disks': drives_count},
-        )
-
+        self._client.put(self._ep + '/resize', body={'disks': drives_count})
         self.load()
 
     def set_size(self, size):  # type: (Union[str, int]) -> None
@@ -175,23 +167,11 @@ class Pool:
                     self.capacity_total, size)
             )
 
-        self._client.put(
-            path='{ep}/{pool_id}/resize'.format(
-                ep=eps.HEALTH_POOLS_ENDPOINT, pool_id=self.id
-            ),
-            body={'bytes': str(size)},
-        )
-
+        self._client.put(self._ep + '/resize', body={'bytes': str(size)})
         self.load()
 
     def set_spare_count(self, spare_count):  # type: (int) -> None
-        self._client.put(
-            path='{ep}/{pool_id}'.format(
-                ep=eps.HEALTH_POOLS_ENDPOINT, pool_id=self.id
-            ),
-            body={'spare': str(spare_count)},
-        )
-
+        self._client.put(self._ep, body={'spare': str(spare_count)})
         self.load()
 
     def set_thresholds(
@@ -217,13 +197,7 @@ class Pool:
         if critical_threshold is not None:
             req_body['critical_alert_threshold'] = critical_threshold
 
-        self._client.put(
-            path='{ep}/{pool_id}/alerts'.format(
-                ep=eps.HEALTH_POOLS_ENDPOINT, pool_id=self.id
-            ),
-            body=req_body,
-        )
-
+        self._client.put(self._ep + '/alerts', body=req_body)
         self.load()
 
     def __eq__(self, other):
