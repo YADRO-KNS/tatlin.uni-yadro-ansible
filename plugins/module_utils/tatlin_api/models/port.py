@@ -15,7 +15,7 @@ import time
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import (
     build_url, PORTS_ENDPOINT)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError, RESTClientConnectionError, RESTClientUnauthorized,
+    TatlinClientError, RESTClientConnectionError, RESTClientUnauthorized, RESTClientNotFoundError,
 )
 
 try:
@@ -305,7 +305,7 @@ class Port:
         # but it doesn't mean that it can't happen with other addresses
         time.sleep(5)
 
-        attempts = 3
+        attempts = 15
         for ip in new_ips:
             is_up = False
             with self._changed_host(ip):
@@ -315,8 +315,8 @@ class Port:
                         is_up = True
                     except RESTClientUnauthorized:
                         is_up = True
-                    except RESTClientConnectionError:
-                        time.sleep(0.1)
+                    except (RESTClientConnectionError, RESTClientNotFoundError):
+                        time.sleep(1)
 
                     if is_up:
                         break
