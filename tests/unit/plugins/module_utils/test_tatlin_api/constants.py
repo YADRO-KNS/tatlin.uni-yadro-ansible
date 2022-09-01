@@ -13,6 +13,8 @@ MODELS_PACKAGE = TATLIN_API_PACKAGE + '.models'
 
 DRIVE_GROUP_CLASS = MODELS_PACKAGE + '.drive_group.DriveGroup'
 POOL_CLASS = MODELS_PACKAGE + '.pool.Pool'
+RESOURCE_BLOCK_CLASS = MODELS_PACKAGE + '.resource.ResourceBlock'
+RESOURCE_FILE_CLASS = MODELS_PACKAGE + '.resource.ResourceFile'
 
 
 HOST_CLASS = MODELS_PACKAGE + '.host.Host'

@@ -71,20 +71,21 @@ class TestPort:
         assert tatlin.get_connection_host() == 'localhost'
 
     def test_get_ports(
-        self, tatlin, make_mock, ports_response, exp_addrs_sp0, exp_addrs_sp1,
+        self, tatlin, make_mock, ports_data, exp_addrs_sp0, exp_addrs_sp1,
     ):
         # Mock open_url response for get_ports
-        make_mock(OPEN_URL_FUNC, return_value=ports_response)
+        make_mock(OPEN_URL_FUNC, return_value=ports_data)
 
         # Call get_ports
         ports = tatlin.get_ports()
 
         # Result: two ports was returned
-        assert len(ports) == 2
+        assert len(ports) == 3
 
         # Define expected ports
         mgmt_port = next(port for port in ports if port.name == 'mgmt')
         p01_port = next(port for port in ports if port.name == 'p01')
+        p10_port = next(port for port in ports if port.name == 'p10')
         expected_ports = [
             {'name': 'p01',
              'type': 'ip',
@@ -92,6 +93,13 @@ class TestPort:
              'mtu': 1500,
              'nodes': {"sp-0": Node(tatlin, p01_port, 'sp-0', []),
                        "sp-1": Node(tatlin, p01_port, 'sp-1', [])},
+             'virtual_address': None},
+            {'name': 'p10',
+             'type': 'ip',
+             'gateway': '',
+             'mtu': 1500,
+             'nodes': {"sp-0": Node(tatlin, p10_port, 'sp-0', []),
+                       "sp-1": Node(tatlin, p10_port, 'sp-1', [])},
              'virtual_address': None},
             {'name': 'mgmt',
              'type': 'ip',
@@ -129,10 +137,10 @@ class TestPort:
         )
 
     def test_get_port(
-        self, tatlin, make_mock, ports_response, exp_addrs_sp0, exp_addrs_sp1,
+        self, tatlin, make_mock, ports_data, exp_addrs_sp0, exp_addrs_sp1,
     ):
         # Mock open_url response for get_ports
-        make_mock(OPEN_URL_FUNC, return_value=ports_response)
+        make_mock(OPEN_URL_FUNC, return_value=ports_data)
 
         # Call get_port
         mgmt_port = tatlin.get_port('mgmt')
@@ -163,9 +171,9 @@ class TestPort:
             dict(name='sp-1', addresses=exp_addrs_sp1),
         )
 
-    def test_get_non_existing_port(self, tatlin, make_mock, ports_response):
+    def test_get_non_existing_port(self, tatlin, make_mock, ports_data):
         # Mock open_url response for get_ports
-        make_mock(OPEN_URL_FUNC, return_value=ports_response)
+        make_mock(OPEN_URL_FUNC, return_value=ports_data)
 
         # Call get_port
         with pytest.raises(TatlinClientError) as exc_info:
@@ -173,9 +181,9 @@ class TestPort:
 
         assert str(exc_info.value) == 'Not found port with name AbsentPort'
 
-    def test_port_is_mgmt_true(self, tatlin, make_mock, ports_response):
+    def test_port_is_mgmt_true(self, tatlin, make_mock, ports_data):
         # Create mgmt port
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Get port mgmt status
         is_mgmt = port.is_mgmt()
@@ -183,9 +191,9 @@ class TestPort:
         # Result: port is mgmt
         assert is_mgmt is True
 
-    def test_port_is_mgmt_false(self, tatlin, make_mock, ports_response):
+    def test_port_is_mgmt_false(self, tatlin, make_mock, ports_data):
         # Create data port
-        port = Port(client=tatlin, port_data=ports_response[0])
+        port = Port(client=tatlin, port_data=ports_data[0])
 
         # Get port mgmt status
         is_mgmt = port.is_mgmt()
@@ -194,7 +202,7 @@ class TestPort:
         assert is_mgmt is False
 
     def test_port_load_with_addresses(
-        self, tatlin, make_mock, ports_response,
+        self, tatlin, make_mock, ports_data,
         exp_addrs_sp0, exp_addrs_sp1,
     ):
         # Create port with empty data
@@ -222,7 +230,7 @@ class TestPort:
         )
 
         # Mock open_url with data
-        make_mock(OPEN_URL_FUNC, return_value=ports_response[1])
+        make_mock(OPEN_URL_FUNC, return_value=ports_data[1])
 
         # Load port
         port.load()
@@ -255,7 +263,7 @@ class TestPort:
         )
 
     def test_port_load_wo_addresses(
-        self, tatlin, make_mock, ports_response
+        self, tatlin, make_mock, ports_data
     ):
         # Create port with empty data
         port = Port(client=tatlin, port_data={
@@ -282,7 +290,7 @@ class TestPort:
         )
 
         # Mock open_url with data
-        make_mock(OPEN_URL_FUNC, return_value=ports_response[0])
+        make_mock(OPEN_URL_FUNC, return_value=ports_data[0])
 
         # Load port
         port.load()
@@ -316,10 +324,10 @@ class TestPort:
     @pytest.mark.parametrize('port_name', ['mgmt', 'p01'])
     def test_update_mtu(
         self, tatlin, make_mock, open_url_kwargs,
-        port_name, mocker, ports_response,
+        port_name, mocker, ports_data,
     ):
         # Create port object
-        port_data = next(data for data in ports_response
+        port_data = next(data for data in ports_data
                          if data['id'] == port_name)
 
         port = Port(client=tatlin, port_data=port_data)
@@ -370,10 +378,10 @@ class TestPort:
     @pytest.mark.parametrize('port_name', ['mgmt', 'p01'])
     def test_update_gateway(
         self, tatlin, make_mock, open_url_kwargs,
-        port_name, mocker, ports_response,
+        port_name, mocker, ports_data,
     ):
         # Create port object
-        port_data = next(data for data in ports_response
+        port_data = next(data for data in ports_data
                          if data['id'] == port_name)
 
         port = Port(client=tatlin, port_data=port_data)
@@ -423,10 +431,10 @@ class TestPort:
     @pytest.mark.parametrize('port_name', ['mgmt', 'p01'])
     def test_update_virtual_address(
         self, tatlin, make_mock, open_url_kwargs,
-        port_name, mocker, ports_response,
+        port_name, mocker, ports_data,
     ):
         # Create port object
-        port_data = next(data for data in ports_response
+        port_data = next(data for data in ports_data
                          if data['id'] == port_name)
 
         port = Port(client=tatlin, port_data=port_data)
@@ -479,10 +487,10 @@ class TestPort:
     @pytest.mark.parametrize('port_name', ['mgmt', 'p01'])
     def test_update_sp_addresses(
         self, tatlin, make_mock, open_url_kwargs,
-        port_name, mocker, ports_response,
+        port_name, mocker, ports_data,
     ):
         # Create port object
-        port_data = next(data for data in ports_response
+        port_data = next(data for data in ports_data
                          if data['id'] == port_name)
 
         port = Port(client=tatlin, port_data=port_data)
@@ -533,7 +541,7 @@ class TestPort:
         assert_that(call_data, has_entries(expected_call_data))
 
     def test_waiting_for_connection(
-        self, tatlin, make_mock, mocker, open_url_kwargs, ports_response,
+        self, tatlin, make_mock, mocker, open_url_kwargs, ports_data,
     ):
         new_addresses = [
             '192.168.1.2/24',
@@ -544,7 +552,7 @@ class TestPort:
         ]
 
         # Create port object
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Mock sleeping
         make_mock(target=MODELS_PACKAGE + '.port.time.sleep')
@@ -580,10 +588,10 @@ class TestPort:
          {'nodes': {'sp-0': '192.168.1.3/24'}}]
     )
     def test_waiting_for_connection_interface_was_not_up(
-        self, tatlin, make_mock, open_url_kwargs, new_address, ports_response
+        self, tatlin, make_mock, open_url_kwargs, new_address, ports_data
     ):
         # Create port object
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Mock sleeping
         make_mock(target=MODELS_PACKAGE + '.port.time.sleep')
@@ -600,10 +608,10 @@ class TestPort:
             port._wait_interfaces_up(**new_address)
 
     def test_getting_ip_for_reconnect_virt_ip(
-        self, tatlin, make_mock, ports_response
+        self, tatlin, make_mock, ports_data
     ):
         # Create port object
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Set client's host equal to port's virtual address
         virtual_ip = port.virtual_address.ip
@@ -620,10 +628,10 @@ class TestPort:
         assert reconnect_ip == '192.168.11.1'
 
     def test_getting_ip_for_reconnect_sp(
-        self, tatlin, make_mock, ports_response,
+        self, tatlin, make_mock, ports_data,
     ):
         # Create port object
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Set client's host equal to port's virtual address
         sp0_ip = port.nodes['sp-0'].addresses[0].ip
@@ -640,10 +648,10 @@ class TestPort:
         assert reconnect_ip == '192.168.2.22'
 
     def test_getting_none_as_ip_for_reconnect(
-        self, tatlin, make_mock, ports_response,
+        self, tatlin, make_mock, ports_data,
     ):
         # Create port object
-        port = Port(client=tatlin, port_data=ports_response[1])
+        port = Port(client=tatlin, port_data=ports_data[1])
 
         # Get ip for reconnect
         reconnect_ip = port._get_ip_for_reconnect(

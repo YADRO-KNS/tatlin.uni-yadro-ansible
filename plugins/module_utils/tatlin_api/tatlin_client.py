@@ -22,9 +22,13 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.hos
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
+    ResourceBlock, ResourceFile,
+)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import get_iscsi_auth_for_request
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_client import (
     RestClient, AUTH_BASIC, AUTH_SESSION,
@@ -241,10 +245,16 @@ class TatlinClient(RestClient):
 
         return group
 
-    def get_all_pools(self):  # type: () -> List[Pool]
+    def get_pool(self, name):  # type: (str) -> Optional[Pool]
+        for pool in self.get_pools():
+            if pool.name == name:
+                return pool
+        return None
+
+    def get_pools(self):  # type: () -> List[Pool]
         rv = []
         for drive_group in self.get_drive_groups():
-            rv.extend(drive_group.pools)
+            rv.extend(drive_group.get_pools())
         return rv
 
     def get_dns_config(self):  # type: () -> DnsConfig
@@ -322,6 +332,20 @@ class TatlinClient(RestClient):
             rv.append(port)
         return rv
 
+    def get_resource(self, name):
+        # type: (str) -> Optional[Union[ResourceBlock, ResourceFile]]
+        for resource in self.get_resources():
+            if resource.name == name:
+                return resource
+        return None
+
+    def get_resources(self):
+        # type: () -> List[Union[ResourceBlock, ResourceFile]]
+        rv = []
+        for pool in self.get_pools():
+            rv.extend(pool.get_resources())
+        return rv
+
     def get_smtp_config(self):  # type: () -> SmtpConfig
         return SmtpConfig(client=self)
 
@@ -330,6 +354,21 @@ class TatlinClient(RestClient):
 
     def get_syslog_config(self):  # type: () -> SyslogConfig
         return SyslogConfig(client=self)
+
+    def get_task(self, task_id):  # type: (int) -> Task
+        task_data = self.get('{0}/{1}'.format(
+            eps.DASHBOARD_TASKS_ENDPOINT, task_id
+        )).json
+
+        task = Task(client=self, **task_data)
+        return task
+
+    def get_tasks(self):  # type: () -> List[Task]
+        rv = []
+        tasks_data = self.get(eps.DASHBOARD_TASKS_ENDPOINT).json
+        for task_data in tasks_data:
+            rv.append(Task(client=self, **task_data))
+        return rv
 
     def get_user(self, name):  # type: (str) -> Optional[User]
         try:

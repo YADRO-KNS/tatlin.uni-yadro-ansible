@@ -1,4 +1,4 @@
-- name: Test pools info | Create new pool
+- name: Test pools info | Ensure pool exists
   yadro.tatlin.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_209.71MB
@@ -11,13 +11,44 @@
     warning_threshold: 65
     critical_threshold: 66
 
+- name: Test pools info | Set pool host
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: tatlin_sp_pools_info_host
+    port_type: eth
+    auth: none
+
+- name: Test resource block | Ensure host_group1 exists
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: tatlin_sp_pools_info_host_group
+
+- name: Test pools info | Set pool resources
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: tatlin_sp_pools_info_resource
+    name_template: 1-2
+    pool: tatlin_sp_pools_info
+    size: 1MiB
+    size_format: 4kn
+    read_cache: false
+    write_cache: false
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - tatlin_sp_pools_info_host
+    host_groups:
+      - tatlin_sp_pools_info_host_group
+
 - name: Test get tatlin pools info | Get tatlin pools info
   yadro.tatlin.tatlin_sp_pools_info:
     connection: "{{ connection }}"
-  until: "{{ result.pools_info 
-    | selectattr('name','equalto', 'tatlin_sp_pools_info') 
-    | selectattr('status','equalto', 'ready') 
-    | list 
+  until: "{{ result.pools_info
+    | selectattr('name','equalto', 'tatlin_sp_pools_info')
+    | selectattr('status','equalto', 'ready')
+    | list
     | count > 0 }}"
   register: result
   delay: 2
@@ -29,32 +60,66 @@
       | list 
       | last }}"
 
+- set_fact:
+    fact_resource_info1: "{{ pool_info.resources 
+      | selectattr('name','equalto', 'tatlin_sp_pools_info_resource1') 
+      | list 
+      | last }}"
+    fact_resource_info2: "{{ pool_info.resources 
+      | selectattr('name','equalto', 'tatlin_sp_pools_info_resource2') 
+      | list 
+      | last }}"
+
 - name: Test get tatlin pools info | Show fact pools info
   debug:
     msg:
       - "Fact pool info: {{ pool_info }}"
 
-- name: Test get tatlin pools info | Check received info
+- name: Test get tatlin pools info | Check received pool info
   assert:
     that:
       - pool_info.name == 'tatlin_sp_pools_info'
       - pool_info.provision == 'thin'
       - pool_info.status == 'ready'
-      - pool_info.resources_count == 0
+      - pool_info.resources_count == 2
       - pool_info.capacity_total == 201326592
-      - pool_info.capacity_available == 201326592
-      - pool_info.capacity_used == 0
+      - pool_info.capacity_available > 0
+      - pool_info.capacity_used > 0
       - pool_info.capacity_failed == 0
       - pool_info.protection == '1+1'
       - pool_info.spare_count == 1
       - pool_info.stripe_size == 4096
       - pool_info.warning_threshold == 65
       - pool_info.critical_threshold == 66
-      - pool_info.resources == []
 
-- name: Test get tatlin pools info | Remove created pool
-  yadro.tatlin.tatlin_sp_pool:
-    connection: "{{ connection }}"
-    drive_group: HDD_209.71MB
-    name: tatlin_sp_pools_info
-    state: absent
+- name: Test get tatlin pools info | Check received resource1 info
+  assert:
+    that:
+      - fact_resource_info1.name == 'tatlin_sp_pools_info_resource1'
+      - fact_resource_info1.type == 'block'
+      - fact_resource_info1.status != None
+      - fact_resource_info1.size_format == '4kn'
+      - fact_resource_info1.capacity_total == 1048576
+      - fact_resource_info1.capacity_used != None
+      - fact_resource_info1.read_cache == false
+      - fact_resource_info1.write_cache == false
+      - fact_resource_info1.warning_threshold == 69
+      - fact_resource_info1.ports | sort == ['p00', 'p01'] | sort
+      - fact_resource_info1.hosts == ['tatlin_sp_pools_info_host']
+      - fact_resource_info1.host_groups == ['tatlin_sp_pools_info_host_group']
+
+- name: Test get tatlin pools info | Check received resource2 info
+  assert:
+    that:
+      - fact_resource_info2.name == 'tatlin_sp_pools_info_resource2'
+      - fact_resource_info2.type == 'block'
+      - fact_resource_info2.status != None
+      - fact_resource_info2.size_format == '4kn'
+      - fact_resource_info2.capacity_total == 1048576
+      - fact_resource_info2.capacity_used != None
+      - fact_resource_info2.read_cache == false
+      - fact_resource_info2.write_cache == false
+      - fact_resource_info2.warning_threshold == 69
+      - fact_resource_info2.ports | sort == ['p00', 'p01'] | sort
+      - fact_resource_info2.hosts == ['tatlin_sp_pools_info_host']
+      - fact_resource_info2.host_groups == ['tatlin_sp_pools_info_host_group']

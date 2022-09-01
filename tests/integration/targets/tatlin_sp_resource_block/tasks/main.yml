@@ -1,0 +1,482 @@
+# NOTE: Resizing is not tested, because deleting resources is not implemented
+#  If in future there will be implementation for the deletion, tests with
+#  resizing (changing resource size) should be added
+
+#################################################
+#### PREPARE
+#################################################
+
+- name: Test resource block | Ensure pool exists
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: pool_for_block_resources1
+    protection: '1+1'
+    provision: 'thin'
+    size: 192 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+
+- name: Test resource block | Ensure pool exists
+  yadro.tatlin.tatlin_sp_pool:
+    connection: "{{ connection }}"
+    drive_group: HDD_209.71MB
+    name: pool_for_block_resources2
+    protection: '1+1'
+    provision: 'thick'
+    size: 192 MiB
+    spare_count: 1
+    stripe_size: 4KiB
+
+- name: Test resource block | Ensure host1 exists
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: host_for_block_resources1
+    port_type: eth
+    auth: none
+
+- name: Test resource block | Ensure host2 exists
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: host_for_block_resources2
+    port_type: eth
+    auth: none
+
+- name: Test resource block | Ensure host3 exists
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: host_for_block_resources3
+    port_type: eth
+    auth: none
+
+- name: Test resource block | Ensure host_group1 exists
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: host_group_for_block_resources1
+
+- name: Test resource block | Ensure host_group2 exists
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: host_group_for_block_resources2
+
+- name: Test resource block | Ensure host_group3 exists
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: host_group_for_block_resources3
+
+
+#################################################
+#### TEST 1
+#################################################
+
+- name: Test resource block | Test check mode with create
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_check_mode_resource
+    pool: pool_for_block_resources1
+    size: 1MiB
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resource is not set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_check_mode_resource
+    pool: pool_for_block_resources1
+    size: 1MiB
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 2
+#################################################
+
+- name: Test resource block | Set single resource
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first1
+    pool: pool_for_block_resources1
+    size: 1MiB
+    size_format: 512e
+    read_cache: true
+    write_cache: true
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - host_for_block_resources1
+      - host_for_block_resources2
+    host_groups:
+      - host_group_for_block_resources1
+      - host_group_for_block_resources2
+    wait: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resource is set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first1
+    pool: pool_for_block_resources1
+    size: 1MiB
+    size_format: 512e
+    read_cache: true
+    write_cache: true
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - host_for_block_resources1
+      - host_for_block_resources2
+    host_groups:
+      - host_group_for_block_resources1
+      - host_group_for_block_resources2
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 3
+#################################################
+
+- name: Test resource block | Set additional resources with template
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first
+    pool: pool_for_block_resources1
+    name_template: 1-3,5,7-8
+    size: 1MiB
+    size_format: 512e
+    read_cache: true
+    write_cache: true
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - host_for_block_resources1
+      - host_for_block_resources2
+    host_groups:
+      - host_group_for_block_resources1
+      - host_group_for_block_resources2
+    wait: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resources are set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first
+    pool: pool_for_block_resources1
+    name_template: 1-3, 5, 7-8
+    size: 1MiB
+    size_format: 512e
+    read_cache: true
+    write_cache: true
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - host_for_block_resources1
+      - host_for_block_resources2
+    host_groups:
+      - host_group_for_block_resources1
+      - host_group_for_block_resources2
+    wait: true
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test resource block | Ensure unnecessary resources are not set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first4
+    pool: pool_for_block_resources1
+    size: 1MiB
+    size_format: 512e
+    read_cache: true
+    write_cache: true
+    warning_threshold: 69
+    ports:
+      - p00
+      - p01
+    hosts:
+      - host_for_block_resources1
+      - host_for_block_resources2
+    host_groups:
+      - host_group_for_block_resources1
+      - host_group_for_block_resources2
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 4
+#################################################
+
+- name: Test resource block | Update single resource
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first1
+    pool: pool_for_block_resources1
+    read_cache: false
+    write_cache: false
+    warning_threshold: 79
+    ports:
+      - p01
+      - p10
+    hosts:
+      - host_for_block_resources2
+      - host_for_block_resources3
+    host_groups:
+      - host_group_for_block_resources2
+      - host_group_for_block_resources3
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resource was updated
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first1
+    pool: pool_for_block_resources1
+    read_cache: false
+    write_cache: false
+    warning_threshold: 79
+    ports:
+      - p01
+      - p10
+    hosts:
+      - host_for_block_resources2
+      - host_for_block_resources3
+    host_groups:
+      - host_group_for_block_resources2
+      - host_group_for_block_resources3
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 5
+#################################################
+
+- name: Test resource block | Update multiple resources
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first
+    pool: pool_for_block_resources1
+    name_template: 1-3, 5, 7-8
+    read_cache: false
+    write_cache: false
+    warning_threshold: 79
+    ports:
+      - p01
+      - p10
+    hosts:
+      - host_for_block_resources2
+      - host_for_block_resources3
+    host_groups:
+      - host_group_for_block_resources2
+      - host_group_for_block_resources3
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resources were updated
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_first
+    pool: pool_for_block_resources1
+    name_template: 1-3, 5, 7-8
+    read_cache: false
+    write_cache: false
+    warning_threshold: 79
+    ports:
+      - p01
+      - p10
+    hosts:
+      - host_for_block_resources2
+      - host_for_block_resources3
+    host_groups:
+      - host_group_for_block_resources2
+      - host_group_for_block_resources3
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 6
+#################################################
+
+- name: Test resource block | Set multiple resources with template at once
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second
+    pool: pool_for_block_resources2
+    name_template: 1,3-5
+    size: 1MiB
+    size_format: 4kn
+    read_cache: false
+    write_cache: false
+    ports:
+      - p10
+      - p11
+    hosts:
+      - host_for_block_resources1
+    host_groups:
+      - host_group_for_block_resources1
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resources are set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second
+    pool: pool_for_block_resources2
+    name_template: 1,3-5
+    size: 1MiB
+    size_format: 4kn
+    read_cache: false
+    write_cache: false
+    ports:
+      - p10
+      - p11
+    hosts:
+      - host_for_block_resources1
+    host_groups:
+      - host_group_for_block_resources1
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+- name: Test resource block | Ensure unnecessary resources are not set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second2
+    pool: pool_for_block_resources2
+    size: 1MiB
+    size_format: 4kn
+    read_cache: false
+    write_cache: false
+    ports:
+      - p10
+      - p11
+    hosts:
+      - host_for_block_resources1
+    host_groups:
+      - host_group_for_block_resources1
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+#################################################
+#### TEST 7
+#################################################
+
+- name: Test resource block | Reset ports, hosts and host_groups
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second
+    pool: pool_for_block_resources2
+    name_template: 1,3-5
+    ports: []
+    hosts: []
+    host_groups: []
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resources are set
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second
+    pool: pool_for_block_resources2
+    name_template: 1,3-5
+    ports: []
+    hosts: []
+    host_groups: []
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 8
+#################################################
+
+- name: Test resource block | Test check mode with update
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second1
+    pool: pool_for_block_resources1
+    read_cache: true
+    write_cache: true
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test resource block | Ensure resource was not updated
+  yadro.tatlin.tatlin_sp_resource_block:
+    connection: "{{ connection }}"
+    name: test_resource_second1
+    pool: pool_for_block_resources1
+    read_cache: true
+    write_cache: true
+  check_mode: true
+  register: result
+
+- name: Test resource block | Check state
+  assert:
+    that: "result.changed == true"

@@ -25,7 +25,6 @@ class TestDrives:
         self, tatlin, make_mock, drives_groups_data, pools_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             target=OPEN_URL_FUNC,
             return_value=[drives_groups_data, pools_data],
@@ -87,7 +86,6 @@ class TestDrives:
         # Make mocks for drive group creation
         drives_groups_data['HDD_209715200']['warningDisks'] = 1
         drives_groups_data['HDD_209715200']['disks'][0]['state'] = 'warning'
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, pools_data],
@@ -107,7 +105,6 @@ class TestDrives:
         # Make mocks for drive group creation
         drives_groups_data['HDD_209715200']['failedDisks'] = 1
         drives_groups_data['HDD_209715200']['disks'][0]['state'] = 'error'
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, pools_data],
@@ -137,7 +134,6 @@ class TestDrives:
         thin_provision,
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -149,9 +145,6 @@ class TestDrives:
 
         # Mock open_url without data
         open_url_mock = make_mock(OPEN_URL_FUNC)
-
-        # Mock Pool.load_resources()
-        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool
         drive_group.create_pool(
@@ -195,7 +188,6 @@ class TestDrives:
         self, tatlin, make_mock, open_url_kwargs, drives_groups_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -207,9 +199,6 @@ class TestDrives:
 
         # Mock open_url without data
         open_url_mock = make_mock(OPEN_URL_FUNC)
-
-        # Mock Pool.load_resources()
-        make_mock(POOL_CLASS + '.load_resources')
 
         # Create pool
         drive_group.create_pool(
@@ -251,7 +240,6 @@ class TestDrives:
         self, tatlin, make_mock, drives_groups_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -277,7 +265,6 @@ class TestDrives:
         self, tatlin, make_mock, open_url_kwargs, drives_groups_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -311,11 +298,10 @@ class TestDrives:
 
         check_called_with(open_url_mock, **open_url_kwargs)
 
-    def test_load_pools(
+    def test_get_pools(
         self, tatlin, make_mock, drives_groups_data, pools_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -325,15 +311,11 @@ class TestDrives:
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
-        # Ensure that drive group has no pools
-        assert len(drive_group.pools) == 0
-
         # Mock open_url response with pools data
         make_mock(OPEN_URL_FUNC, return_value=pools_data)
-        make_mock(POOL_CLASS + '.load_resources')
 
         # Load pools
-        drive_group.load_pools()
+        pools = drive_group.get_pools()
 
         # Result: Drive group pools are not empty
-        assert len(drive_group.pools) > 0
+        assert len(pools) > 0

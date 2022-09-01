@@ -33,9 +33,6 @@ class DriveGroup:
         self._client = client
         self._data = drive_group_data
 
-        self.pools = []
-        self.load_pools()
-
     @property
     def capacity_available(self):  # type: () -> int
         rv = int(self._data['availableCapacity']) \
@@ -178,15 +175,30 @@ class DriveGroup:
         ).json
 
         new_pool = Pool(client=self._client, drive_group=self, **pool_data)
-        self.pools.append(new_pool)
-
         return new_pool
 
     def get_drive(self, drive_id):  # type: (str) -> Optional[Drive]
         return next((d for d in self.drives if d.id == drive_id), None)
 
     def get_pool(self, name):  # type: (str) -> Optional[Pool]
-        return next((p for p in self.pools if p.name == name), None)
+        return next((p for p in self.get_pools() if p.name == name), None)
+
+    def get_pools(self):  # type: () -> List[Pool]
+        rv = []
+
+        pools_data = self._client.get(eps.HEALTH_POOLS_ENDPOINT).json
+        for pool_data in pools_data:
+            pool_drive_group = pool_data['media']['model']
+            if self.id == pool_drive_group:
+                new_pool = Pool(
+                    client=self._client,
+                    drive_group=self,
+                    **pool_data
+                )
+
+                rv.append(new_pool)
+
+        return rv
 
     def get_real_pool_size(
         self,
@@ -236,23 +248,6 @@ class DriveGroup:
             if group_data['id'] == self.id:
                 self._data = group_data
                 break
-
-        self.load_pools()
-
-    def load_pools(self):  # type: () -> None
-        self.pools = []
-
-        pools_data = self._client.get(eps.HEALTH_POOLS_ENDPOINT).json
-        for pool_data in pools_data:
-            pool_drive_group = pool_data['media']['model']
-            if self.id == pool_drive_group:
-                new_pool = Pool(
-                    client=self._client,
-                    drive_group=self,
-                    **pool_data
-                )
-
-                self.pools.append(new_pool)
 
     @staticmethod
     def _check_pool_capacity(pool_size, drives_count):

@@ -10,13 +10,19 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
+    ResourceBase, ResourceBlock, ResourceFile, RESOURCE_TYPE,
+)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
 
 try:
-    from typing import List, Union, Dict, Optional
+    from typing import List, Union, Dict, Optional, TYPE_CHECKING
 except ImportError:
-    List = Union = Dict = Optional = None
+    List = Union = Dict = Optional = TYPE_CHECKING = None
+
+if TYPE_CHECKING:
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api import models
 
 
 class PROVISION_TYPE:
@@ -32,44 +38,6 @@ class Pool:
         self._ep = '{0}/{1}'.format(eps.HEALTH_POOLS_ENDPOINT, self.id)
 
         self.drive_group = drive_group
-        self.resources = []
-        self.load_resources()
-
-    @property
-    def id(self):  # type: () -> str
-        rv = self._data.get('id')
-        if rv is None:
-            raise AttributeError(
-                'Pool object has no id value'
-            )
-        return rv
-
-    @property
-    def name(self):  # type: () -> str
-        return self._data.get('name')
-
-    @property
-    def status(self):  # type: () -> str
-        return self._data.get('status')
-
-    @property
-    def provision(self):  # type: () -> Optional[str]
-        if self._data.get('thinProvision') is None:
-            return None
-
-        rv = PROVISION_TYPE.THIN if \
-            self._data['thinProvision'] else PROVISION_TYPE.THICK
-        return rv
-
-    @property
-    def protection(self):  # type: () -> str
-        return self._data.get('protection')
-
-    @property
-    def capacity_used(self):  # type: () -> int
-        rv = int(self._data['used']) \
-            if self._data.get('used') is not None else None
-        return rv
 
     @property
     def capacity_available(self):  # type: () -> int
@@ -90,13 +58,45 @@ class Pool:
         return rv
 
     @property
-    def stripe_size(self):  # type: () -> int
-        return self._data.get('stripe_size')
+    def capacity_used(self):  # type: () -> int
+        rv = int(self._data['used']) \
+            if self._data.get('used') is not None else None
+        return rv
+
+    @property
+    def critical_threshold(self):  # type: () -> int
+        return self._data.get('critical_alert_threshold')
 
     @property
     def drives(self):  # type: () -> List['Drive']
         drive_id_list = self._data.get('disks_list', [])
         return [self.drive_group.get_drive(_id) for _id in drive_id_list]
+
+    @property
+    def id(self):  # type: () -> str
+        rv = self._data.get('id')
+        if rv is None:
+            raise AttributeError(
+                'Pool object has no id value'
+            )
+        return rv
+
+    @property
+    def name(self):  # type: () -> str
+        return self._data.get('name')
+
+    @property
+    def protection(self):  # type: () -> str
+        return self._data.get('protection')
+
+    @property
+    def provision(self):  # type: () -> Optional[str]
+        if self._data.get('thinProvision') is None:
+            return None
+
+        rv = PROVISION_TYPE.THIN if \
+            self._data['thinProvision'] else PROVISION_TYPE.THICK
+        return rv
 
     @property
     def spare_count(self):  # type: () -> int
@@ -105,12 +105,132 @@ class Pool:
         return rv
 
     @property
+    def status(self):  # type: () -> str
+        return self._data.get('status')
+
+    @property
+    def stripe_size(self):  # type: () -> int
+        return self._data.get('stripe_size')
+
+    @property
     def warning_threshold(self):  # type: () -> int
         return self._data.get('soft_alert_threshold')
 
-    @property
-    def critical_threshold(self):  # type: () -> int
-        return self._data.get('critical_alert_threshold')
+    def create_resource_block(
+        self,
+        name,  # type: str
+        size,  # type: Union[int, str]
+        size_format=None,  # type: str
+        name_template=None,  # type: str
+        read_cache=True,  # type: bool
+        write_cache=True,  # type: bool
+        warning_threshold=None,  # type: int
+        ports=None,  # type: List['models.port.Port']
+        hosts=None,  # type: List['models.host.Host']
+        host_groups=None,  # type: List['models.host_group.HostGroup']
+    ):  # type: (...) -> int
+
+        if isinstance(size, str):
+            size = to_bytes(size)
+
+        port_names = None
+        host_names = None
+        host_group_names = None
+
+        if ports is not None:
+            port_names = [port.name for port in ports]
+
+        if hosts is not None:
+            host_names = [host.name for host in hosts]
+
+        if host_groups is not None:
+            host_group_names = [group.name for group in host_groups]
+
+        resource_names = self._client.post(
+            path=eps.DASHBOARD_RESOURCES_ENDPOINT + '/block/create',
+            body={
+                'templates': [{'nameTemplate': name, 'params': name_template}],
+                'poolId': self.id,
+                'size': size,
+                'lbaFormat': size_format,
+                'cached': 'true',
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'alert_threshold': warning_threshold,
+                'ports': port_names,
+                'hosts': host_names,
+                'groups': host_group_names,
+            }
+        ).json
+
+        task_data = self._client.put(
+            path=eps.DASHBOARD_RESOURCES_ENDPOINT + '/block/create',
+            body={
+                'names': resource_names,
+                'poolId': self.id,
+                'size': size,
+                'lbaFormat': size_format,
+                'cached': 'true',
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'alert_threshold': warning_threshold,
+                'ports': port_names,
+                'hosts': host_names,
+                'groups': host_group_names,
+            }
+        ).json
+
+        return task_data['id']
+
+    @staticmethod
+    def _get_permissions_for_request(permissions):
+        # type: (str) -> List[str]
+        if permissions == 'r':
+            return ['read']
+        elif permissions == 'rw':
+            return ['read', 'write']
+
+        raise TatlinClientError(
+            'Unknown permissions: {0}'.format(permissions)
+        )
+
+    def get_resource(self, name):
+        # type: (str) -> Optional[Union[ResourceBlock, ResourceFile]]
+        for resource in self.get_resources():
+            if resource.name == name:
+                return resource
+        return None
+
+    def get_resources(self):
+        # type: () -> List[Union[ResourceBlock, ResourceFile]]
+        rv = []
+
+        ResourceBase.clear_cache()
+
+        resources_data = self._client.get(
+            eps.HEALTH_PERSONALITIES_ENDPOINT
+        ).json
+
+        for resource_data in resources_data:
+            if resource_data['poolId'] == self.id:
+                resource_type = resource_data.get('type')
+                if resource_type == RESOURCE_TYPE.BLOCK:
+                    rv.append(ResourceBlock(
+                        client=self._client,
+                        pool=self,
+                        **resource_data
+                    ))
+                elif resource_type in (RESOURCE_TYPE.NFS, RESOURCE_TYPE.CIFS):
+                    rv.append(ResourceFile(
+                        client=self._client,
+                        pool=self,
+                        **resource_data
+                    ))
+                else:
+                    raise TatlinClientError(
+                        'Unknown resource type: {0}'.format(resource_type)
+                    )
+        return rv
 
     def is_deleting(self):  # type: () -> bool
         return self.status.lower() == 'deleting'
@@ -123,22 +243,9 @@ class Pool:
 
     def load(self):  # type: () -> None
         self._data = self._client.get(self._ep).json
-        self.load_resources()
-
-    def load_resources(self):
-        self.resources = []
-
-        resources_data = self._client.get(
-            eps.HEALTH_PERSONALITIES_ENDPOINT
-        ).json
-
-        for item in resources_data:
-            if item['poolId'] == self.id:
-                # TODO: Implement as objects after Resource class implementation
-                self.resources.append(item)
 
     def remove(self):  # type: () -> None
-        if len(self.resources) > 0:
+        if len(self.get_resources()) > 0:
             raise TatlinClientError(
                 'It is prohibited to remove pool with existing resources'
             )

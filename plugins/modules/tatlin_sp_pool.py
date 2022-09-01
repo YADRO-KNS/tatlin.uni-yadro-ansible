@@ -297,7 +297,7 @@ class TatlinPoolModule(TatlinModule):
                         critical_threshold=new_crit,
                     ))
         else:
-            if pool is not None and len(pool.resources) > 0:
+            if pool is not None and len(pool.get_resources()) > 0:
                 # state absent, can't remove
                 self.fail_json(
                     changed=False,

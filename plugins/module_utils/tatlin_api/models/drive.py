@@ -57,7 +57,7 @@ class Drive:
 
     @property
     def pool(self):  # type: () -> Optional[Pool]
-        for pool in self.drive_group.pools:
+        for pool in self.drive_group.get_pools():
             if self in pool.drives:
                 return pool
         return None

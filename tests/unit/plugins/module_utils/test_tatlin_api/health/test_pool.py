@@ -10,14 +10,13 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-import json
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive import Drive
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import HEALTH_POOLS_ENDPOINT
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_called_with
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
-    POOL_CLASS, OPEN_URL_FUNC)
+    POOL_CLASS, OPEN_URL_FUNC, DRIVE_GROUP_CLASS)
 
 
 class TestPool:
@@ -26,7 +25,6 @@ class TestPool:
         self, tatlin, make_mock, drives_groups_data, pools_data
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(
             OPEN_URL_FUNC,
             return_value=[drives_groups_data, {}],
@@ -35,9 +33,6 @@ class TestPool:
 
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
-
-        # # Mock load_resources
-        # mocker.patch(POOL_CLASS + '.load_resources')
 
         # Create pool object
         pool = Pool(
@@ -59,6 +54,11 @@ class TestPool:
         # Load pool
         pool.load()
 
+        make_mock(
+            DRIVE_GROUP_CLASS + '.get_pools',
+            return_value=[pool],
+        )
+
         # Result: Pool has expected parameters
         assert pool is not None
         assert pool.id == '28118216-74eb-4ba2-8e01-be894b878de1'
@@ -77,34 +77,21 @@ class TestPool:
         assert len(pool.drives) > 0
         assert isinstance(pool.drives[0], Drive)
 
-    def test_load_resources(self, tatlin, make_mock, resources_data):
-        # Mock load_resources
-        init_load_resources = Pool.load_resources
-        make_mock(POOL_CLASS + '.load_resources')
-
+    def test_get_resources(self, tatlin, make_mock, resources_data):
         # Create pool object
         pool = Pool(client=tatlin, drive_group=None)
         pool._data['id'] = resources_data[0]['poolId']
 
-        # Ensure that pool has no resources
-        assert len(pool.resources) == 0
-
         # Mock open_url with resources data
         make_mock(OPEN_URL_FUNC, return_value=resources_data)
 
-        # Restore load_resources method
-        Pool.load_resources = init_load_resources
+        # Get pool resources
+        resources = pool.get_resources()
 
-        # Load resources
-        pool.load_resources()
-
-        # Result: pool has resources
-        assert len(pool.resources) > 0
+        # Result: Resources list is not empty
+        assert len(resources) > 0
 
     def test_remove(self, tatlin, make_mock, open_url_kwargs, pools_data):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
-
         # Create pool object
         pool = Pool(client=tatlin, drive_group=None, **pools_data[0])
 
@@ -135,8 +122,8 @@ class TestPool:
             id=resources_data[0]['poolId'],
         )
 
-        # Ensure that pool has resources
-        assert len(pool.resources) > 0
+        # Mock open_url with resources data
+        make_mock(OPEN_URL_FUNC, return_value=resources_data)
 
         # Remove pool
         # Result: Error was raised
@@ -144,9 +131,6 @@ class TestPool:
             pool.remove()
 
     def test_is_ready(self, tatlin, make_mock):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
-
         # Create pool object with ready status
         pool = Pool(client=tatlin, drive_group=None, status='ready')
 
@@ -168,7 +152,6 @@ class TestPool:
         pools_data,
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(POOL_CLASS + '.load')
         make_mock(
             OPEN_URL_FUNC,
@@ -208,7 +191,6 @@ class TestPool:
         pools_data,
     ):
         # Make mocks for drive group creation
-        make_mock(POOL_CLASS + '.load_resources')
         make_mock(POOL_CLASS + '.load')
         make_mock(
             OPEN_URL_FUNC,
@@ -231,8 +213,7 @@ class TestPool:
             pool.set_drives_count(1)
 
     def test_set_size(self, tatlin, make_mock, open_url_kwargs):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
@@ -262,8 +243,7 @@ class TestPool:
         check_called_with(open_url_mock, **open_url_kwargs)
 
     def test_set_size_fail(self, tatlin, make_mock):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
@@ -278,8 +258,7 @@ class TestPool:
             pool.set_size('191MiB')
 
     def test_set_spare_count(self, tatlin, make_mock, open_url_kwargs):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object
@@ -304,8 +283,7 @@ class TestPool:
         check_called_with(open_url_mock, **open_url_kwargs)
 
     def test_set_thresholds(self, tatlin, make_mock, open_url_kwargs):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thin provision
@@ -338,8 +316,7 @@ class TestPool:
         check_called_with(open_url_mock, **open_url_kwargs)
 
     def test_set_thresholds_fail_no_args(self, tatlin, make_mock):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object thin provision
@@ -354,8 +331,7 @@ class TestPool:
             pool.set_thresholds()
 
     def test_set_thresholds_fail_provision(self, tatlin, make_mock):
-        # Mock load_resources
-        make_mock(POOL_CLASS + '.load_resources')
+        # Mock load method
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thick provision
