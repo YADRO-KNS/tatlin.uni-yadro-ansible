@@ -1,0 +1,65 @@
+#################################################
+#### PREPARE
+#################################################
+- name: Test hosts info | Prepare testhost1
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost1
+    port_type: eth
+    tags:
+      - tag1
+      - tag2
+    auth: mutual
+    username: host1name
+    password: host1pass
+    mutual_username: targetname
+    mutual_password: targetpass
+
+- name: Test hosts info | Prepare testhost2
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost2
+    port_type: fc
+    tags:
+      - tag3
+      - tag4
+
+#################################################
+#### TEST
+#################################################
+- name: Test hosts info | Get hosts info
+  yadro.tatlin.tatlin_sp_hosts_info:
+    connection: "{{ connection }}"
+  register: result
+
+- name: Test hosts info | Check hosts count
+  assert:
+    that: "result.hosts_info | length > 1"
+
+- set_fact:
+    host1: "{{ result.hosts_info 
+      | selectattr('name','equalto', 'testhost1') 
+      | list 
+      | last }}"
+    host2: "{{ result.hosts_info 
+          | selectattr('name','equalto', 'testhost2') 
+          | list 
+          | last }}"
+
+- name: Test hosts info | Check testhost1
+  assert:
+    that:
+      - host1.name == 'testhost1'
+      - host1.port_type == 'eth'
+      - host1.auth == 'mutual'
+      - host1.ports == []
+      - host1.tags == ['tag1', 'tag2']
+
+- name: Test hosts info | Check testhost2
+  assert:
+    that:
+      - host2.name == 'testhost2'
+      - host2.port_type == 'fc'
+      - host2.auth == None
+      - host2.ports == []
+      - host2.tags == ['tag3', 'tag4']
