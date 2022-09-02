@@ -109,10 +109,10 @@ EXAMPLES = r"""
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
 
 
-class TatlinDrivesInfoModule(TatlinModule):
+class TatlinPoolsInfoModule(TatlinModule):
 
     def __init__(self):
-        super(TatlinDrivesInfoModule, self).__init__(
+        super(TatlinPoolsInfoModule, self).__init__(
             supports_check_mode=True,
         )
 
@@ -142,7 +142,7 @@ class TatlinDrivesInfoModule(TatlinModule):
 
 
 def main():
-    TatlinDrivesInfoModule()
+    TatlinPoolsInfoModule()
 
 
 if __name__ == "__main__":
