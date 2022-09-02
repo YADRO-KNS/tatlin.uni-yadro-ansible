@@ -75,10 +75,10 @@ class RestClient:
     def authorize(self, username=None, password=None, auth=None):
         raise NotImplementedError
 
-    def set_host(self, host):  # type: (str) -> None
+    def set_connection_host(self, host):  # type: (str) -> None
         self._host = host
 
-    def get_host(self):  # type: () -> str
+    def get_connection_host(self):  # type: () -> str
         return self._host
 
     def make_request(

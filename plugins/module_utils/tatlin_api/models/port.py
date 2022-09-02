@@ -190,7 +190,7 @@ class Port:
     def _get_ip_for_reconnect(self, new_virtual_address=None, nodes=None):
         # type: (str, Dict[str, Union[str, List[str]]]) -> Optional[str]
 
-        host = self._client.get_host()
+        host = self._client.get_connection_host()
         if host is None:
             return
 
@@ -418,8 +418,8 @@ class ChangedHost:
                 'No host was passed for changed host context manager'
             )
 
-        self.init_host = self.client.get_host()
-        self.client.set_host(self.new_host)
+        self.init_host = self.client.get_connection_host()
+        self.client.set_connection_host(self.new_host)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.init_host is None:
@@ -427,5 +427,5 @@ class ChangedHost:
                 'Initial host was not saved for changed host context manager'
             )
 
-        self.client.set_host(self.init_host)
+        self.client.set_connection_host(self.init_host)
         self.init_host = self.new_host = None

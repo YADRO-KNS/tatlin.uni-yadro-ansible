@@ -61,14 +61,14 @@ class TestPort:
         changed_host = ChangedHost(client=tatlin)
 
         # Ensure that we use specific host
-        assert tatlin.get_host() == 'localhost'
+        assert tatlin.get_connection_host() == 'localhost'
 
         # Change client's host
         with changed_host('new_host'):
-            assert tatlin.get_host() == 'new_host'
+            assert tatlin.get_connection_host() == 'new_host'
 
         # Result: init host is used after context manager
-        assert tatlin.get_host() == 'localhost'
+        assert tatlin.get_connection_host() == 'localhost'
 
     def test_get_ports(
         self, tatlin, make_mock, ports_response, exp_addrs_sp0, exp_addrs_sp1,
@@ -607,7 +607,7 @@ class TestPort:
 
         # Set client's host equal to port's virtual address
         virtual_ip = port.virtual_address.ip
-        tatlin.set_host(virtual_ip)
+        tatlin.set_connection_host(virtual_ip)
 
         # Get ip for reconnect
         reconnect_ip = port._get_ip_for_reconnect(
@@ -627,7 +627,7 @@ class TestPort:
 
         # Set client's host equal to port's virtual address
         sp0_ip = port.nodes['sp-0'].addresses[0].ip
-        tatlin.set_host(sp0_ip)
+        tatlin.set_connection_host(sp0_ip)
 
         # Get ip for reconnect
         reconnect_ip = port._get_ip_for_reconnect(
