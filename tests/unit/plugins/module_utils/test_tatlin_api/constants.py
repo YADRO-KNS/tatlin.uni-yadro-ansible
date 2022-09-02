@@ -15,6 +15,9 @@ DRIVE_GROUP_CLASS = MODELS_PACKAGE + '.drive_group.DriveGroup'
 POOL_CLASS = MODELS_PACKAGE + '.pool.Pool'
 
 
+HOST_CLASS = MODELS_PACKAGE + '.host.Host'
+
+
 USER_CLASS = MODELS_PACKAGE + '.user.User'
 USER_GROUP_CLASS = MODELS_PACKAGE + '.user_group.UserGroup'
 LDAP_CONFIG_CLASS = MODELS_PACKAGE + '.ldap.LdapConfig'

@@ -17,17 +17,19 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.use
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive_group import DriveGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host import Host
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import get_iscsi_auth_for_request
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_client import (
     RestClient, AUTH_BASIC, AUTH_SESSION,
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
-    TatlinClientError, TatlinNodeNotFoundError, RESTClientNotFoundError,
+    TatlinClientError, TatlinNodeNotFoundError, TatlinAuthorizationError, RESTClientNotFoundError,
 )
 
 try:
@@ -38,7 +40,6 @@ except ImportError:
 
 LOGIN_PATH = 'auth/login'
 LOGOUT_PATH = 'auth/logout'
-ISCSI_AUTH_TYPES = ('none', 'oneway', 'mutual')
 
 
 class TatlinClient(RestClient):
@@ -109,6 +110,52 @@ class TatlinClient(RestClient):
             raise TatlinClientError(
                 'Unrecognized authentication method ' + auth_method,
             )
+
+    def create_host(
+        self,
+        name,  # type: str
+        port_type,  # type: str
+        auth,  # type: str
+        username=None,  # type: str
+        password=None,  # type: str
+        mutual_username=None,  # type: str
+        mutual_password=None,  # type: str
+        ports=None,  # type: Union[str, List[str]]
+        tags=None,  # type: Union[str, List[str]]
+    ):  # type: (...) -> Host
+
+        # It's called eth/ethernet in tatlin-cli and webui. But inside tatlin
+        # it's called iscsi. eth was chosen for consistency with user interfaces
+        allowed_port_types = ('eth', 'fc')
+        if port_type not in allowed_port_types:
+            raise TatlinClientError(
+                'Unknown port type {0}. Only {1} are allowed'.format(
+                    port_type, ', '.join(allowed_port_types)
+                )
+            )
+
+        ports = [ports] if isinstance(ports, str) else ports
+        tags = [tags] if isinstance(tags, str) else tags
+
+        auth_body = None
+        if auth is not None:
+            auth_body = get_iscsi_auth_for_request(
+                auth, username, password, mutual_username, mutual_password,
+            )
+
+        host_data = self.put(
+            path=eps.PERSONALITIES_HOSTS_ENDPOINT,
+            body={
+                'name': name,
+                'port_type': 'iscsi' if port_type == 'eth' else port_type,
+                'initiators': ports,
+                'tags': tags,
+                'auth': auth_body,
+            }
+        ).json
+
+        new_host = Host(client=self, **host_data)
+        return new_host
 
     def create_user(
         self,
@@ -190,6 +237,19 @@ class TatlinClient(RestClient):
         for drive_group in self.get_drive_groups():
             if drive_group.name == name:
                 return drive_group
+        return None
+
+    def get_hosts(self):  # type: () -> List[Host]
+        rv = []
+        hosts_data = self.get(eps.PERSONALITIES_HOSTS_ENDPOINT).json
+        for host_data in hosts_data:
+            rv.append(Host(client=self, **host_data))
+        return rv
+
+    def get_host(self, name):  # type: (str) -> Optional[Host]
+        for host in self.get_hosts():
+            if host.name == name:
+                return host
         return None
 
     def get_ldap_config(self):  # type: () -> LdapConfig
@@ -319,35 +379,12 @@ class TatlinClient(RestClient):
         mutual_username=None,  # type: str
         mutual_password=None,  # type: str
     ):
-        if auth not in ISCSI_AUTH_TYPES:
-            raise TatlinClientError(
-                'Unknown iscsi auth type'
-            )
-
-        req_body = {'auth_type': auth}
-        if auth in ('oneway', 'mutual'):
-            if not username or not password:
-                raise TatlinClientError(
-                    'username and password must be provided '
-                    'with auth type {0}'.format(auth)
-                )
-
-            req_body.update(internal_name=username,
-                            internal_password=password)
-
-        if auth == 'mutual':
-            if not all([
-                username, password, mutual_username, mutual_password
-            ]):
-                raise TatlinClientError(
-                    'username, password, mutual_username and mutual_password '
-                    'must be provided with {0} auth type'.format(auth)
-                )
-
-            req_body.update(external_name=mutual_username,
-                            external_password=mutual_password)
-
-        self.post(path=eps.PERSONALITIES_AUTH_ENDPOINT, body=req_body)
+        self.post(
+            path=eps.PERSONALITIES_AUTH_ENDPOINT,
+            body=get_iscsi_auth_for_request(
+                auth, username, password, mutual_username, mutual_password,
+            ),
+        )
 
     def upload_ssl_certificate(self, crt, key):
         # type: (Union[str, bytes], Union[str, bytes]) -> None
@@ -380,7 +417,3 @@ class TatlinClient(RestClient):
         except (KeyError, TypeError):
             raise TatlinClientError('Failed to parse tatlin version')
         return version
-
-
-class TatlinAuthorizationError(Exception):
-    pass

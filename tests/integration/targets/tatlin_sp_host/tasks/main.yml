@@ -1,0 +1,161 @@
+#################################################
+#### TEST 1
+#################################################
+
+- name: Test host | Set host
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    port_type: eth
+    ports: iqn.1993-08.org.debian:01:h9srae30474w
+    tags:
+      - tag1
+      - tag2
+    auth: mutual
+    username: hostname
+    password: hostpass
+    mutual_username: targetname
+    mutual_password: targetpass
+  register: result
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host | Check host is created
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    port_type: eth
+    ports: iqn.1993-08.org.debian:01:h9srae30474w
+    tags:
+      - tag1
+      - tag2
+  register: result
+  check_mode: true
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 2
+#################################################
+
+- name: Test host | Update tags
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    tags:
+      - tag2
+      - tag3
+  register: result
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host | Check that tags were updated
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    tags:
+      - tag2
+      - tag3
+  register: result
+  check_mode: true
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 3
+#################################################
+- name: Test host | Change auth type to oneway
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    auth: oneway
+    username: hostname
+    password: hostpass
+  register: result
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host | Get host info
+  yadro.tatlin.tatlin_sp_hosts_info:
+    connection: "{{ connection }}"
+  register: result
+
+- set_fact:
+    testhost: "{{ result.hosts_info 
+      | selectattr('name','equalto', 'testhost') 
+      | list 
+      | last }}"
+
+- name: Test host | Check auth type was changed
+  assert:
+    that: testhost.auth == 'oneway'
+
+#################################################
+#### TEST 4
+#################################################
+- name: Test host | Change auth type to oneway
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    auth: none
+  register: result
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host | Get host info
+  yadro.tatlin.tatlin_sp_hosts_info:
+    connection: "{{ connection }}"
+  register: result
+
+- set_fact:
+    testhost: "{{ result.hosts_info 
+  | selectattr('name','equalto', 'testhost') 
+  | list 
+  | last }}"
+
+- name: Test host | Check auth type was changed
+  assert:
+    that: testhost.auth == 'none'
+
+#################################################
+#### TEST 5
+#################################################
+
+- name: Test host | Update ports
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    ports:
+      - iqn.1993-08.org.debian:01:h9srae30474w
+      - iqn.1993-08.org.debian:01:h9srae30474q
+  register: result
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host | Check that ports were updated
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: testhost
+    ports:
+      - iqn.1993-08.org.debian:01:h9srae30474w
+      - iqn.1993-08.org.debian:01:h9srae30474q
+  register: result
+  check_mode: true
+
+- name: Test host | Check state
+  assert:
+    that: "result.changed == false"

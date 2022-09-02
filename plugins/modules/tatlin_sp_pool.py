@@ -236,7 +236,7 @@ class TatlinPoolModule(TatlinModule):
 
         if self.params['state'] == 'present':
             if pool is None:
-                self.validate_creating_params()
+                self.validate_params_create()
                 actions.append(partial(
                     drive_group.create_pool,
                     name=self.params['name'],
@@ -250,7 +250,7 @@ class TatlinPoolModule(TatlinModule):
                     critical_threshold=self.params['critical_threshold'],
                 ))
             else:
-                self.validate_changing_params(pool)
+                self.validate_params_change(pool)
 
                 new_spare_count = self.params['spare_count']
                 if all([
@@ -371,7 +371,7 @@ class TatlinPoolModule(TatlinModule):
 
         return real_size
 
-    def validate_creating_params(self):
+    def validate_params_create(self):
         missing_params = []
         for param_name in ('protection', 'provision'):
             if self.params[param_name] is None:
@@ -396,7 +396,7 @@ class TatlinPoolModule(TatlinModule):
                     'drives_count, size',
             )
 
-    def validate_changing_params(self, pool):
+    def validate_params_change(self, pool):
         forbidden_params = (
             'protection',
             'provision',

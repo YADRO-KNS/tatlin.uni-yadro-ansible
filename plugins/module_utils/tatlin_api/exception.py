@@ -40,3 +40,7 @@ class TatlinClientError(Exception):
 
 class TatlinNodeNotFoundError(Exception):
     pass
+
+
+class TatlinAuthorizationError(Exception):
+    pass

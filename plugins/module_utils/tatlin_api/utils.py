@@ -11,6 +11,14 @@ __metaclass__ = type
 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
+try:
+    from typing import Dict
+except ImportError:
+    Dict = None
+
+
+ISCSI_AUTH_TYPES = ('none', 'oneway', 'mutual')
+
 
 def to_bytes(s):  # type: (str) -> int
     units_dec = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
@@ -43,3 +51,43 @@ def to_bytes(s):  # type: (str) -> int
         )
 
     return int((size * multiplier) + 0.5)
+
+
+def get_iscsi_auth_for_request(
+    auth,  # type: str
+    username,  # type: str
+    password,  # type: str
+    mutual_username,  # type: str
+    mutual_password,  # type: str
+):  # type: (...) -> Dict[str, str]
+
+    if auth not in ISCSI_AUTH_TYPES:
+        raise TatlinClientError(
+            'Unknown auth type: {0}'.format(auth)
+        )
+
+    rv = {'auth_type': auth}
+
+    if auth in ('oneway', 'mutual'):
+        if not username or not password:
+            raise TatlinClientError(
+                'username and password must be provided '
+                'with auth type {0}'.format(auth)
+            )
+
+        rv.update(internal_name=username,
+                  internal_password=password)
+
+    if auth == 'mutual':
+        if not all([
+            username, password, mutual_username, mutual_password
+        ]):
+            raise TatlinClientError(
+                'username, password, mutual_username and mutual_password '
+                'must be provided with {0} auth type'.format(auth)
+            )
+
+        rv.update(external_name=mutual_username,
+                  external_password=mutual_password)
+
+    return rv
