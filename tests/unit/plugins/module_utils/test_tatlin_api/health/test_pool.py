@@ -79,8 +79,11 @@ class TestPool:
 
     def test_get_resources(self, tatlin, make_mock, resources_data):
         # Create pool object
-        pool = Pool(client=tatlin, drive_group=None)
-        pool._data['id'] = resources_data[0]['poolId']
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            id=resources_data[0]['poolId'],
+        )
 
         # Mock open_url with resources data
         make_mock(OPEN_URL_FUNC, return_value=resources_data)
@@ -132,7 +135,12 @@ class TestPool:
 
     def test_is_ready(self, tatlin, make_mock):
         # Create pool object with ready status
-        pool = Pool(client=tatlin, drive_group=None, status='ready')
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            status='ready',
+            id='pool_id',
+        )
 
         # Result: is_ready method return True
         assert pool.is_ready()
@@ -247,7 +255,12 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
-        pool = Pool(client=tatlin, drive_group=None, capacity=201326592)
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            capacity=201326592,
+            id='pool_id',
+        )
 
         # Mock open_url without data
         make_mock(target=OPEN_URL_FUNC)
@@ -320,7 +333,12 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object thin provision
-        pool = Pool(client=tatlin, drive_group=None, thinProvision=True)
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            thinProvision=True,
+            id='pool_id'
+        )
 
         # Mock open_url without data
         make_mock(target=OPEN_URL_FUNC)
@@ -335,7 +353,12 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thick provision
-        pool = Pool(client=tatlin, drive_group=None, thinProvision=False)
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            thinProvision=False,
+            id='pool_id',
+        )
 
         # Mock open_url without data
         make_mock(target=OPEN_URL_FUNC)

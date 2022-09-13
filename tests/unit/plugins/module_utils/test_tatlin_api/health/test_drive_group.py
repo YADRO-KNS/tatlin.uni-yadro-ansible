@@ -143,8 +143,10 @@ class TestDrives:
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
-        # Mock open_url without data
-        open_url_mock = make_mock(OPEN_URL_FUNC)
+        # Mock open_url with returning pool_id
+        open_url_mock = make_mock(
+            OPEN_URL_FUNC, return_value={'id': 'pool_id'}
+        )
 
         # Create pool
         drive_group.create_pool(
@@ -197,8 +199,11 @@ class TestDrives:
         # Get drive group
         drive_group = tatlin.get_drive_groups()[0]
 
-        # Mock open_url without data
-        open_url_mock = make_mock(OPEN_URL_FUNC)
+        # Mock open_url with returning pool_id
+        open_url_mock = make_mock(
+            OPEN_URL_FUNC,
+            return_value={'id': 'pool_id'},
+        )
 
         # Create pool
         drive_group.create_pool(
