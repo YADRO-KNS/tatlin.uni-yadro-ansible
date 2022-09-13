@@ -1,0 +1,53 @@
+#################################################
+#### PREPARE
+#################################################
+
+- name: Test host groups info | Set host1
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: group_info_host
+    port_type: eth
+    auth: none
+    tags:
+      - testtag
+
+- name: Test host groups info | Set host group
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: tatlin_sp_host_groups_info
+    tags:
+      - tag1
+      - tag2
+    hosts:
+      - group_info_host
+
+#################################################
+#### TEST
+#################################################
+
+- name: Test host groups info | Get host groups info
+  yadro.tatlin.tatlin_sp_host_groups_info:
+    connection: "{{ connection }}"
+  register: result
+
+- name: Test host groups info | Check host groups count
+  assert:
+    that: "result.host_groups_info | length > 0"
+
+- set_fact:
+    host_group: "{{ result.host_groups_info 
+      | selectattr('name','equalto', 'tatlin_sp_host_groups_info') 
+      | list 
+      | last }}"
+
+- name: Test host groups info | Check created host group
+  assert:
+    that:
+      - host_group.name == 'tatlin_sp_host_groups_info'
+      - host_group.tags == ['tag1', 'tag2']
+      - host_group.hosts | length == 1
+      - host_group.hosts[0].name == 'group_info_host'
+      - host_group.hosts[0].port_type == 'eth'
+      - host_group.hosts[0].auth == 'none'
+      - host_group.hosts[0].ports == []
+      - host_group.hosts[0].tags == ['testtag']
