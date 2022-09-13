@@ -118,7 +118,7 @@ class TestHostGroup:
         self, tatlin, make_mock, host_groups_data, hosts_data
     ):
         # Create empty HostGroup object
-        host_group = HostGroup(client=tatlin)
+        host_group = HostGroup(client=tatlin, id='host_group_id')
 
         # Mock open_url response with data
         make_mock(OPEN_URL_FUNC, return_value=host_groups_data[0])

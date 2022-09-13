@@ -36,7 +36,12 @@ class Pool:
 
     @property
     def id(self):  # type: () -> str
-        return self._data.get('id')
+        rv = self._data.get('id')
+        if rv is None:
+            raise AttributeError(
+                'Pool object has no id value'
+            )
+        return rv
 
     @property
     def name(self):  # type: () -> str

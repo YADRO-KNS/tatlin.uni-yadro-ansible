@@ -40,7 +40,11 @@ class TestPool:
         # mocker.patch(POOL_CLASS + '.load_resources')
 
         # Create pool object
-        pool = Pool(client=tatlin, drive_group=drive_group)
+        pool = Pool(
+            client=tatlin,
+            drive_group=drive_group,
+            id='pool_id',
+        )
 
         # Check pool drives are empty
         assert len(pool.drives) == 0
@@ -232,7 +236,12 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with capacity
-        pool = Pool(client=tatlin, drive_group=None, capacity=201326592)
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            capacity=201326592,
+            id='pool_id',
+        )
 
         # Mock open_url without data
         open_url_mock = make_mock(target=OPEN_URL_FUNC)
@@ -274,7 +283,7 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object
-        pool = Pool(client=tatlin, drive_group=None)
+        pool = Pool(client=tatlin, drive_group=None, id='pool_id')
 
         # Mock open_url without data
         open_url_mock = make_mock(target=OPEN_URL_FUNC)
@@ -300,7 +309,12 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
 
         # Create pool object with thin provision
-        pool = Pool(client=tatlin, drive_group=None, thinProvision=True)
+        pool = Pool(
+            client=tatlin,
+            drive_group=None,
+            thinProvision=True,
+            id='pool_id',
+        )
 
         # Mock open_url without data
         open_url_mock = make_mock(target=OPEN_URL_FUNC)

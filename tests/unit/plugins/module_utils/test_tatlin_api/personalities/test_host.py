@@ -249,7 +249,7 @@ class TestHost:
 
     def test_host_load(self, tatlin, make_mock, hosts_data):
         # Create empty Host object
-        host = Host(client=tatlin)
+        host = Host(client=tatlin, id='host_id')
 
         # Mock open_url response with data
         make_mock(OPEN_URL_FUNC, return_value=hosts_data[0])
@@ -271,7 +271,7 @@ class TestHost:
         self, tatlin, make_mock, open_url_kwargs, hosts_data,
     ):
         # Create empty Host object
-        host = Host(client=tatlin)
+        host = Host(client=tatlin, id='host_id')
 
         # Mock open_url response with data
         make_mock(OPEN_URL_FUNC, return_value=hosts_data[0])
