@@ -18,6 +18,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.use
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive_group import DriveGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host import Host
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host_group import HostGroup
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
@@ -157,6 +158,29 @@ class TatlinClient(RestClient):
         new_host = Host(client=self, **host_data)
         return new_host
 
+    def create_host_group(
+        self,
+        name,  # type: str
+        tags=None,  # type: Union[List[str], str]
+        hosts=None,  # type: Union[List[Host], Host]
+    ):  # type: (...) -> HostGroup
+
+        tags = [tags] if isinstance(tags, str) else tags
+        hosts = [hosts] if isinstance(hosts, Host) else hosts
+        host_ids = [host.id for host in hosts] if hosts is not None else []
+
+        host_group_data = self.put(
+            path=eps.PERSONALITIES_HOST_GROUPS_ENDPOINT,
+            body={
+                'name': name,
+                'host_ids': host_ids,
+                'tags': tags or [],
+            }
+        ).json
+
+        new_host_group = HostGroup(client=self, **host_group_data)
+        return new_host_group
+
     def create_user(
         self,
         name,  # type: str
@@ -250,6 +274,24 @@ class TatlinClient(RestClient):
         for host in self.get_hosts():
             if host.name == name:
                 return host
+        return None
+
+    def get_host_groups(self):  # type: () -> List[HostGroup]
+        rv = []
+
+        host_groups_data = self.get(
+            eps.PERSONALITIES_HOST_GROUPS_ENDPOINT
+        ).json
+
+        for host_group_data in host_groups_data:
+            rv.append(HostGroup(client=self, **host_group_data))
+
+        return rv
+
+    def get_host_group(self, name):  # type: (str) -> Optional[HostGroup]
+        for host_group in self.get_host_groups():
+            if host_group.name == name:
+                return host_group
         return None
 
     def get_ldap_config(self):  # type: () -> LdapConfig

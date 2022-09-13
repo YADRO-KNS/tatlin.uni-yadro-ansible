@@ -18,7 +18,7 @@ def hosts_data():
         {
             "version": "cdf087471cd7d0cbb7b8b2ab019ebe88",
             "id": "7ab276b8-59a3-416b-8f28-191e91b4e20b",
-            "name": "testhost",
+            "name": "host1",
             "port_type": "iscsi",
             "initiators": [
                 "iqn.1993-08.org.debian:01:5728e30474c"
@@ -39,7 +39,7 @@ def hosts_data():
         {
             "version": "41d0964c8d588d564a9122d888e6faa8",
             "id": "9355f65d-a8a2-4df9-8459-98a5c20725f3",
-            "name": "host1",
+            "name": "host2",
             "port_type": "iscsi",
             "initiators": [],
             "tags": [
@@ -49,5 +49,33 @@ def hosts_data():
             "auth": {
                 "auth_type": "none"
             }
+        },
+    ]
+
+
+@pytest.fixture
+def host_groups_data():
+    return [
+        {
+            "version": "6312695fd1834b46d3b38266a6042da2",
+            "id": "02a41332-626f-40a7-a755-94650640477b",
+            "name": "hostgroup1",
+            "host_ids": [
+                "7ab276b8-59a3-416b-8f28-191e91b4e20b",
+                "9355f65d-a8a2-4df9-8459-98a5c20725f3",
+            ],
+            "tags": [
+                "tag1",
+                "tag2"
+            ],
+            "comment": ""
+        },
+        {
+            "version": "e4b32e127683c87e14a194b6d33f04ba",
+            "id": "a43aaf85-ad1d-4ac7-9433-09992c36a29a",
+            "name": "hostgroup2",
+            "host_ids": [],
+            "tags": [],
+            "comment": ""
         },
     ]

@@ -1,0 +1,118 @@
+#################################################
+#### PREPARE
+#################################################
+
+- name: Test host group | Set host1
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: hostforgroup1
+    port_type: eth
+    auth: none
+
+- name: Test host group | Set host2
+  yadro.tatlin.tatlin_sp_host:
+    connection: "{{ connection }}"
+    name: hostforgroup2
+    port_type: eth
+    auth: none
+
+#################################################
+#### TEST 1
+#################################################
+
+- name: Test host group | Set host group
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags:
+      - tag1
+      - tag2
+    hosts:
+      - hostforgroup1
+      - hostforgroup2
+  register: result
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host group | Check host group is created
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags:
+      - tag1
+      - tag2
+    hosts:
+      - hostforgroup1
+      - hostforgroup2
+  register: result
+  check_mode: true
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+#### TEST 2
+#################################################
+
+- name: Test host group | Update tags and hosts
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags:
+      - tag2
+      - tag3
+    hosts:
+      - hostforgroup2
+  register: result
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host group | Check tags and hosts were changed
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags:
+      - tag2
+      - tag3
+    hosts:
+      - hostforgroup2
+  register: result
+  check_mode: true
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+####  TEST 3
+#################################################
+
+- name: Test host group | Reset tags and hosts
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags: []
+    hosts: []
+  register: result
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test host group | Check tags and hosts were reset
+  yadro.tatlin.tatlin_sp_host_group:
+    connection: "{{ connection }}"
+    name: testgroup
+    tags: []
+    hosts: []
+  register: result
+  check_mode: true
+
+- name: Test host group | Check state
+  assert:
+    that: "result.changed == false"

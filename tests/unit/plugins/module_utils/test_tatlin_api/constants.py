@@ -16,6 +16,7 @@ POOL_CLASS = MODELS_PACKAGE + '.pool.Pool'
 
 
 HOST_CLASS = MODELS_PACKAGE + '.host.Host'
+HOST_GROUP_CLASS = MODELS_PACKAGE + '.host_group.HostGroup'
 
 
 USER_CLASS = MODELS_PACKAGE + '.user.User'

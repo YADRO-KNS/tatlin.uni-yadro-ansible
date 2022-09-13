@@ -36,7 +36,7 @@ class TestHost:
 
         # Create host
         tatlin.create_host(
-            name='testhost',
+            name='host1',
             port_type='eth',
             ports='iqn',
             tags=['tag1', 'tag2'],
@@ -53,7 +53,7 @@ class TestHost:
             url='https://localhost/{0}'.format(
                 eps.PERSONALITIES_HOSTS_ENDPOINT),
             data={
-                'name': 'testhost',
+                'name': 'host1',
                 'port_type': 'iscsi',
                 'initiators': ['iqn'],
                 'tags': ['tag1', 'tag2'],
@@ -96,7 +96,7 @@ class TestHost:
         # Result: Error was raised
         with pytest.raises(TatlinClientError):
             tatlin.create_host(
-                name='testhost',
+                name='host1',
                 port_type='eth',
                 ports='iqn',
                 tags=['tag1', 'tag2'],
@@ -115,7 +115,7 @@ class TestHost:
 
         # Create host
         tatlin.create_host(
-            name='testhost',
+            name='host1',
             port_type='eth',
             ports='iqn',
             tags=['tag1', 'tag2'],
@@ -130,7 +130,7 @@ class TestHost:
             url='https://localhost/{0}'.format(
                 eps.PERSONALITIES_HOSTS_ENDPOINT),
             data={
-                'name': 'testhost',
+                'name': 'host1',
                 'port_type': 'iscsi',
                 'initiators': ['iqn'],
                 'tags': ['tag1', 'tag2'],
@@ -162,7 +162,7 @@ class TestHost:
         # Result: Error was raised
         with pytest.raises(TatlinClientError):
             tatlin.create_host(
-                name='testhost',
+                name='host1',
                 port_type='eth',
                 ports='iqn',
                 tags=['tag1', 'tag2'],
@@ -179,7 +179,7 @@ class TestHost:
 
         # Create host
         tatlin.create_host(
-            name='testhost',
+            name='host1',
             port_type='eth',
             ports='iqn',
             tags=['tag1', 'tag2'],
@@ -192,7 +192,7 @@ class TestHost:
             url='https://localhost/{0}'.format(
                 eps.PERSONALITIES_HOSTS_ENDPOINT),
             data={
-                'name': 'testhost',
+                'name': 'host1',
                 'port_type': 'iscsi',
                 'initiators': ['iqn'],
                 'tags': ['tag1', 'tag2'],
@@ -215,7 +215,7 @@ class TestHost:
         assert hosts[0].auth == 'mutual'
         assert hosts[0].id == '7ab276b8-59a3-416b-8f28-191e91b4e20b'
         assert hosts[0].mutual_username == 'targetname'
-        assert hosts[0].name == 'testhost'
+        assert hosts[0].name == 'host1'
         assert hosts[0].port_type == 'eth'
         assert hosts[0].ports == ['iqn.1993-08.org.debian:01:5728e30474c']
         assert hosts[0].tags == ['tag1', 'tag2']
@@ -224,7 +224,7 @@ class TestHost:
         assert hosts[1].auth == 'none'
         assert hosts[1].id == '9355f65d-a8a2-4df9-8459-98a5c20725f3'
         assert hosts[1].mutual_username is None
-        assert hosts[1].name == 'host1'
+        assert hosts[1].name == 'host2'
         assert hosts[1].port_type == 'eth'
         assert hosts[1].ports == []
         assert hosts[1].tags == ['testtag']
@@ -235,13 +235,13 @@ class TestHost:
         make_mock(OPEN_URL_FUNC, return_value=hosts_data)
 
         # Get host by name
-        host = tatlin.get_host('testhost')
+        host = tatlin.get_host('host1')
 
         # Result: host with expected parameters was returned
         assert host.auth == 'mutual'
         assert host.id == '7ab276b8-59a3-416b-8f28-191e91b4e20b'
         assert host.mutual_username == 'targetname'
-        assert host.name == 'testhost'
+        assert host.name == 'host1'
         assert host.port_type == 'eth'
         assert host.ports == ['iqn.1993-08.org.debian:01:5728e30474c']
         assert host.tags == ['tag1', 'tag2']
@@ -261,7 +261,7 @@ class TestHost:
         assert host.auth == 'mutual'
         assert host.id == '7ab276b8-59a3-416b-8f28-191e91b4e20b'
         assert host.mutual_username == 'targetname'
-        assert host.name == 'testhost'
+        assert host.name == 'host1'
         assert host.port_type == 'eth'
         assert host.ports == ['iqn.1993-08.org.debian:01:5728e30474c']
         assert host.tags == ['tag1', 'tag2']
