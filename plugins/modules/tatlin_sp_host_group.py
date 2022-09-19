@@ -111,7 +111,7 @@ class TatlinHostGroupModule(TatlinModule):
                 hosts=new_hosts,
             ))
         else:
-            new_tags = self.params['tags']
+            new_tags = self.params['tags'] or []
             old_tags = host_group.tags
             if sorted(new_tags) != sorted(old_tags):
                 actions.append(partial(
