@@ -22,7 +22,7 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 )
 
 
-class TestGroup:
+class TestUserGroup:
 
     def test_get_user_groups(self, tatlin, make_mock):
         # Mock get_groups method with 2 groups
