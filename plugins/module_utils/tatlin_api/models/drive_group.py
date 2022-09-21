@@ -33,6 +33,9 @@ class DriveGroup:
         self._client = client
         self._data = drive_group_data
 
+        self.drives = []
+        self.load_drives()
+
     @property
     def capacity_available(self):  # type: () -> int
         rv = int(self._data['availableCapacity']) \
@@ -65,15 +68,6 @@ class DriveGroup:
     def drive_capacity(self):  # type: () -> int
         rv = int(self._data['diskCapacity']) \
             if self._data.get('diskCapacity') is not None else None
-        return rv
-
-    @property
-    def drives(self):  # type: () -> List[Drive]
-        rv = []
-        for drive_data in self._data.get('disks', []):
-            rv.append(
-                Drive(client=self._client, drive_group=self, **drive_data)
-            )
         return rv
 
     @property
@@ -248,6 +242,21 @@ class DriveGroup:
             if group_data['id'] == self.id:
                 self._data = group_data
                 break
+
+        self.load_drives()
+
+    def load_drives(self):
+        self.drives = []
+        pools = self.get_pools()
+
+        for drive_data in self._data.get('disks', []):
+            drive_pool = next((
+                pool for pool in pools
+                if drive_data['id'] in pool.get_drive_ids()
+            ), None)
+
+            self.drives.append(Drive(
+                client=self._client, drive_group=self, pool=drive_pool, **drive_data))
 
     @staticmethod
     def _check_pool_capacity(pool_size, drives_count):

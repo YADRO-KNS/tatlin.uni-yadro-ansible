@@ -26,7 +26,7 @@ class DRIVE_STATUS:
 
 class Drive:
 
-    def __init__(self, client, drive_group, **drive_data):
+    def __init__(self, client, drive_group, pool, **drive_data):
         self._client = client
         self._state = drive_data['state']
         self._topology_path = drive_data['topology_path']
@@ -38,6 +38,7 @@ class Drive:
         self.serial_number = drive_data['sn']
         self.size = drive_data['size']
         self.slot = drive_data['slot']
+        self.pool = pool
 
     @property
     def bay(self):  # type: () -> str
@@ -54,13 +55,6 @@ class Drive:
         if self._state.lower() == 'warning':
             return DRIVE_STATUS.WARNING
         return DRIVE_STATUS.HEALTHY
-
-    @property
-    def pool(self):  # type: () -> Optional[Pool]
-        for pool in self.drive_group.get_pools():
-            if self in pool.drives:
-                return pool
-        return None
 
     def __eq__(self, other):
         if isinstance(other, Drive):

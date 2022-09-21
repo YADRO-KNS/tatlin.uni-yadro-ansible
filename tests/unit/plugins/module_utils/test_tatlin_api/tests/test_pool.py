@@ -163,7 +163,7 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
         make_mock(
             OPEN_URL_FUNC,
-            return_value=[drives_groups_data, pools_data],
+            return_value=[drives_groups_data, pools_data, pools_data],
             chain_calls=True,
         )
 
@@ -202,7 +202,7 @@ class TestPool:
         make_mock(POOL_CLASS + '.load')
         make_mock(
             OPEN_URL_FUNC,
-            return_value=[drives_groups_data, pools_data],
+            return_value=[drives_groups_data, pools_data, pools_data],
             chain_calls=True,
         )
 

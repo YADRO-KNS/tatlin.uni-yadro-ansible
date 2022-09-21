@@ -69,8 +69,13 @@ class Pool:
 
     @property
     def drives(self):  # type: () -> List['Drive']
+        rv = []
+
         drive_id_list = self._data.get('disks_list', [])
-        return [self.drive_group.get_drive(_id) for _id in drive_id_list]
+        for drive in self.drive_group.drives:
+            if drive.id in drive_id_list:
+                rv.append(drive)
+        return rv
 
     @property
     def id(self):  # type: () -> str
@@ -193,6 +198,9 @@ class Pool:
         raise TatlinClientError(
             'Unknown permissions: {0}'.format(permissions)
         )
+
+    def get_drive_ids(self):
+        return self._data.get('disks_list', [])
 
     def get_resource(self, name):
         # type: (str) -> Optional[Union[ResourceBlock, ResourceFile]]
