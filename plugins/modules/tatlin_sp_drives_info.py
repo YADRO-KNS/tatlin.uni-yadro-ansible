@@ -64,20 +64,7 @@ drives_info:
         "serial_number":"0450513bb2bbd68fdc7cb9f2e38d00c0",
         "slot":"4",
         "status":"Healthy",
-        "pool":{
-          "capacity_available": 301989888,
-          "capacity_failed": 0,
-          "capacity_total": 301989888,
-          "capacity_used": 0,
-          "critical_threshold": 66,
-          "name": "testpool",
-          "protection": "1+1",
-          "provision": "thin",
-          "resources_count": 0,
-          "spare_count": 1,
-          "status": "ready",
-          "warning_threshold": 65
-        },
+        "pool":"testpool"
       },
       {
         "bay":"1000000002",
@@ -135,20 +122,7 @@ class TatlinDrivesInfoModule(TatlinModule):
                     capacity=drive.size,
                     bay=drive.bay,
                     slot=drive.slot,
-                    pool={
-                        'name': drive.pool.name,
-                        'provision': drive.pool.provision,
-                        'status': drive.pool.status,
-                        'resources_count': len(drive.pool.resources),
-                        'capacity_total': drive.pool.capacity_total,
-                        'capacity_available': drive.pool.capacity_available,
-                        'capacity_used': drive.pool.capacity_used,
-                        'capacity_failed': drive.pool.capacity_failed,
-                        'protection': drive.pool.protection,
-                        'spare_count': drive.pool.spare_count,
-                        'warning_threshold': drive.pool.warning_threshold,
-                        'critical_threshold': drive.pool.critical_threshold,
-                    } if drive.pool is not None else None,
+                    pool=drive.pool.name if drive.pool is not None else None,
                 ) for drive in group.drives],
             })
 
