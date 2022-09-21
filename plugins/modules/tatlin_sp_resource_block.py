@@ -263,7 +263,7 @@ class TatlinResourceBlockModule(TatlinModule):
         )
 
     def run(self):
-        task_id = None
+        task = None
         pool = self.tatlin.get_pool(self.params['pool'])
 
         if pool is None:
@@ -304,7 +304,7 @@ class TatlinResourceBlockModule(TatlinModule):
             host_groups = self.get_requested_host_groups()
 
             if not self.check_mode:
-                task_id = pool.create_resource_block(
+                task = pool.create_resource_block(
                     name=missing_name,
                     size=self.params['size'],
                     size_format=self.params['size_format'],
@@ -318,8 +318,8 @@ class TatlinResourceBlockModule(TatlinModule):
                 )
             self.changed = True
 
-        if self.params['wait'] and task_id is not None:
-            self.wait_for_task_completion(task_id)
+        if self.params['wait'] and task is not None:
+            self.wait_for_task_completion(task)
 
         if self.changed:
             result_msg = 'Operation successful'
@@ -560,10 +560,8 @@ class TatlinResourceBlockModule(TatlinModule):
                         new_value=new_size_format),
             )
 
-    def wait_for_task_completion(self, task_id):
-        task = self.tatlin.get_task(task_id)
+    def wait_for_task_completion(self, task):
         start_time = time.time()
-
         while task.state != 'done':
             if time.time() - start_time > self.params['wait_timeout']:
                 self.fail_json(

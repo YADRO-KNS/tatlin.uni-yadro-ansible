@@ -13,6 +13,7 @@ import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoint
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
     ResourceBase, ResourceBlock, ResourceFile, RESOURCE_TYPE,
 )
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
 
@@ -133,7 +134,7 @@ class Pool:
         ports=None,  # type: List['models.port.Port']
         hosts=None,  # type: List['models.host.Host']
         host_groups=None,  # type: List['models.host_group.HostGroup']
-    ):  # type: (...) -> int
+    ):  # type: (...) -> Task
 
         if isinstance(size, str):
             size = to_bytes(size)
@@ -185,7 +186,7 @@ class Pool:
             }
         ).json
 
-        return task_data['id']
+        return Task(client=self._client, **task_data)
 
     @staticmethod
     def _get_permissions_for_request(permissions):
