@@ -49,6 +49,13 @@ class HostGroup:
     def tags(self):  # type: () -> List[str]
         return self._data.get('tags') or []
 
+    def get_resources(self):  # type: () -> List
+        rv = []
+        for resource in self._client.get_resources():
+            if self in resource.host_groups:
+                rv.append(resource)
+        return rv
+
     def load(self):  # type: () -> None
         self._data = self._client.get(
             '{ep}/{id}'.format(

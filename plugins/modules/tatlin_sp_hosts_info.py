@@ -37,14 +37,16 @@ hosts_info:
     "name":"newhost",
     "port_type":"eth",
     "ports":["some_iqn1", "some_iqn2"],
-    "tags":["tag1", "tag2"]
+    "tags":["tag1", "tag2"],
+    "resources": ["resource1", "resource2"]
   },
   {
     "auth":null,
     "name":"another_host",
     "port_type":"fc",
     "ports":[],
-    "tags":["tag3", "tag4"]
+    "tags":["tag3", "tag4"],
+    "resources": ["resource1", "resource2"]
   }
 ]
 """
@@ -75,6 +77,7 @@ class TatlinHostsInfoModule(TatlinModule):
             'auth': host.auth,
             'ports': host.ports,
             'tags': host.tags,
+            'resources': [r.name for r in host.get_resources()],
         } for host in self.tatlin.get_hosts()]
 
         self.exit_json(

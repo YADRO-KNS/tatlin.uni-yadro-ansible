@@ -256,7 +256,11 @@ class DriveGroup:
             ), None)
 
             self.drives.append(Drive(
-                client=self._client, drive_group=self, pool=drive_pool, **drive_data))
+                client=self._client,
+                drive_group=self,
+                pool=drive_pool,
+                **drive_data
+            ))
 
     @staticmethod
     def _check_pool_capacity(pool_size, drives_count):

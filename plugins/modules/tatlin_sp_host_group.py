@@ -89,7 +89,6 @@ class TatlinHostGroupModule(TatlinModule):
             'name': {'type': 'str', 'required': True},
             'tags': {'type': 'list', 'elements': 'str', 'required': False},
             'hosts': {'type': 'list', 'elements': 'str', 'required': False},
-            # TODO: Resources
         }
 
         super(TatlinHostGroupModule, self).__init__(

@@ -64,6 +64,13 @@ class Host:
     def username(self):  # type: () -> str
         return self._data.get('auth', {}).get('internal_name')
 
+    def get_resources(self):  # type: () -> List
+        rv = []
+        for resource in self._client.get_resources():
+            if self in resource.hosts:
+                rv.append(resource)
+        return rv
+
     def load(self):  # type: () -> None
         self._data = self._client.get(
             '{ep}/{id}'.format(

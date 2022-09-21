@@ -40,7 +40,8 @@ host_groups_info:
         "name": "group_info_host",
         "port_type": "eth",
         "ports": [],
-        "tags": ["tag1", "tag2"]
+        "tags": ["tag1", "tag2"],
+        "resources": ["resource1", "resource2"]
       }]
     }
   ]
@@ -69,6 +70,7 @@ class TatlinHostGroupsInfoModule(TatlinModule):
         host_groups_info = [{
             'name': host_group.name,
             'tags': host_group.tags,
+            'resources': [r.name for r in host_group.get_resources()],
             'hosts': [{
                 'name': host.name,
                 'port_type': host.port_type,
@@ -76,7 +78,6 @@ class TatlinHostGroupsInfoModule(TatlinModule):
                 'ports': host.ports,
                 'tags': host.tags,
             } for host in host_group.hosts],
-            # TODO: Resources
         } for host_group in self.tatlin.get_host_groups()]
 
         self.exit_json(
