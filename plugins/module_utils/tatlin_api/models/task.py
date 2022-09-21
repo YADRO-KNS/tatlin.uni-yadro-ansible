@@ -9,7 +9,9 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+import time
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinTaskError
 
 
 class Task:
@@ -39,6 +41,24 @@ class Task:
         self._data = self._client.get('{0}/{1}'.format(
             eps.DASHBOARD_TASKS_ENDPOINT, self.id
         )).json
+
+    def wait_until_complete(self, timeout=120):  # type: (int) -> None
+        start_time = time.time()
+        while self.state != 'done':
+            if time.time() - start_time > timeout:
+                raise TimeoutError(
+                    'Task has not done state for {0} seconds'.format(timeout),
+                )
+
+            time.sleep(0.1)
+            self.load()
+
+            if self.state in ('error', 'aborting', 'aborted'):
+                if self.state == 'error':
+                    msg = 'Tatlin task was finished with error state'
+                else:
+                    msg = self.err_msg
+                raise TatlinTaskError(msg)
 
     def __eq__(self, other):
         if isinstance(other, Task):

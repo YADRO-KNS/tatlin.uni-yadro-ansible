@@ -210,7 +210,6 @@ EXAMPLES = r"""
 """
 
 
-import time
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
 
@@ -561,31 +560,14 @@ class TatlinResourceBlockModule(TatlinModule):
             )
 
     def wait_for_task_completion(self, task):
-        start_time = time.time()
-        while task.state != 'done':
-            if time.time() - start_time > self.params['wait_timeout']:
-                self.fail_json(
-                    changed=True,
-                    error='Timeout error',
-                    msg='Task has not done state for {0} seconds'.format(
-                        self.params['wait_timeout'],
-                    ),
-                )
-
-            time.sleep(1)
-            task.load()
-
-            if task.state in ('error', 'aborting', 'aborted'):
-                if task.state == 'error':
-                    msg = 'Tatlin task was finished with error state'
-                else:
-                    msg = task.err_msg
-
-                self.fail_json(
-                    changed=True,
-                    error='Tatlin task error',
-                    msg=msg,
-                )
+        try:
+            task.wait_until_complete(timeout=self.params['wait_timeout'])
+        except Exception as e:
+            self.fail_json(
+                changed=True,
+                error=type(e).__name__,
+                msg=str(e),
+            )
 
     def _get_host_groups(self):
         if self._host_groups is None:

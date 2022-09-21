@@ -69,7 +69,7 @@ class TestResource:
         )
 
         # Create resources
-        task_id = pool.create_resource_block(
+        task = pool.create_resource_block(
             name='new_resource',
             size='10 MiB',
             size_format='4kn',
@@ -152,7 +152,7 @@ class TestResource:
         open_url_mock.assert_has_calls(calls=calls, any_order=True)
 
         # Result: Expected task_id was returned
-        assert task_id == 1
+        assert task.id == 1
 
     # TODO: Add file resource to data
     def test_get_resources(
