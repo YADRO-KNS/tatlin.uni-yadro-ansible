@@ -312,3 +312,10 @@
 - name: Test get tatlin info | Check syslog info
   assert:
     that: tatlin_info.syslog == exp_syslog_info
+
+- name: Test get tatlin info | Check system state
+  assert:
+    that:
+      - tatlin_info.state_security in ['OK', 'WARNING', 'ERROR']
+      - tatlin_info.state_storage in ['OK', 'WARNING', 'ERROR']
+      - tatlin_info.state_hardware in ['OK', 'WARNING', 'ERROR']

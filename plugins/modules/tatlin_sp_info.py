@@ -110,7 +110,10 @@ tatlin_info:
                       "protocol":"udp",
                       "facility":10,
                       "severity":"critical",
-                      "audit":false}]}
+                      "audit":false}]},
+   "state_security": "WARNING",
+   "state_storage": "ERROR",
+   "state_hardware": "OK"
 }
 """
 
@@ -134,6 +137,8 @@ class TatlinInfoModule(TatlinModule):
         )
 
     def run(self):
+        system_state = self.tatlin.get_system_state()
+
         tatlin_info = {
             'system_name': self.tatlin.system_name,
             'system_version': self.tatlin.system_version,
@@ -144,6 +149,9 @@ class TatlinInfoModule(TatlinModule):
             'smtp': self.get_smtp_info(),
             'dns': self.get_dns_info(),
             'syslog': self.get_syslog_info(),
+            'state_security': system_state['security'],
+            'state_storage': system_state['storage'],
+            'state_hardware': system_state['hardware'],
         }
 
         self.exit_json(

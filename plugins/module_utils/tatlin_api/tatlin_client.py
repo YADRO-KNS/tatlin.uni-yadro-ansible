@@ -383,6 +383,43 @@ class TatlinClient(RestClient):
     def get_syslog_config(self):  # type: () -> SyslogConfig
         return SyslogConfig(client=self)
 
+    def get_system_state(self):  # type: () -> Dict
+        ok_state = 'OK'
+        warning_state = 'WARNING'
+        error_state = 'ERROR'
+
+        rv = {
+            'security': ok_state,
+            'storage': ok_state,
+            'hardware': ok_state,
+        }
+
+        cluster_check = self.get(eps.HEALTH_CLUSTER_CHECK_ENDPOINT).json
+
+        security_warnings = cluster_check['security']['warnings']
+        storage_errors = cluster_check['storage']['errors']
+        hardware_warnings = cluster_check['hardware']['warnings']
+        hardware_errors = cluster_check['hardware']['errors']
+
+        if any([
+            security_warnings['adminPassDefault'],
+            security_warnings['discoverySettingsAreUnsafe'],
+            security_warnings['hostsAuthSettingsAreUnsafe'],
+        ]):
+            rv['security'] = warning_state
+
+        # Storage warnings are skipped in tatlin-cli,
+        # so they are skipped here too
+        if len(storage_errors) > 0:
+            rv['storage'] = error_state
+
+        if len(hardware_errors) > 0:
+            rv['hardware'] = error_state
+        elif len(hardware_warnings) > 0:
+            rv['hardware'] = warning_state
+
+        return rv
+
     def get_task(self, task_id):  # type: (int) -> Task
         task_data = self.get('{0}/{1}'.format(
             eps.DASHBOARD_TASKS_ENDPOINT, task_id
