@@ -5,7 +5,7 @@
     name: tatlin_sp_pools_info
     protection: '1+1'
     provision: 'thin'
-    size: 192 MiB
+    size: 352 MiB
     spare_count: 1
     stripe_size: 4KiB
     warning_threshold: 65
@@ -82,7 +82,7 @@
       - pool_info.provision == 'thin'
       - pool_info.status == 'ready'
       - pool_info.resources_count == 2
-      - pool_info.capacity_total == 201326592
+      - pool_info.capacity_total == 369098752
       - pool_info.capacity_available > 0
       - pool_info.capacity_used > 0
       - pool_info.capacity_failed == 0

@@ -13,7 +13,7 @@
     name: pool_for_block_resources1
     protection: '1+1'
     provision: 'thin'
-    size: 192 MiB
+    size: 880 MiB
     spare_count: 1
     stripe_size: 4KiB
 
@@ -24,7 +24,7 @@
     name: pool_for_block_resources2
     protection: '1+1'
     provision: 'thick'
-    size: 192 MiB
+    size: 880 MiB
     spare_count: 1
     stripe_size: 4KiB
 
