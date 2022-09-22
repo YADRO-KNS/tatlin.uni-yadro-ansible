@@ -1,0 +1,37 @@
+---
+#################################################
+#### PREPARE
+#################################################
+
+- name: Test subnets info | Ensure that subnet exists
+  yadro.tatlin.tatlin_sp_subnet:
+    connection: "{{ connection }}"
+    name: tatlin_sp_subnets_info
+    ip_start: '100.100.100.100'
+    ip_end: '100.100.100.102'
+
+#################################################
+#### TEST
+#################################################
+
+- name: Test subnets info | Get subnets info
+  yadro.tatlin.tatlin_sp_subnets_info:
+    connection: "{{ connection }}"
+  register: result
+
+- set_fact:
+    subnet_info: "{{ result.subnets_info 
+      | selectattr('name','equalto', 'tatlin_sp_subnets_info') 
+      | list 
+      | last }}"
+
+- name: Test subnets info | Show fact subnet info
+  debug:
+    msg:
+      - "Fact subnet info: {{ subnet_info }}"
+
+- name: Test subnets info | Check recieved subnet info
+  assert:
+    that:
+      - subnet_info.name == 'tatlin_sp_subnets_info'
+      - subnet_info.ip_range == '100.100.100.100-100.100.100.102'
