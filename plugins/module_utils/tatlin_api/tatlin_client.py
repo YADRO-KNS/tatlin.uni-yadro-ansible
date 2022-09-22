@@ -11,6 +11,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from base64 import b64encode
+from uuid import uuid4
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ldap import LdapConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
@@ -27,6 +28,7 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.res
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.subnet import Subnet
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import get_iscsi_auth_for_request
@@ -184,6 +186,19 @@ class TatlinClient(RestClient):
 
         new_host_group = HostGroup(client=self, **host_group_data)
         return new_host_group
+
+    def create_subnet(self, name, ip_start, ip_end):
+        # type: (str, str, str) -> Task
+        task_data = self.put(
+            path=eps.DASHBOARD_SUBNETS_ENDPOINT + '/create',
+            body={
+                'id': str(uuid4()),
+                'name': name,
+                'ips': [ip_start, ip_end],
+            }
+        ).json
+
+        return Task(client=self, **task_data)
 
     def create_user(
         self,
@@ -351,6 +366,19 @@ class TatlinClient(RestClient):
 
     def get_snmp_config(self):  # type: () -> SnmpConfig
         return SnmpConfig(client=self)
+
+    def get_subnet(self, name):  # type: (str) -> Optional[Subnet]
+        for subnet in self.get_subnets():
+            if subnet.name == name:
+                return subnet
+        return None
+
+    def get_subnets(self):  # type: () -> List[Subnet]
+        rv = []
+        subnets_data = self.get(eps.PERSONALITIES_SUBNETS_ENDPOINT).json
+        for subnet_data in subnets_data:
+            rv.append(Subnet(client=self, **subnet_data))
+        return rv
 
     def get_syslog_config(self):  # type: () -> SyslogConfig
         return SyslogConfig(client=self)

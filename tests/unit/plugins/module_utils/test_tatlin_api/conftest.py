@@ -367,3 +367,23 @@ def host_groups_data():
             "comment": ""
         },
     ]
+
+
+@pytest.fixture
+def subnets_data():
+    return [
+        {"version": "2",
+         "id": "1",
+         "name": "subnet1",
+         "comment": "",
+         "tags": None,
+         "resources": None,
+         "ips": ["1.1.1.1", "2.2.2.2"]},
+        {"version": "2",
+         "id": "2",
+         "name": "subnet2",
+         "comment": "",
+         "tags": None,
+         "resources": None,
+         "ips": ["8.8.8.8", "9.9.9.9"]}
+    ]

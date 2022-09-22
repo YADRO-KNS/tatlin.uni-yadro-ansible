@@ -14,11 +14,12 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: tatlin_sp_resource_block
-short_description: Create or modify a resource
+short_description: Create or modify a block resource
 version_added: "1.0.0"
 description:
-  - This module is intended to create new resource and
-    change existing resource
+  - This module is intended to create new resource/resources and
+    change existing resource/resources
+  - Multiple resources can be created at once with I(name_template)
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
