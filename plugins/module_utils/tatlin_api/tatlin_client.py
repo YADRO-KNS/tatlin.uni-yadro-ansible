@@ -502,6 +502,7 @@ class TatlinClient(RestClient):
     def logout(self):  # type: () -> None
         if self._token:
             self.post(LOGOUT_PATH)
+            self._token = None
 
     def reboot_node(self, name):  # type: (str) -> None
         try:

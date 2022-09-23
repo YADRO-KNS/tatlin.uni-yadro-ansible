@@ -85,6 +85,13 @@ class TatlinModule(AnsibleModule):
 
         try:
             self.tatlin.authorize()
+        except Exception as e:
+            self.fail_json(
+                msg='Authorization failed',
+                error='{0}: {1}'.format(type(e).__name__, e),
+            )
+
+        try:
             self.run()
         except Exception as e:
             self.fail_json(
@@ -94,3 +101,19 @@ class TatlinModule(AnsibleModule):
 
     def run(self):  # type: () -> None
         raise NotImplementedError('Method not implemented!')
+
+    def exit_json(self, **kwargs):
+        self._logout()
+        super(TatlinModule, self).exit_json(**kwargs)
+
+    def fail_json(self, **kwargs):
+        self._logout()
+        super(TatlinModule, self).fail_json(**kwargs)
+
+    def _logout(self):
+        try:
+            self.tatlin.logout()
+        except Exception as e:
+            self.warn(
+                'Logout failed. {0}: {1}'.format(type(e).__name__, e)
+            )
