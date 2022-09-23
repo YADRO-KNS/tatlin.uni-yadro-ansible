@@ -16,6 +16,7 @@ except ImportError:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinAuthorizationError
 
 
 class TatlinModule(AnsibleModule):
@@ -85,14 +86,12 @@ class TatlinModule(AnsibleModule):
 
         try:
             self.tatlin.authorize()
-        except Exception as e:
+            self.run()
+        except TatlinAuthorizationError as e:
             self.fail_json(
                 msg='Authorization failed',
                 error='{0}: {1}'.format(type(e).__name__, e),
             )
-
-        try:
-            self.run()
         except Exception as e:
             self.fail_json(
                 msg='Operation failed',

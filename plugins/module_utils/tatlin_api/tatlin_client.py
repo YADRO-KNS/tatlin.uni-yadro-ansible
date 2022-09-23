@@ -105,16 +105,21 @@ class TatlinClient(RestClient):
                     'No login path was passed for session authorization'
                 )
 
-            response = self.post(
-                self._login_path,
-                body={'name': self._username, 'secret': self._password},
-            ).json
+            try:
+                response = self.post(
+                    self._login_path,
+                    body={'name': self._username, 'secret': self._password},
+                ).json
+            except Exception as e:
+                raise TatlinAuthorizationError('{0}: {1}'.format(
+                    type(e).__name__, str(e)
+                ))
 
             self._token = response['token']
         elif not self._auth_method:
             pass
         else:
-            raise TatlinClientError(
+            raise TatlinAuthorizationError(
                 'Unrecognized authentication method ' + auth_method,
             )
 
