@@ -102,6 +102,11 @@ options:
         and thresholds
       - C(absent) removes existing pool. Only pool without
         resources can be removed
+  wait_timeout:
+    type: int
+    required: False
+    default: 60
+    description: The number of seconds for waiting until pool will be ready
 notes:
   - Fact pool size may differ from C(size) value. Real size will be returned
     by module
@@ -209,6 +214,7 @@ class TatlinPoolModule(TatlinModule):
                 'default': 'present',
                 'choices': ['present', 'absent'],
             },
+            'wait_timeout': {'type': 'int', 'required': False, 'default': 60},
         }
 
         super(TatlinPoolModule, self).__init__(
@@ -435,7 +441,7 @@ class TatlinPoolModule(TatlinModule):
         while not pool.is_ready() or pool.is_resizing():
             time.sleep(1)
 
-            if time.time() - start_time > 60:
+            if time.time() - start_time > self.params['wait_timeout']:
                 self.fail_json(
                     changed=False,
                     error='Timeout error',

@@ -41,9 +41,11 @@ subnets_info:
   returned: on success
   sample: [
     {"name": "example_subnet1",
-     "ip_range": "192.168.0.11-192.168.0.20"},
+     "ip_range": "192.168.0.11-192.168.0.20",
+     "resources": ["example_resource1", "example_resource2"]},
     {"name": "example_subnet2",
-     "ip_range": "192.168.0.21-192.168.0.30"}
+     "ip_range": "192.168.0.21-192.168.0.30",
+     "resources": []}
   ]
 """
 
@@ -69,8 +71,8 @@ class TatlinSubnetsInfoModule(TatlinModule):
     def run(self):
         subnets_info = [{
             'name': subnet.name,
-            'ip_range': '{0}-{1}'.format(subnet.ip_start, subnet.ip_end)
-            # TODO: Add resources
+            'ip_range': '{0}-{1}'.format(subnet.ip_start, subnet.ip_end),
+            'resources': [resource.name for resource in subnet.resources],
         } for subnet in self.tatlin.get_subnets()]
 
         self.exit_json(

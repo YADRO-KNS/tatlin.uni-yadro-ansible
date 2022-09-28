@@ -379,6 +379,8 @@ class TatlinClient(RestClient):
         return None
 
     def get_subnets(self):  # type: () -> List[Subnet]
+        Subnet.clear_cache()
+
         rv = []
         subnets_data = self.get(eps.PERSONALITIES_SUBNETS_ENDPOINT).json
         for subnet_data in subnets_data:

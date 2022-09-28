@@ -9,12 +9,15 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+    TatlinClientError,
+    WrongResourceNameTemplate,
+)
 
 try:
-    from typing import Dict
+    from typing import Dict, List
 except ImportError:
-    Dict = None
+    Dict = List = None
 
 
 ISCSI_AUTH_TYPES = ('none', 'oneway', 'mutual')
@@ -91,3 +94,49 @@ def get_iscsi_auth_for_request(
                   external_password=mutual_password)
 
     return rv
+
+
+def get_resource_name_suffixes(name_template):  # type: (str) -> List[str]
+    if name_template is None:
+        return ['']
+
+    rv = []
+
+    sub_templates = name_template.split(',')
+    for sub_template in sub_templates:
+        parts = sub_template.split('-')  # '1-3'/'1' -> ['1','3']/['1']
+        if len(parts) < 2:
+            parts *= 2  # ['1','3']/['1'] -> ['1','3']/['1','1']
+
+        start, end = parts[:2]  # ['1','3']/['1','1'] -> ('1','3')/('1','1')
+
+        try:
+            suffix_range = range(int(start), int(end) + 1)
+        except ValueError:
+            raise WrongResourceNameTemplate(
+                'There is an error in resource name template'
+            )
+
+        for i in suffix_range:
+            rv.append(str(i))
+
+    return sorted(rv, key=int)
+
+
+def generate_resource_name_template(suffixes):  # type: (List[str]) -> str
+    template = ''
+
+    for i, current_suffix in enumerate(suffixes):
+        is_last = i == len(suffixes) - 1
+        if is_last:
+            template += current_suffix
+        else:
+            next_suffix = suffixes[i + 1]
+            last_symbol = template[-1] if template else ''
+
+            if int(next_suffix) - int(current_suffix) == 1 and last_symbol != '-':
+                template += current_suffix + '-'
+            elif int(next_suffix) - int(current_suffix) > 1:
+                template += current_suffix + ','
+
+    return template

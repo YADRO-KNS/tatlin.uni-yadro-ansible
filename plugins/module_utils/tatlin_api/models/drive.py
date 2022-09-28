@@ -9,9 +9,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
-
 try:
     from typing import List, Dict, Optional
 except ImportError:

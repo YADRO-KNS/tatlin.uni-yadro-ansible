@@ -55,7 +55,8 @@ class Task:
 
             if self.state in ('error', 'aborting', 'aborted'):
                 if self.state == 'error':
-                    msg = 'Tatlin task was finished with error state'
+                    msg = 'Tatlin task {0} was finished ' \
+                          'with error state'.format(self.id)
                 else:
                     msg = self.err_msg
                 raise TatlinTaskError(msg)

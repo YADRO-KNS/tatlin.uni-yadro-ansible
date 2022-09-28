@@ -18,7 +18,7 @@
     port_type: eth
     auth: none
 
-- name: Test resource block | Ensure host_group1 exists
+- name: Test pools info | Ensure host_group1 exists
   yadro.tatlin.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: tatlin_sp_pools_info_host_group
@@ -42,7 +42,7 @@
     host_groups:
       - tatlin_sp_pools_info_host_group
 
-- name: Test get tatlin pools info | Get tatlin pools info
+- name: Test pools info | Get tatlin pools info
   yadro.tatlin.tatlin_sp_pools_info:
     connection: "{{ connection }}"
   until: "{{ result.pools_info
@@ -70,12 +70,12 @@
       | list 
       | last }}"
 
-- name: Test get tatlin pools info | Show fact pools info
+- name: Test pools info | Show fact pools info
   debug:
     msg:
       - "Fact pool info: {{ pool_info }}"
 
-- name: Test get tatlin pools info | Check received pool info
+- name: Test pools info | Check received pool info
   assert:
     that:
       - pool_info.name == 'tatlin_sp_pools_info'
@@ -92,7 +92,7 @@
       - pool_info.warning_threshold == 65
       - pool_info.critical_threshold == 66
 
-- name: Test get tatlin pools info | Check received resource1 info
+- name: Test pools info | Check received resource1 info
   assert:
     that:
       - fact_resource_info1.name == 'tatlin_sp_pools_info_resource1'

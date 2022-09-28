@@ -158,7 +158,7 @@ def pools_data():
 def resources_data():
     return [{
         "id": "c66dbc61-6e79-425b-b2ae-e396fd06ee68",
-        "name": "test_resource1",
+        "name": "test_block_resource1",
         "type": "block",
         "poolId": "28118216-74eb-4ba2-8e01-be894b878de1",
         "volume_id": "pty-vol-c66dbc61-6e79-425b-b2ae-e396fd06ee68",
@@ -200,7 +200,7 @@ def resources_data():
     },
         {
         "id": "48a75120-e8f9-42e7-8c42-2282047b4e3b",
-        "name": "test_resource2",
+        "name": "test_block_resource2",
         "type": "block",
         "poolId": "28118216-74eb-4ba2-8e01-be894b878de1",
         "volume_id": "pty-vol-48a75120-e8f9-42e7-8c42-2282047b4e3b",
@@ -230,6 +230,54 @@ def resources_data():
             "is_enabled": False
         },
         "ptyId": "48a75120-e8f9-42e7-8c42-2282047b4e3b"
+    },
+        {
+        "id": "4eae68d3-d793-4e08-972a-b64132e21f66",
+        "name": "test_file_resource1",
+        "type": "nfs",
+        "poolId": "28118216-74eb-4ba2-8e01-be894b878de1",
+        "volume_id": "blk-4eae68d3-d793-4e08-972a-b64132e21f66",
+        "size": 104857600,
+        "maxModifySize": 0,
+        "status": "ready",
+        "state": "running",
+        "min_limit_iops": 10,
+        "min_limit_bw": 10485760,
+        "stat": {
+            "used_capacity": 10485760,
+            "mapped_blocks": 0,
+            "dedup_count": 0,
+            "reduction_ratio": 0
+        },
+        "cached": "true",
+        "rCacheMode": "enabled",
+        "wCacheMode": "enabled",
+        "available_ports_number": 8,
+        "ptyId": "4eae68d3-d793-4e08-972a-b64132e21f66"
+    },
+        {
+        "id": "187ca049-e0cd-4cd8-ac85-0c478a1f915a",
+        "name": "test_file_resource2",
+        "type": "cifs",
+        "poolId": "28118216-74eb-4ba2-8e01-be894b878de1",
+        "volume_id": "blk-187ca049-e0cd-4cd8-ac85-0c478a1f915a",
+        "size": 104857600,
+        "maxModifySize": 0,
+        "status": "ready",
+        "state": "running",
+        "min_limit_iops": 10,
+        "min_limit_bw": 10485760,
+        "stat": {
+            "used_capacity": 5242880,
+            "mapped_blocks": 0,
+            "dedup_count": 0,
+            "reduction_ratio": 0
+        },
+        "cached": "true",
+        "rCacheMode": "disabled",
+        "wCacheMode": "disabled",
+        "available_ports_number": 8,
+        "ptyId": "187ca049-e0cd-4cd8-ac85-0c478a1f915a"
     }]
 
 

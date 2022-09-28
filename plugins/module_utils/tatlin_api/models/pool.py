@@ -9,6 +9,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from uuid import uuid4
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
     ResourceBase, ResourceBlock, ResourceFile, RESOURCE_TYPE,
@@ -18,9 +19,9 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
 
 try:
-    from typing import List, Union, Dict, Optional, TYPE_CHECKING
+    from typing import List, Union, Dict, Tuple, Optional, TYPE_CHECKING
 except ImportError:
-    List = Union = Dict = Optional = TYPE_CHECKING = None
+    List = Union = Dict = Tuple = Optional = TYPE_CHECKING = None
 
 if TYPE_CHECKING:
     from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api import models
@@ -188,17 +189,117 @@ class Pool:
 
         return Task(client=self._client, **task_data)
 
-    @staticmethod
-    def _get_permissions_for_request(permissions):
-        # type: (str) -> List[str]
-        if permissions == 'r':
-            return ['read']
-        elif permissions == 'rw':
-            return ['read', 'write']
+    def create_resource_file(
+        self,
+        name,  # type: str
+        resource_type,  # type: str
+        size,  # type: Union[int, str]
+        name_template=None,  # type: str
+        read_cache=True,  # type: bool
+        write_cache=True,  # type: bool
+        ports=None,  # type: List['models.port.Port']
+        subnets=None,  # type: List['models.subnet.Subnet']
+        users=None,  # type: List[Tuple['models.user.User', str]]
+        user_groups=None,  # type: List[Tuple['models.user_group.UserGroup', str]]
+    ):  # type: (...) -> Task
+        """
+        users: List of tuples containing two elements: (user, permission).
+            Allowed permissions: 'r' - read, 'rw' - 'read/write'
+        user_groups: List of tuples containing two elements:
+            (user_group, permission).
+            Allowed permissions: 'r' - read, 'rw' - 'read/write'
+        """
 
-        raise TatlinClientError(
-            'Unknown permissions: {0}'.format(permissions)
-        )
+        if resource_type not in (RESOURCE_TYPE.NFS, RESOURCE_TYPE.CIFS):
+            raise TatlinClientError(
+                'Unknown file resource type: {0}'.format(resource_type)
+            )
+
+        if isinstance(size, str):
+            size = to_bytes(size)
+
+        acl = []
+
+        if users is not None:
+            ResourceFile.validate_users(users)
+
+            for user, permissions in users:
+                acl.append({
+                    'principal': {'kind': 'user', 'name': user.name},
+                    'permissions': ResourceFile.get_permissions_for_request(
+                        permissions)
+                })
+
+        if user_groups is not None:
+            ResourceFile.validate_user_groups(user_groups)
+
+            for group, permissions in user_groups:
+                acl.append({
+                    'principal': {'kind': 'group', 'name': group.name},
+                    'permissions': ResourceFile.get_permissions_for_request(
+                        permissions)
+                })
+
+        port_names = None
+        if ports is not None:
+            port_names = [{'port': port.name} for port in ports]
+
+        subnet_ids = None
+        if subnets is not None:
+            subnet_ids = [subnet.id for subnet in subnets]
+
+        if self._file_resource_legacy():
+            return self._create_file_resource_legacy(
+                name=name,
+                name_template=name_template,
+                resource_type=resource_type,
+                size=size,
+                read_cache=read_cache,
+                write_cache=write_cache,
+                port_names=port_names,
+                acl=acl,
+                subnet_ids=subnet_ids,
+            )
+
+        resource_names = self._client.post(
+            path=eps.DASHBOARD_RESOURCES_ENDPOINT + '/file/create',
+            body={
+                'bulk_params': {
+                    'names': None,
+                    'templates': [{
+                        'nameTemplate': name,
+                        'params': name_template,
+                    }],
+                },
+                'type': resource_type,
+                'poolId': self.id,
+                'size': size,
+                'cached': 'true',
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'ports': port_names,
+                'acl': acl or None,
+                'subnets': subnet_ids,
+            }
+        ).json
+
+        task_data = self._client.put(
+            path=eps.DASHBOARD_RESOURCES_ENDPOINT + '/file/create',
+            body={
+                'bulk_params': {'names': resource_names},
+                'type': resource_type,
+                'poolId': self.id,
+                'size': size,
+                'cached': 'true',
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'ports': port_names,
+                'acl': acl or None,
+                'subnets': subnet_ids,
+            }
+        ).json
+
+        return Task(client=self._client, **task_data)
 
     def get_drive_ids(self):
         return self._data.get('disks_list', [])
@@ -315,6 +416,47 @@ class Pool:
 
         self._client.put(self._ep + '/alerts', body=req_body)
         self.load()
+
+    def _file_resource_legacy(self):  # type: () -> bool
+        """Tatlin 2.6 does not support bulk file resources creation"""
+        major, minor = self._client.system_version.split('.')[:2]
+        return (int(major), int(minor)) < (2, 7)
+
+    def _create_file_resource_legacy(
+        self,
+        name,  # type: str
+        name_template,  # type: Union[str, None]
+        resource_type,  # type: str
+        size,  # type: int
+        read_cache,  # type: bool
+        write_cache,  # type: bool
+        port_names,  # type: List[str]
+        acl,  # type: List[Dict]
+        subnet_ids,  # type: List[str]
+    ):  # type(...) -> Task
+        if name_template is not None:
+            raise TatlinClientError(
+                'Bulk resource creation is not allowed for Tatlin <= 2.6'
+            )
+
+        task_data = self._client.put(
+            path=eps.DASHBOARD_RESOURCES_ENDPOINT + '/file/create',
+            body={
+                'id': str(uuid4()),
+                'name': name,
+                'type': resource_type,
+                'poolId': self.id,
+                'size': size,
+                'cached': 'true',
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'ports': port_names,
+                'acl': acl or None,
+                'subnets': subnet_ids,
+            }
+        ).json
+
+        return Task(client=self._client, **task_data)
 
     def __eq__(self, other):
         if isinstance(other, Pool):

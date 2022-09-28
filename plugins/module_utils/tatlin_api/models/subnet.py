@@ -21,6 +21,12 @@ except ImportError:
 
 class Subnet:
 
+    _cache = {}
+
+    @classmethod
+    def clear_cache(cls):
+        cls._cache = {}
+
     def __init__(self, client, **data):
         self._client = client
         self._data = data
@@ -52,11 +58,28 @@ class Subnet:
     def name(self):  # type: () -> str
         return self._data.get('name')
 
+    @property
+    def resources(self):  # type: () -> List['models.resource.Resource']
+        rv = []
+
+        resources = self._cache.get('resources')
+        if resources is None:
+            resources = self._cache['resources'] = \
+                self._client.get_resources()
+
+        for resource in resources:
+            if resource.id in (self._data['resources'] or []):
+                rv.append(resource)
+
+        return rv
+
     def load(self):  # type: () -> None
         self._data.get('{ep}/{id}'.format(
             ep=eps.PERSONALITIES_SUBNETS_ENDPOINT,
             id=self.id,
         ))
+
+        self.clear_cache()
 
     def update(self, ip_start=None, ip_end=None):  # type: (str, str) -> Task
         task_data = self._client.put(

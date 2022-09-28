@@ -48,3 +48,7 @@ class TatlinAuthorizationError(Exception):
 
 class TatlinTaskError(Exception):
     pass
+
+
+class WrongResourceNameTemplate(Exception):
+    pass

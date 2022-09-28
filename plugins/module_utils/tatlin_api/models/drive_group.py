@@ -229,7 +229,7 @@ class DriveGroup:
         if drives_count:
             path += '&disks={0}'.format(drives_count)
 
-        if spare_count:
+        if spare_count is not None:
             path += '&spare={0}'.format(spare_count)
 
         real_size = self._client.get(path).json

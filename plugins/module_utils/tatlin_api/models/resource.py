@@ -12,11 +12,12 @@ __metaclass__ = type
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
+from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
 
 try:
-    from typing import List, Dict, Union, TYPE_CHECKING
+    from typing import List, Dict, Tuple, Union, TYPE_CHECKING
 except ImportError:
-    List = Dict = Union = TYPE_CHECKING = None
+    List = Dict = Tuple = Union = TYPE_CHECKING = None
 
 if TYPE_CHECKING:
     from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api import models
@@ -161,6 +162,10 @@ class ResourceBlock(ResourceBase):
             all_hosts = self._cache['hosts'] = self._client.get_hosts()
 
         return [host for host in all_hosts if host.id in mapped_host_ids]
+
+    @property
+    def subnets(self):  # type: () -> List
+        return []
 
     @property
     def users(self):  # type: () -> List
@@ -360,6 +365,20 @@ class ResourceFile(ResourceBase):
         return []
 
     @property
+    def subnets(self):  # type: () -> List['models.subnet.Subnet']
+        rv = []
+
+        all_subnets = self._cache.get('subnets')
+        if all_subnets is None:
+            all_subnets = self._cache['subnets'] = self._client.get_subnets()
+
+        for subnet in all_subnets:
+            if self in subnet.resources:
+                rv.append(subnet)
+
+        return rv
+
+    @property
     def users(self):  # type: () -> List['models.user.User']
         rv = []
 
@@ -413,6 +432,164 @@ class ResourceFile(ResourceBase):
                 rv.append(group)
 
         return rv
+
+    def get_user_permissions(self, user):
+        # type: ('models.user.User') -> str
+
+        for item in self._data['acl']:
+            if item['principal']['kind'] == 'user' \
+                    and item['principal']['name'] == user.name:
+                if {'read', 'write'} == set(item['permissions']):
+                    return 'rw'
+                elif ['read'] == item['permissions']:
+                    return 'r'
+
+                raise TatlinClientError(
+                    'Unexpected permissions for user {0}'.format(
+                        user.name,
+                    )
+                )
+
+        raise TatlinClientError(
+            'User {0} does not belong to resource {1}'.format(
+                user.name, self.name,
+            )
+        )
+
+    def get_user_group_permissions(self, group):
+        # type: ('models.user_group.UserGroup') -> str
+
+        for item in self._data['acl']:
+            if item['principal']['kind'] == 'group' \
+                    and item['principal']['name'] == group.name:
+                if {'read', 'write'} == set(item['permissions']):
+                    return 'rw'
+                elif ['read'] == item['permissions']:
+                    return 'r'
+
+                raise TatlinClientError(
+                    'Unexpected permissions for user group {0}'.format(
+                        group.name,
+                    )
+                )
+
+        raise TatlinClientError(
+            'User group {0} does not belong to resource {1}'.format(
+                group.name, self.name,
+            )
+        )
+
+    def load(self):  # type: () -> None
+        self._data = self._client.get('{ep}/file/{id}'.format(
+            ep=eps.PERSONALITIES_ENDPOINT,
+            id=self.id,
+        )).json
+
+    def update(
+        self,
+        read_cache=None,  # type: bool
+        write_cache=None,  # type: bool
+        ports=None,  # type: List['models.port.Port']
+        subnets=None,  # type: List['models.subnet.Subnet']
+        users=None,  # type: List[Tuple['models.user.User', str]]
+        user_groups=None,  # type: List[Tuple['models.user_group.UserGroup', str]]
+    ):  # type: (...) -> Task
+
+        ports = ports if ports is not None else self.ports
+        subnets = subnets if subnets is not None else self.subnets
+        read_cache = read_cache if read_cache is not None else self.read_cache
+        write_cache = write_cache \
+            if write_cache is not None else self.write_cache
+
+        acl = []
+
+        if users is not None:
+            self.validate_users(users)
+
+            for user, permissions in users:
+                acl.append({
+                    'principal': {'kind': 'user', 'name': user.name},
+                    'permissions': self.get_permissions_for_request(
+                        permissions)
+                })
+        else:
+            for item in self._data['acl']:
+                if item['principal']['kind'] == 'user':
+                    acl.append(item)
+
+        if user_groups is not None:
+            self.validate_user_groups(user_groups)
+
+            for group, permissions in user_groups:
+                acl.append({
+                    'principal': {'kind': 'group', 'name': group.name},
+                    'permissions': self.get_permissions_for_request(
+                        permissions)
+                })
+        else:
+            for item in self._data['acl']:
+                if item['principal']['kind'] == 'group':
+                    acl.append(item)
+
+        task_data = self._client.put(
+            path='{ep}/file/update/{id}'.format(
+                ep=eps.DASHBOARD_RESOURCES_ENDPOINT,
+                id=self.id,
+            ),
+            body={
+                'id': self.id,
+                'rCacheMode': 'enabled' if read_cache else 'disabled',
+                'wCacheMode': 'enabled' if write_cache else 'disabled',
+                'ports': [{'port': port.name} for port in ports],
+                'subnets': [subnet.id for subnet in subnets],
+                'acl': acl,
+            },
+        ).json
+
+        self.load()
+        self.clear_cache()
+
+        return Task(client=self._client, **task_data)
+
+    @staticmethod
+    def get_permissions_for_request(permissions):
+        # type: (str) -> List[str]
+        if permissions == 'r':
+            return ['read']
+        elif permissions == 'rw':
+            return ['read', 'write']
+
+        raise TatlinClientError(
+            'Unknown permissions: {0}'.format(permissions)
+        )
+
+    @staticmethod
+    def validate_users(users):
+        for user in users:
+            if not any([
+                isinstance(user, tuple),
+                len(user) != 2,
+                type(user[0]).__name__ != 'User',
+                isinstance(user[1], str),
+            ]):
+                raise TatlinClientError(
+                    'users argument must be a list of tuples '
+                    'with two elements: (User, str)'
+                )
+
+    @staticmethod
+    def validate_user_groups(groups):
+        for group in groups:
+            if not any([
+                isinstance(group, tuple),
+                len(group) != 2,
+                type(group[0]).__name__ != 'UserGroup',
+                isinstance(group[1], str),
+            ]):
+                raise TatlinClientError(
+                    'user_groups argument must be a list of tuples '
+                    'with two elements: (User, str)'
+                )
 
     def __eq__(self, other):
         if isinstance(other, ResourceFile):
