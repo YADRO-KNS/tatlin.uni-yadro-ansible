@@ -32,7 +32,7 @@
     ip_end: '22.22.22.22'
 
 - name: Test resource file | Ensure user_group exists
-  yadro.tatlin.tatlin_sp_group:
+  yadro.tatlin.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources1
     parent_groups:

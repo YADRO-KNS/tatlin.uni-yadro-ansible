@@ -46,21 +46,21 @@
     ip_end: '66.66.66.66'
 
 - name: Test resource file | Ensure user_group1 exists
-  yadro.tatlin.tatlin_sp_group:
+  yadro.tatlin.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources1
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user_group2 exists
-  yadro.tatlin.tatlin_sp_group:
+  yadro.tatlin.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources2
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user_group3 exists
-  yadro.tatlin.tatlin_sp_group:
+  yadro.tatlin.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources3
     parent_groups:
