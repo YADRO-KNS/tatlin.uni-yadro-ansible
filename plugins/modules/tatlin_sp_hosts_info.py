@@ -26,6 +26,14 @@ extends_documentation_fragment:
 
 RETURN = r"""
 ---
+msg:
+  type: str
+  returned: always
+  description: Operation status message
+error:
+  type: str
+  returned: on error
+  description: Error details if raised
 hosts_info:
   type: list
   elements: dict

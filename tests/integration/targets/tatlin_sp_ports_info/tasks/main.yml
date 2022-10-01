@@ -53,8 +53,8 @@
   register: result
 
 - set_fact:
-    p00: "{{ result.data_ports.p00 }}"
-    p01: "{{ result.data_ports.p01 }}"
+    p00: "{{ result.ports_info.p00 }}"
+    p01: "{{ result.ports_info.p01 }}"
 
 #################################################
 #### Checking port p00

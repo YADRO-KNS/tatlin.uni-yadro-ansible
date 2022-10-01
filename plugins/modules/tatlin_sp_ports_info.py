@@ -34,7 +34,7 @@ error:
   type: str
   returned: on error
   description: Error details if raised
-data_ports:
+ports_info:
   type: dict
   description: Details of the data ports
   returned: on success
@@ -120,7 +120,7 @@ class TatlinPortInfoModule(TatlinModule):
 
         self.exit_json(
             msg="Operation successful.",
-            data_ports=ports_info,
+            ports_info=ports_info,
             changed=False,
         )
 
