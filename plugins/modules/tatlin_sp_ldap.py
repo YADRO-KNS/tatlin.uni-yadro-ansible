@@ -158,6 +158,7 @@ EXAMPLES = r"""
 """
 
 
+from io import open
 from functools import partial
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
 
