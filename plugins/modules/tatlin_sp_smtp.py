@@ -85,8 +85,8 @@ EXAMPLES = r"""
     connection: "{{ connection }}"
     address: 127.0.0.1
     port: 25
-    login: admin
-    password: ***REMOVED***
+    login: user
+    password: userpass
     sender: smtp@example.com
     state: present
     recipients:

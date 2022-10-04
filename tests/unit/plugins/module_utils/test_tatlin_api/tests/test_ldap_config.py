@@ -77,7 +77,7 @@ class TestLdapConfig:
             host='127.0.0.1',
             port=636,
             lookup_user='LookupUser',
-            lookup_password='***REMOVED***',
+            lookup_password='LookupPassword',
             base_dn='dc=yadro,dc=com',
             search_filter='(memberof=cn=TestUsers,dc=yadro,dc=com)',
             encryption='tls',
@@ -106,7 +106,7 @@ class TestLdapConfig:
             'host': '127.0.0.1',
             'port': '636',
             'lookUpUserName': 'LookupUser',
-            'lookUpUserPwd': '***REMOVED***',
+            'lookUpUserPwd': 'LookupPassword',
             'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
             'baseDn': 'dc=yadro,dc=com',
             'attrLogin': 'sAMAccountName',
@@ -140,7 +140,7 @@ class TestLdapConfig:
 
         # Update search filter for LDAP
         ldap_config.update(
-            lookup_password='***REMOVED***',
+            lookup_password='LookupPassword',
             search_filter='(memberof=cn=TestUsers,dc=yadro,dc=com)',
             cert='testcert',
         )
@@ -164,7 +164,7 @@ class TestLdapConfig:
             'host': '127.0.0.1',
             'port': '636',
             'lookUpUserName': 'LookupUser',
-            'lookUpUserPwd': '***REMOVED***',
+            'lookUpUserPwd': 'LookupPassword',
             'usersFilter': '(memberof=cn=TestUsers,dc=yadro,dc=com)',
             'baseDn': 'dc=yadro,dc=com',
             'attrLogin': 'sAMAccountName',

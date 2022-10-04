@@ -10,8 +10,8 @@
     address: 127.0.0.1
     port: 25
     encryption: tls
-    login: admin
-    password: ***REMOVED***
+    login: user
+    password: userpass
     sender: test@example.com
     recipients:
       - first@recipient.com
@@ -29,8 +29,8 @@
     address: 127.0.0.1
     port: 25
     encryption: tls
-    login: admin
-    password: ***REMOVED***
+    login: user
+    password: userpass
     sender: test@example.com
     recipients:
       - first@recipient.com
@@ -48,8 +48,8 @@
     connection: "{{ connection }}"
     address: 127.0.0.1
     port: 25
-    login: admin
-    password: ***REMOVED***
+    login: user
+    password: userpass
     sender: smtp@example.com
     state: present
   register: result

@@ -13,7 +13,6 @@ import pytest
 import json
 from ansible_collections.yadro.tatlin.tests.unit.compat.mock import MagicMock
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import NodeAddress
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
 
 
@@ -300,20 +299,20 @@ def ports_data():
                  "replication_role": False},
              "params": {
                  "mtu": 1500,
-                 "gateway": "***REMOVED***",
+                 "gateway": "192.168.0.1",
                  "nodes": {
-                     "sp-0": [{"ipaddress": "***REMOVED***",
+                     "sp-0": [{"ipaddress": "192.168.0.2",
                                "netmask": "24",
                                "status": "online",
                                "ipaddressid": "mgmt0-ip-static-cfg-instance_attributes-ipaddress-1"
                                },
                               ],
-                     "sp-1": [{"ipaddress": "***REMOVED***",
+                     "sp-1": [{"ipaddress": "192.168.0.3",
                                "netmask": "24",
                                "status": "online",
                                "ipaddressid": "mgmt1-ip-static-cfg-instance_attributes-ipaddress-2"
                                }]},
-                 "failover": [{"ipaddress": "***REMOVED***",
+                 "failover": [{"ipaddress": "192.168.0.4",
                                "netmask": "24"}]}},
             {"id": "p10",
              "meta": {
@@ -326,26 +325,6 @@ def ports_data():
                  "nodes": {"sp-0": [], "sp-1": []},
                  "failover": None}},
             ]
-
-
-@pytest.fixture
-def exp_addrs_sp0():
-    return [NodeAddress(
-        ip='***REMOVED***',
-        mask='24',
-        address_id='mgmt0-ip-static-cfg-instance_attributes-ipaddress-1',
-        status='online',
-    )]
-
-
-@pytest.fixture
-def exp_addrs_sp1():
-    return [NodeAddress(
-        ip='***REMOVED***',
-        mask='24',
-        address_id='mgmt1-ip-static-cfg-instance_attributes-ipaddress-2',
-        status='online',
-    )]
 
 
 @pytest.fixture

@@ -10,9 +10,7 @@ license:
 license_file: COPYING
 tags: []
 dependencies: {}
-repository: empty
-documentation: empty
-homepage: empty
-issues: empty
-build_ignore:
-  - '.*'
+repository: TODO
+documentation: TODO
+homepage: TODO
+issues: TODO

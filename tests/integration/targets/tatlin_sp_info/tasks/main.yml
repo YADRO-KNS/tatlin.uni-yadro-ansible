@@ -43,8 +43,8 @@
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
-    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
-    lookup_password: ***REMOVED***
+    lookup_user: cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ansible_test
     base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
     search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
     encryption: off
@@ -73,8 +73,8 @@
     address: 127.0.0.1
     port: 25
     encryption: tls
-    login: admin
-    password: ***REMOVED***
+    login: user
+    password: userpass
     sender: smtp@example.com
     recipients:
       - first@recipient.com
@@ -161,7 +161,7 @@
     exp_ldap_info: {
       host: "{{ ldap_host }}",
       port: "389",
-      lookup_user: "cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com",
+      lookup_user: "cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com",
       base_dn: "dc=testldap,dc=spb,dc=yadro,dc=com",
       search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)",
       encryption: "off",
@@ -179,7 +179,7 @@
     exp_smtp_info: {
       address: "127.0.0.1",
       port: 25,
-      login: "admin",
+      login: "user",
       encryption: "tls",
       sender: "smtp@example.com",
       recipients: ["first@recipient.com", "second@recipient.com"]

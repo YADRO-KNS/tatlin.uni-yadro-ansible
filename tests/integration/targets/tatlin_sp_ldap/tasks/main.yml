@@ -10,8 +10,8 @@
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
-    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
-    lookup_password: ***REMOVED***
+    lookup_user: cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ansible_test
     base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
     search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
     encryption: off
@@ -29,8 +29,8 @@
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
-    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
-    lookup_password: ***REMOVED***
+    lookup_user: cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ansible_test
     base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
     search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
     encryption: off
@@ -64,7 +64,7 @@
 - name: Test ldap config | Enable ssl encryption
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
-    lookup_password: ***REMOVED***
+    lookup_password: ansible_test
     encryption: ssl
     port: 636
     crt_path: "{{ role_path }}/ca.crt"
@@ -77,7 +77,7 @@
 - name: Test ldap config | Enable tls encryption
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
-    lookup_password: ***REMOVED***
+    lookup_password: ansible_test
     encryption: tls
     port: 389
     crt_content: "{{ cert_info.cert }}"
@@ -90,7 +90,7 @@
 - name: Test ldap config | Change filter
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
-    lookup_password: ***REMOVED***
+    lookup_password: ansible_test
     search_filter: (uid=*)
     crt_path: "{{ role_path }}/ca.crt"
   register: result
@@ -102,7 +102,7 @@
 - name: Test ldap config | Check filter and encryption updated
   yadro.tatlin.tatlin_sp_ldap:
     connection: "{{ connection }}"
-    lookup_password: ***REMOVED***
+    lookup_password: ansible_test
     search_filter: (uid=*)
   check_mode: true
   register: result
@@ -116,8 +116,8 @@
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
-    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
-    lookup_password: ***REMOVED***
+    lookup_user: cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ansible_test
     base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
     search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
     encryption: off
@@ -138,8 +138,8 @@
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
-    lookup_user: cn=admin,dc=testldap,dc=spb,dc=yadro,dc=com
-    lookup_password: ***REMOVED***
+    lookup_user: cn=ansible_test,dc=testldap,dc=spb,dc=yadro,dc=com
+    lookup_password: ansible_test
     base_dn: dc=testldap,dc=spb,dc=yadro,dc=com
     search_filter: "(memberof=cn=Tatlin Users,dc=testldap,dc=spb,dc=yadro,dc=com)"
     encryption: off

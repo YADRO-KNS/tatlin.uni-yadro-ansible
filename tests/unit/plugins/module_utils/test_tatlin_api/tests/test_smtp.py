@@ -31,7 +31,7 @@ class TestSmtp:
                 'host': '127.0.0.1',
                 'port': 25,
                 'protocol': '',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -48,7 +48,7 @@ class TestSmtp:
             'address': '127.0.0.1',
             'port': 25,
             'encryption': 'off',
-            'login': 'admin',
+            'login': 'user',
             'sender': 'smtp@example.com',
             'recipients': ['first@recipients.com', 'second@recipients.com'],
         }
@@ -86,7 +86,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': 'tls',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -104,7 +104,7 @@ class TestSmtp:
             'address': 'example.com',
             'port': 587,
             'encryption': 'tls',
-            'login': 'admin',
+            'login': 'user',
             'sender': 'smtp@example.com',
             'recipients': [
                 'first@recipients.com',
@@ -121,7 +121,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': 'tls',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -188,7 +188,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': init_protocol,
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -233,7 +233,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': 'tls',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -267,7 +267,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': 'tls',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -306,7 +306,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': '',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},
@@ -356,7 +356,7 @@ class TestSmtp:
                 'host': 'example.com',
                 'port': 587,
                 'protocol': '',
-                'login': {'username': 'admin', 'password': '***REMOVED***'},
+                'login': {'username': 'user', 'password': 'userpass'},
                 'sender_email': 'smtp@example.com',
                 'recipients': {
                     'first@recipients.com': {},

@@ -18,9 +18,29 @@ from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatli
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import (
-    get_ip_and_mask, get_ip, Port, Node, VirtualAddress, ChangedHost)
+    get_ip_and_mask, get_ip, Port, Node, VirtualAddress, ChangedHost, NodeAddress)
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     RESTClientConnectionError, TatlinClientError)
+
+
+@pytest.fixture
+def exp_addrs_sp0():
+    return [NodeAddress(
+        ip='192.168.0.2',
+        mask='24',
+        address_id='mgmt0-ip-static-cfg-instance_attributes-ipaddress-1',
+        status='online',
+    )]
+
+
+@pytest.fixture
+def exp_addrs_sp1():
+    return [NodeAddress(
+        ip='192.168.0.3',
+        mask='24',
+        address_id='mgmt1-ip-static-cfg-instance_attributes-ipaddress-2',
+        status='online',
+    )]
 
 
 def get_addrs_for_request(*addresses):
@@ -103,13 +123,13 @@ class TestPort:
              'virtual_address': None},
             {'name': 'mgmt',
              'type': 'ip',
-             'gateway': '***REMOVED***',
+             'gateway': '192.168.0.1',
              'mtu': 1500,
              'nodes': {
                  "sp-0": Node(tatlin, mgmt_port, 'sp-0', exp_addrs_sp0),
                  "sp-1": Node(tatlin, mgmt_port, 'sp-1', exp_addrs_sp1),
              },
-             'virtual_address': VirtualAddress(ip='***REMOVED***', mask='24')}
+             'virtual_address': VirtualAddress(ip='192.168.0.4', mask='24')}
         ]
 
         # Result: Ports with expected params was returned
@@ -148,12 +168,12 @@ class TestPort:
         expected_ports = [
             {'name': 'mgmt',
              'type': 'ip',
-             'gateway': '***REMOVED***',
+             'gateway': '192.168.0.1',
              'mtu': 1500,
              'nodes': {
                  "sp-0": Node(tatlin, mgmt_port, 'sp-0', exp_addrs_sp0),
                  "sp-1": Node(tatlin, mgmt_port, 'sp-1', exp_addrs_sp1)},
-             'virtual_address': VirtualAddress(ip='***REMOVED***', mask='24')}
+             'virtual_address': VirtualAddress(ip='192.168.0.4', mask='24')}
         ]
 
         # Result: Port with expected params was returned
@@ -239,12 +259,12 @@ class TestPort:
         expected_port = {
             'name': 'mgmt',
             'type': 'ip',
-            'gateway': '***REMOVED***',
+            'gateway': '192.168.0.1',
             'mtu': 1500,
             'nodes': {
                 "sp-0": Node(tatlin, port, 'sp-0', exp_addrs_sp0),
                 "sp-1": Node(tatlin, port, 'sp-1', exp_addrs_sp1)},
-            'virtual_address': VirtualAddress(ip='***REMOVED***', mask='24'),
+            'virtual_address': VirtualAddress(ip='192.168.0.4', mask='24'),
         }
 
         # Result: Port has expected attributes
