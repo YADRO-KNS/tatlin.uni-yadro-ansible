@@ -20,7 +20,12 @@ except ImportError:
     List = Dict = Tuple = Union = TYPE_CHECKING = None
 
 if TYPE_CHECKING:
-    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api import models
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host_group import HostGroup
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host import Host
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.subnet import Subnet
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 
 
 class RESOURCE_TYPE:
@@ -89,7 +94,7 @@ class ResourceBase:
         return self._data['wCacheMode'] == 'enabled'
 
     @property
-    def ports(self):  # type: () -> List['models.port.Port']
+    def ports(self):  # type: () -> List['Port']
         rv = []
 
         self_port_names = [
@@ -128,7 +133,7 @@ class ResourceBlock(ResourceBase):
 
     @property
     def host_groups(self):
-        # type: () -> List['models.host_group.HostGroup']
+        # type: () -> List['HostGroup']
 
         mapping = self._get_resources_mapping()
         mapped_group_ids = set()
@@ -147,7 +152,7 @@ class ResourceBlock(ResourceBase):
         return [group for group in all_groups if group.id in mapped_group_ids]
 
     @property
-    def hosts(self):  # type: () -> List['models.host.Host']
+    def hosts(self):  # type: () -> List['Host']
         mapping = self._get_resources_mapping()
         mapped_host_ids = set()
 
@@ -187,9 +192,9 @@ class ResourceBlock(ResourceBase):
         read_cache=None,  # type: bool
         write_cache=None,  # type: bool
         warning_threshold=None,  # type: int
-        ports=None,  # type: List['models.port.Port']
-        hosts=None,  # type: List['models.host.Host']
-        host_groups=None,  # type: List['models.host_group.HostGroup']
+        ports=None,  # type: List['Port']
+        hosts=None,  # type: List['Host']
+        host_groups=None,  # type: List['HostGroup']
     ):  # type: (...) -> None
 
         if size is not None and isinstance(size, str):
@@ -231,7 +236,7 @@ class ResourceBlock(ResourceBase):
         self.clear_cache()
 
     def _set_host_groups(self, host_groups):
-        # type: (List['models.host_group.HostGroup']) -> None
+        # type: (List['HostGroup']) -> None
 
         desired_group_names = [group.name for group in host_groups]
         self_group_names = [group.name for group in self.host_groups]
@@ -268,7 +273,7 @@ class ResourceBlock(ResourceBase):
             )
 
     def _set_hosts(self, hosts):
-        # type: (List['models.host.Host']) -> None
+        # type: (List['Host']) -> None
 
         desired_host_names = [host.name for host in hosts]
         self_host_names = [host.name for host in self.hosts]
@@ -305,7 +310,7 @@ class ResourceBlock(ResourceBase):
             )
 
     def _set_ports(self, ports):
-        # type: (List['models.port.Port']) -> None
+        # type: (List['Port']) -> None
 
         desired_port_names = [port.name for port in ports]
         self_port_names = [
@@ -365,7 +370,7 @@ class ResourceFile(ResourceBase):
         return []
 
     @property
-    def subnets(self):  # type: () -> List['models.subnet.Subnet']
+    def subnets(self):  # type: () -> List['Subnet']
         rv = []
 
         all_subnets = self._cache.get('subnets')
@@ -379,7 +384,7 @@ class ResourceFile(ResourceBase):
         return rv
 
     @property
-    def users(self):  # type: () -> List['models.user.User']
+    def users(self):  # type: () -> List['User']
         rv = []
 
         all_users = self._cache.get('users')
@@ -406,7 +411,7 @@ class ResourceFile(ResourceBase):
 
     @property
     def user_groups(self):
-        # type: () -> List['models.user_group.UserGroup']
+        # type: () -> List['UserGroup']
 
         rv = []
 
@@ -434,7 +439,7 @@ class ResourceFile(ResourceBase):
         return rv
 
     def get_user_permissions(self, user):
-        # type: ('models.user.User') -> str
+        # type: ('User') -> str
 
         for item in self._data['acl']:
             if item['principal']['kind'] == 'user' \
@@ -457,7 +462,7 @@ class ResourceFile(ResourceBase):
         )
 
     def get_user_group_permissions(self, group):
-        # type: ('models.user_group.UserGroup') -> str
+        # type: ('UserGroup') -> str
 
         for item in self._data['acl']:
             if item['principal']['kind'] == 'group' \
@@ -489,10 +494,10 @@ class ResourceFile(ResourceBase):
         self,
         read_cache=None,  # type: bool
         write_cache=None,  # type: bool
-        ports=None,  # type: List['models.port.Port']
-        subnets=None,  # type: List['models.subnet.Subnet']
-        users=None,  # type: List[Tuple['models.user.User', str]]
-        user_groups=None,  # type: List[Tuple['models.user_group.UserGroup', str]]
+        ports=None,  # type: List['Port']
+        subnets=None,  # type: List['Subnet']
+        users=None,  # type: List[Tuple['User', str]]
+        user_groups=None,  # type: List[Tuple['UserGroup', str]]
     ):  # type: (...) -> Task
 
         ports = ports if ports is not None else self.ports

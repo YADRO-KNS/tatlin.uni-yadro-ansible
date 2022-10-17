@@ -12,7 +12,10 @@ __metaclass__ = type
 from uuid import uuid4
 import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
-    ResourceBase, ResourceBlock, ResourceFile, RESOURCE_TYPE,
+    ResourceBase,
+    ResourceBlock,
+    ResourceFile,
+    RESOURCE_TYPE,
 )
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
@@ -24,7 +27,11 @@ except ImportError:
     List = Union = Dict = Tuple = Optional = TYPE_CHECKING = None
 
 if TYPE_CHECKING:
-    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api import models
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host import Host
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host_group import HostGroup
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
+    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 
 
 class PROVISION_TYPE:
@@ -132,9 +139,9 @@ class Pool:
         read_cache=True,  # type: bool
         write_cache=True,  # type: bool
         warning_threshold=None,  # type: int
-        ports=None,  # type: List['models.port.Port']
-        hosts=None,  # type: List['models.host.Host']
-        host_groups=None,  # type: List['models.host_group.HostGroup']
+        ports=None,  # type: List['Port']
+        hosts=None,  # type: List['Host']
+        host_groups=None,  # type: List['HostGroup']
     ):  # type: (...) -> Task
 
         if isinstance(size, str):
@@ -197,10 +204,10 @@ class Pool:
         name_template=None,  # type: str
         read_cache=True,  # type: bool
         write_cache=True,  # type: bool
-        ports=None,  # type: List['models.port.Port']
-        subnets=None,  # type: List['models.subnet.Subnet']
-        users=None,  # type: List[Tuple['models.user.User', str]]
-        user_groups=None,  # type: List[Tuple['models.user_group.UserGroup', str]]
+        ports=None,  # type: List['Port']
+        subnets=None,  # type: List['Subnet']
+        users=None,  # type: List[Tuple['User', str]]
+        user_groups=None,  # type: List[Tuple['UserGroup', str]]
     ):  # type: (...) -> Task
         """
         users: List of tuples containing two elements: (user, permission).
