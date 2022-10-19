@@ -9,6 +9,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from ansible.module_utils.six import PY3
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import CERTIFICATE_ENDPOINT
 from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
 
@@ -32,23 +33,35 @@ class TestSslCertificate:
         # Check that header is correct
         assert content_type is not None, \
             'Not found Content-Type in request headers'
-        assert 'boundary="' in content_type, \
+        assert 'boundary=' in content_type, \
             'Not found boundary in Content-Type'
 
         # Get boundary
-        boundary = content_type.split('boundary="')[1][:-1]
+        boundary = content_type.split('boundary=')[1]
 
         # Define expected data
-        data = \
-            '--{boundary}\r\n' \
-            'Content-Type: application/octet-stream\r\n' \
-            'Content-Disposition: form-data; ' \
-            'name="crt"; filename="crt"\r\n\r\ncrt_content\r\n' \
-            '--{boundary}' \
-            '\r\nContent-Type: application/octet-stream\r\n' \
-            'Content-Disposition: form-data; ' \
-            'name="key"; filename="key"\r\n\r\nkey_content\r\n' \
-            '--{boundary}--\r\n'.format(boundary=boundary).encode()
+        if PY3:
+            data = \
+                '--{boundary}\r\n' \
+                'Content-Type: application/octet-stream\r\n' \
+                'Content-Disposition: form-data; ' \
+                'name="crt"; filename="crt"\r\n\r\ncrt_content\r\n' \
+                '--{boundary}' \
+                '\r\nContent-Type: application/octet-stream\r\n' \
+                'Content-Disposition: form-data; ' \
+                'name="key"; filename="key"\r\n\r\nkey_content\r\n' \
+                '--{boundary}--\r\n'.format(boundary=boundary).encode()
+        else:
+            data = \
+                '--{boundary}\r\n' \
+                'Content-Type: application/octet-stream\r\n' \
+                'Content-Disposition: form-data; ' \
+                'name="key"; filename="key"\r\n\r\nkey_content\r\n' \
+                '--{boundary}' \
+                '\r\nContent-Type: application/octet-stream\r\n' \
+                'Content-Disposition: form-data; ' \
+                'name="crt"; filename="crt"\r\n\r\ncrt_content\r\n' \
+                '--{boundary}--\r\n'.format(boundary=boundary).encode()
 
         # Defining expected call parameters
         open_url_kwargs.update(
@@ -56,7 +69,7 @@ class TestSslCertificate:
             url='https://localhost/{0}'.format(
                 CERTIFICATE_ENDPOINT),
             data=data,
-            headers={'Content-Type': 'multipart/form-data; boundary="{boundary}"'.format(boundary=boundary)},
+            headers={'Content-Type': 'multipart/form-data; boundary={boundary}'.format(boundary=boundary)},
         )
 
         # Result: Request with expected parameters was sent to tatlin

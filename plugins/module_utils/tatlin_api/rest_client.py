@@ -10,11 +10,18 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 try:
-    from typing import Dict, Union
+    from typing import Dict, Union, Tuple
 except ImportError:
     # Satisfy Python 2 which doesn't have typing.
-    Dict = Union = None
+    Dict = Union = Tuple = None
 
+import json
+from uuid import uuid4
+from ansible.module_utils.urls import open_url
+from ansible.module_utils.six.moves.urllib.parse import urlencode
+from ansible.module_utils.six.moves.http_client import HTTPResponse
+from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
+from ansible.module_utils.urls import ConnectionError, SSLValidationError
 from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
     RESTClientError,
     RESTClientNotFoundError,
@@ -23,13 +30,6 @@ from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception 
     RESTClientUnauthorized,
     RESTClientBadRequest,
 )
-
-import json
-from ansible.module_utils.urls import open_url, prepare_multipart
-from ansible.module_utils.six.moves.urllib.parse import urlencode
-from ansible.module_utils.six.moves.http_client import HTTPResponse
-from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
-from ansible.module_utils.urls import ConnectionError, SSLValidationError
 
 
 def build_url(base, path, query_params=None):  # type: (str, str, Dict) -> str
@@ -88,7 +88,7 @@ class RestClient:
         query_params=None,  # type: Dict
         body=None,  # type: Union[Dict, bytes]
         headers=None,  # type: Dict
-        files=None,  # type: Dict
+        files=None,  # type: Dict[str, bytes]
     ):  # type: (...) -> RestResponse
 
         request_kwargs = {
@@ -107,11 +107,8 @@ class RestClient:
             )
 
         if files:
-            prepared_files = {}
-            for name, file in files.items():
-                prepared_files[name] = {'filename': name, 'content': file}
-            content_type, request_body = prepare_multipart(prepared_files)
-            request_kwargs["headers"]["Content-Type"] = content_type
+            content_type, request_body = prepare_multipart(files)
+            request_kwargs['headers']['Content-Type'] = content_type
         elif body:
             if isinstance(body, dict) or isinstance(body, list):
                 request_kwargs["headers"]["Content-Type"] = "application/json"
@@ -225,3 +222,31 @@ class RestResponse:
     @property
     def is_success(self):  # type: () -> bool
         return self.status_code in (200, 201, 202, 204)
+
+
+def prepare_multipart(files):
+    # type: (Dict[str, Union[str, bytes]]) -> Tuple[str, bytes]
+
+    boundary = str(uuid4())
+    content_type = 'application/octet-stream'
+    parts = []
+
+    for filename, content in files.items():
+        content_disposition = \
+            'Content-Disposition: form-data; name="{filename}"; ' \
+            'filename="{filename}"'.format(filename=filename)
+
+        parts.extend([
+            '--{0}'.format(boundary),
+            'Content-Type: {0}'.format(content_type),
+            content_disposition,
+            '',
+            '\r\n'.join(content.splitlines()),
+        ])
+
+    parts.extend(['--{0}--'.format(boundary), ''])
+
+    return (
+        'multipart/form-data; boundary=%s' % boundary,
+        bytes('\r\n'.join(parts).encode('utf-8'))
+    )
