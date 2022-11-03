@@ -238,6 +238,14 @@ class TatlinPoolModule(TatlinModule):
         actions = []
         real_size = None
         drive_group = self.tatlin.get_drive_group(self.params['drive_group'])
+        if drive_group is None:
+            self.fail_json(
+                changed=False,
+                error='Drive group not found',
+                msg='Drive group {0} does not exist'.format(
+                    self.params['drive_group']),
+            )
+
         pool = drive_group.get_pool(self.params['name'])
 
         if self.params['state'] == 'present':

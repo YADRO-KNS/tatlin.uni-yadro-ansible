@@ -9,7 +9,7 @@
 - name: Test resource block | Ensure pool1 exists
   yadro.tatlin.tatlin_sp_pool:
     connection: "{{ connection }}"
-    drive_group: HDD_209.71MB
+    drive_group: HDD_218.1MB
     name: pool_for_block_resources1
     protection: '1+1'
     provision: 'thin'
@@ -20,7 +20,7 @@
 - name: Test resource block | Ensure pool2 exists
   yadro.tatlin.tatlin_sp_pool:
     connection: "{{ connection }}"
-    drive_group: HDD_209.71MB
+    drive_group: HDD_218.1MB
     name: pool_for_block_resources2
     protection: '1+1'
     provision: 'thick'

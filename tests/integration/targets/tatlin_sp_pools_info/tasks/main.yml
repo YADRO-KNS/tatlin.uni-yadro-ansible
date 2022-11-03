@@ -1,7 +1,7 @@
 - name: Test pools info | Ensure pool exists
   yadro.tatlin.tatlin_sp_pool:
     connection: "{{ connection }}"
-    drive_group: HDD_209.71MB
+    drive_group: HDD_218.1MB
     name: tatlin_sp_pools_info
     protection: '1+1'
     provision: 'thin'
