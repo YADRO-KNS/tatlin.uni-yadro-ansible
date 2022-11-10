@@ -39,12 +39,14 @@ options:
       - The groups of the user that restrict user permissions.
       - Required when creating a new user
   enabled:
+    required: False
     type: bool
     description:
       - Indication of whether a user is enabled
-      - Required when creating a new user
       - C(true) if the user is enabled, the user can log in
       - C(false) if the user is disabled, the user cannot log in
+      - If new user is created and I(enabled) not passed,
+        C(true) is a default value
   state:
     type: str
     choices: [present, absent]
@@ -147,12 +149,18 @@ class TatlinUserModule(TatlinModule):
 
             else:  # creation
                 self._check_creating_params()
+
+                if self.params['enabled'] is None:
+                    enabled = self.params['enabled']
+                else:
+                    enabled = True
+
                 action = partial(
                     self.tatlin.create_user,
                     name=self.params['name'],
                     password=self.params['password'],
                     groups=self.params['groups'],
-                    enabled=self.params['enabled'],
+                    enabled=enabled,
                 )
         else:
             if user_exists:
@@ -168,7 +176,7 @@ class TatlinUserModule(TatlinModule):
 
     def _check_creating_params(self):
         missed_args = []
-        for arg in ['password', 'groups', 'enabled']:
+        for arg in ('password', 'groups'):
             if self.params[arg] is None:
                 missed_args.append(arg)
 

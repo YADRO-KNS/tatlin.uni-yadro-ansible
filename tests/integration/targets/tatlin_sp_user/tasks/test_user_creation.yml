@@ -9,11 +9,17 @@
     name: TestUser
     state: absent
 
+- name: Test user creation | Ensure TestUser2 is absent
+  yadro.tatlin.tatlin_sp_user:
+    connection: "{{ connection }}"
+    name: TestUser
+    state: absent
+
 #################################################
-# Test
+# Test 1
 #################################################
 
-- name: Test user creation | Create user
+- name: Test user creation with optional params | Create user
   yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
@@ -23,11 +29,11 @@
       - admin
   register: result
 
-- name: Test user creation | Check state
+- name:  Test user creation with optional params | Check state
   assert:
     that: "result.changed == true"
 
-- name: Test user creation | Check TestUser created
+- name:  Test user creation with optional params | Check TestUser created
   yadro.tatlin.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
@@ -38,6 +44,38 @@
   check_mode: true
   register: result
 
-- name: Test user creation | Check state
+- name: Test user creation with optional params | Check state
+  assert:
+    that: "result.changed == false"
+
+#################################################
+# Test 2
+#################################################
+
+- name: Test user creation without optional params | Create user
+  yadro.tatlin.tatlin_sp_user:
+    connection: "{{ connection }}"
+    name: TestUser2
+    password: TestUser
+    groups:
+      - admin
+  register: result
+
+- name: Test user creation without optional params | Check state
+  assert:
+    that: "result.changed == true"
+
+- name: Test user creation without optional params | Check TestUser created
+  yadro.tatlin.tatlin_sp_user:
+    connection: "{{ connection }}"
+    name: TestUser2
+    enabled: true
+    groups:
+      - admin
+    state: "present"
+  check_mode: true
+  register: result
+
+- name: Test user creation without optional params | Check state
   assert:
     that: "result.changed == false"
