@@ -202,7 +202,8 @@ class TestDrives:
         # Mock open_url with returning pool_id
         open_url_mock = make_mock(
             OPEN_URL_FUNC,
-            return_value={'id': 'pool_id'},
+            return_value=[201326592, {'id': 'pool_id'}],
+            chain_calls=True,
         )
 
         # Create pool

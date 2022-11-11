@@ -141,7 +141,11 @@ class DriveGroup:
             )
 
         if size and isinstance(size, str):
-            size = to_bytes(size)
+            size = self.get_real_pool_size(
+                protection=protection,
+                size=size,
+                spare_count=spare_count,
+            )
 
         if stripe_size and isinstance(stripe_size, str):
             stripe_size = to_bytes(stripe_size)
