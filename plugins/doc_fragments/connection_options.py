@@ -39,10 +39,6 @@ class ModuleDocFragment(object):
             description:
               - Responsible for SSL certificates validation.
               - If set to False certificates won't validated.
-          login_path:
-            type: str
-            default: "auth/login"
-            description: Tatlin REST API endpoint for authorization
           timeout:
             type: int
             default: 60

@@ -45,10 +45,6 @@ except ImportError:
     Optional = List = Union = Dict = None
 
 
-LOGIN_PATH = 'auth/login'
-LOGOUT_PATH = 'auth/logout'
-
-
 class TatlinClient(RestClient):
 
     def __init__(
@@ -57,7 +53,6 @@ class TatlinClient(RestClient):
         username=None,  # type: Optional[str]
         password=None,  # type: Optional[str]
         validate_certs=True,  # type: Optional[bool]
-        login_path=LOGIN_PATH,  # type: Optional[str]
         timeout=60,  # type: Optional[int]
         auth_method=AUTH_SESSION,  # type: Optional[str]
     ):  # type: (...) -> None
@@ -67,11 +62,11 @@ class TatlinClient(RestClient):
             username=username,
             password=password,
             validate_certs=validate_certs,
-            login_path=login_path,
             timeout=timeout,
             auth_method=auth_method,
         )
 
+        self._login_path = eps.LOGIN_ENDPOINT
         self._ldap_config = None
         self._system_name = None
         self._system_version = None
@@ -508,7 +503,7 @@ class TatlinClient(RestClient):
 
     def logout(self):  # type: () -> None
         if self._token:
-            self.post(LOGOUT_PATH)
+            self.post(eps.LOGOUT_ENDPOINT)
             self._token = None
 
     def reboot_node(self, name):  # type: (str) -> None

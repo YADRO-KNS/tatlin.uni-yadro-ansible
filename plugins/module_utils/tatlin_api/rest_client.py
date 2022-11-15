@@ -51,14 +51,12 @@ class RestClient:
         username=None,  # type: str
         password=None,  # type: str
         validate_certs=True,  # type: bool
-        login_path=None,  # type: str
         timeout=60,  # type: int
-        auth_method=AUTH_SESSION,
+        auth_method=AUTH_SESSION  # type: str,
     ):  # type: (...) -> None
 
         self._username = username
         self._password = password
-        self._login_path = login_path
         self._auth_key = None
         self._token = None
         self._auth_method = auth_method

@@ -20,6 +20,8 @@ VERSION2 = 'v2'
 
 # Auth service
 AUTH_ENDPOINT = 'auth'
+LOGIN_ENDPOINT = build_url(AUTH_ENDPOINT, 'login')
+LOGOUT_ENDPOINT = build_url(AUTH_ENDPOINT, 'logout')
 USERS_ENDPOINT = build_url(AUTH_ENDPOINT, 'users')
 GROUPS_ENDPOINT = build_url(AUTH_ENDPOINT, 'groups')
 LDAP_ENDPOINT = build_url(AUTH_ENDPOINT, 'ldap')

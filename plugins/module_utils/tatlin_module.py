@@ -47,11 +47,6 @@ class TatlinModule(AnsibleModule):
                         "type": "bool",
                         "default": True,
                     },
-                    "login_path": {
-                        "required": False,
-                        "type": "str",
-                        "default": "auth/login",
-                    },
                     "timeout": {
                         "required": False,
                         "type": "int",
@@ -78,7 +73,6 @@ class TatlinModule(AnsibleModule):
             username=connection['username'],
             password=connection['password'],
             validate_certs=connection['validate_certs'],
-            login_path=connection['login_path'],
             timeout=connection['timeout'],
         )
 
