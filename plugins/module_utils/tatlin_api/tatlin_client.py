@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -12,30 +12,30 @@ __metaclass__ = type
 
 from base64 import b64encode
 from uuid import uuid4
-import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ldap import LdapConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user import User
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive_group import DriveGroup
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host import Host
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.host_group import HostGroup
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import Port
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.resource import (
+import ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints as eps
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.ldap import LdapConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.user import User
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.user_group import UserGroup
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.drive_group import DriveGroup
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.dns import DnsConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.host import Host
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.host_group import HostGroup
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.ntp import NtpConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.pool import Pool
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.port import Port
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.resource import (
     ResourceBlock, ResourceFile,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.subnet import Subnet
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.task import Task
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import get_iscsi_auth_for_request
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.rest_client import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.smtp import SmtpConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.snmp import SnmpConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.subnet import Subnet
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.task import Task
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.utils import get_iscsi_auth_for_request
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.rest_client import (
     RestClient, AUTH_BASIC, AUTH_SESSION,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import (
     TatlinClientError, TatlinNodeNotFoundError, TatlinAuthorizationError, RESTClientNotFoundError,
 )
 

@@ -7,7 +7,7 @@
 #################################################
 
 - name: Test resource block | Ensure pool1 exists
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_218.1MB
     name: pool_for_block_resources1
@@ -18,7 +18,7 @@
     stripe_size: 4KiB
 
 - name: Test resource block | Ensure pool2 exists
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_218.1MB
     name: pool_for_block_resources2
@@ -29,38 +29,38 @@
     stripe_size: 4KiB
 
 - name: Test resource block | Ensure host1 exists
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: host_for_block_resources1
     port_type: eth
     auth: none
 
 - name: Test resource block | Ensure host2 exists
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: host_for_block_resources2
     port_type: eth
     auth: none
 
 - name: Test resource block | Ensure host3 exists
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: host_for_block_resources3
     port_type: eth
     auth: none
 
 - name: Test resource block | Ensure host_group1 exists
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: host_group_for_block_resources1
 
 - name: Test resource block | Ensure host_group2 exists
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: host_group_for_block_resources2
 
 - name: Test resource block | Ensure host_group3 exists
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: host_group_for_block_resources3
 
@@ -70,7 +70,7 @@
 #################################################
 
 - name: Test resource block | Test check mode with create
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_check_resource_block
     pool: pool_for_block_resources1
@@ -83,7 +83,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resource is not set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_check_resource_block
     pool: pool_for_block_resources1
@@ -100,7 +100,7 @@
 #################################################
 
 - name: Test resource block | Set single resource
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_1
     pool: pool_for_block_resources1
@@ -126,7 +126,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resource is set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_1
     pool: pool_for_block_resources1
@@ -156,7 +156,7 @@
 #################################################
 
 - name: Test resource block | Set additional resources with template
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_
     pool: pool_for_block_resources1
@@ -183,7 +183,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resources are set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_
     pool: pool_for_block_resources1
@@ -211,7 +211,7 @@
     that: "result.changed == false"
 
 - name: Test resource block | Ensure unnecessary resources are not set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_4
     pool: pool_for_block_resources1
@@ -241,7 +241,7 @@
 #################################################
 
 - name: Test resource block | Update single resource
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_1
     pool: pool_for_block_resources1
@@ -264,7 +264,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resource was updated
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_1
     pool: pool_for_block_resources1
@@ -292,7 +292,7 @@
 #################################################
 
 - name: Test resource block | Update multiple resources
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_
     pool: pool_for_block_resources1
@@ -316,7 +316,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resources were updated
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_1_
     pool: pool_for_block_resources1
@@ -345,7 +345,7 @@
 #################################################
 
 - name: Test resource block | Set multiple resources with template at once
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_
     pool: pool_for_block_resources2
@@ -368,7 +368,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resources are set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_
     pool: pool_for_block_resources2
@@ -396,7 +396,7 @@
 #################################################
 
 - name: Test resource block | Reset ports, hosts and host_groups
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_
     pool: pool_for_block_resources2
@@ -411,7 +411,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resources are set
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_
     pool: pool_for_block_resources2
@@ -431,7 +431,7 @@
 #################################################
 
 - name: Test resource block | Test check mode with update
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_1
     pool: pool_for_block_resources2
@@ -445,7 +445,7 @@
     that: "result.changed == true"
 
 - name: Test resource block | Ensure resource was not updated
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: test_block_resource_2_1
     pool: pool_for_block_resources2

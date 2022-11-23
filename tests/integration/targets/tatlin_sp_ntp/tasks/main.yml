@@ -1,12 +1,12 @@
 ---
 - name: Test ntp config | Ensure ntp list is empty
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     state: absent
 
 #### TEST 1
 - name: Test ntp config check mode | Set server
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -18,7 +18,7 @@
     that: "result.changed == true"
 
 - name: Test ntp config check mode | Check servers not changed
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -31,7 +31,7 @@
 
 #### TEST 2
 - name: Test ntp config | Set ntp servers
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -45,7 +45,7 @@
     that: "result.changed == true"
 
 - name: Test ntp config | Check servers changed
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -61,7 +61,7 @@
 
 #### TEST 3
 - name: Test ntp config | Remove one server
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - happ-y.pa.th.com
@@ -73,7 +73,7 @@
     that: "result.changed == true"
 
 - name: Test ntp config | Check server removed
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - happ-y.pa.th.com
@@ -87,7 +87,7 @@
 
 ##### TEST 4
 - name: Test ntp config check mode | Set server
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -98,7 +98,7 @@
     that: "result.changed == true"
 
 - name: Test ntp config | Clear servers
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     state: absent
   register: result
@@ -108,7 +108,7 @@
     that: "result.changed == true"
 
 - name: Test ntp config | Check servers cleared
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     state: absent
   register: result
@@ -119,7 +119,7 @@
     that: "result.changed == false"
 
 - name: Test ntp config check mode | Check servers cleared
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1

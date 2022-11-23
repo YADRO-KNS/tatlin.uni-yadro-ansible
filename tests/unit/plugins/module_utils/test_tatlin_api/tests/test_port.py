@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -12,14 +12,14 @@ __metaclass__ = type
 import json
 import pytest
 from hamcrest import assert_that, has_entries
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, PORT_CLASS, MODELS_PACKAGE,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.port import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import PORTS_ENDPOINT
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.port import (
     get_ip_and_mask, get_ip, Port, Node, VirtualAddress, ChangedHost, NodeAddress)
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import (
     RESTClientConnectionError, TatlinClientError)
 
 

@@ -3,7 +3,7 @@
 ##############################################
 
 - name: Test get tatlin info | Set mgmt port
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     mtu: 1500
     nodes:
@@ -17,13 +17,13 @@
             mask: "{{ ip.management.mask }}"
 
 - name: Test get tatlin info | Reset port p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     state: absent
 
 - name: Test get tatlin info | Update port p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     gateway: "{{ ip.data.p01.gateway }}"
@@ -39,7 +39,7 @@
   register: result
 
 - name: Test get tatlin info | Set ldap config
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -53,14 +53,14 @@
     type: custom
 
 - name: Test get tatlin info | Set ntp servers
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - example.com
       - 127.0.0.1
 
 - name: Test get tatlin info | Set SNMP config
-  yadro.tatlin.tatlin_sp_snmp:
+  yadro.tatlin_uni.tatlin_sp_snmp:
     connection: "{{ connection }}"
     community: tatlin
     servers:
@@ -68,7 +68,7 @@
         port: 162
 
 - name: Test get tatlin info | Set SMTP config
-  yadro.tatlin.tatlin_sp_smtp:
+  yadro.tatlin_uni.tatlin_sp_smtp:
     connection: "{{ connection }}"
     address: 127.0.0.1
     port: 25
@@ -81,7 +81,7 @@
       - second@recipient.com
 
 - name: Test get tatlin info | Set DNS config
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -91,7 +91,7 @@
       - test.com
 
 - name: Test get tatlin info | Set Syslog recipients
-  yadro.tatlin.tatlin_sp_syslog:
+  yadro.tatlin_uni.tatlin_sp_syslog:
     connection: "{{ connection }}"
     recipients:
       - address: 127.0.0.1
@@ -106,7 +106,7 @@
 ################################################
 
 - name: Test get tatlin info | Get tatlin info
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
 

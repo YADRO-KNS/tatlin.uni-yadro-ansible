@@ -1,5 +1,5 @@
 - name: Test upload SSL certificate | Upload certificate from path
-  yadro.tatlin.tatlin_sp_ssl:
+  yadro.tatlin_uni.tatlin_sp_ssl:
     connection: "{{ connection }}"
     crt_path: '{{ role_path }}/files/testssl.pem'
     key_path: '{{ role_path }}/files/testssl.key'
@@ -10,7 +10,7 @@
     that: "result.changed == true"
 
 - name: Test upload SSL certificate | Upload certificate from content
-  yadro.tatlin.tatlin_sp_ssl:
+  yadro.tatlin_uni.tatlin_sp_ssl:
     connection: "{{ connection }}"
     crt_content: |
       -----BEGIN CERTIFICATE-----

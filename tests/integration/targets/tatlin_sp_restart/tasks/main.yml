@@ -5,7 +5,7 @@
 ################################################
 
 - name: Test SP restart | Get Tatlin info
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
 
@@ -31,12 +31,12 @@
     loop: "{{ connection|list }}"
 
 - name: Test SP restart | Restart sp-0
-  yadro.tatlin.tatlin_sp_restart:
+  yadro.tatlin_uni.tatlin_sp_restart:
     connection: "{{ connection }}"
     node_name: sp-0
 
 - name: Test SP restart | Wait sp-0 offline
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until:  not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-0'][0].status == "offline"
@@ -44,7 +44,7 @@
   delay: 2
 
 - name: Test SP restart | Wait sp-0 online
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-0'][0].status == "online"
@@ -61,7 +61,7 @@
     loop: "{{ connection|list }}"
 
 - name: Test SP restart | Wait interface sp-0 up
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed
@@ -69,12 +69,12 @@
   delay: 3
 
 - name: Test SP restart | Restart sp-1
-  yadro.tatlin.tatlin_sp_restart:
+  yadro.tatlin_uni.tatlin_sp_restart:
     connection: "{{ connection }}"
     node_name: sp-1
 
 - name: Test SP restart | Wait sp-1 offline
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-1'][0].status == "offline"
@@ -82,7 +82,7 @@
   delay: 2
 
 - name: Test SP restart | Wait sp-1 online
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed and result.tatlin_info.ports.mgmt.nodes['sp-1'][0].status == "online"
@@ -95,7 +95,7 @@
     loop: "{{ connection|list }}"
 
 - name: Test SP restart | Wait interface sp-1 up
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed
@@ -112,7 +112,7 @@
     loop: "{{ connection|list }}"
 
 - name: Test SP restart | Wait initial interface up
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
   until: not result.failed

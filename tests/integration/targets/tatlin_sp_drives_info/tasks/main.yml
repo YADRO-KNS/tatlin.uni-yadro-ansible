@@ -1,5 +1,5 @@
 - name: Test get tatlin drives info | Get tatlin drives info
-  yadro.tatlin.tatlin_sp_drives_info:
+  yadro.tatlin_uni.tatlin_sp_drives_info:
     connection: "{{ connection }}"
   register: result
 

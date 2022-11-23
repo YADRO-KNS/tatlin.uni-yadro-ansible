@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -15,8 +15,8 @@ except ImportError:
     # Satisfy Python 2 which doesn't have typing.
     Optional = Dict = None
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import LDAP_CONFIG_ENDOPINT
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import LDAP_CONFIG_ENDOPINT
 
 
 ENCRYPTION_TLS = 'tls'

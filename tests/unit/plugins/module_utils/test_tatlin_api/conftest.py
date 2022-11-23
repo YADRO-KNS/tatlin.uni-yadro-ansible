@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -11,9 +11,9 @@ __metaclass__ = type
 
 import pytest
 import json
-from ansible_collections.yadro.tatlin.tests.unit.compat.mock import MagicMock
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
+from ansible_collections.yadro.tatlin_uni.tests.unit.compat.mock import MagicMock
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.constants import OPEN_URL_FUNC
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
 
 
 @pytest.fixture

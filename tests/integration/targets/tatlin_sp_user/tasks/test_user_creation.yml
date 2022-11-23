@@ -4,13 +4,13 @@
 #################################################
 
 - name: Test user creation | Ensure TestUser is absent
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent
 
 - name: Test user creation | Ensure TestUser2 is absent
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent
@@ -20,7 +20,7 @@
 #################################################
 
 - name: Test user creation with optional params | Create user
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     password: TestUser
@@ -34,7 +34,7 @@
     that: "result.changed == true"
 
 - name:  Test user creation with optional params | Check TestUser created
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     enabled: true
@@ -53,7 +53,7 @@
 #################################################
 
 - name: Test user creation without optional params | Create user
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser2
     password: TestUser
@@ -66,7 +66,7 @@
     that: "result.changed == true"
 
 - name: Test user creation without optional params | Check TestUser created
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser2
     enabled: true

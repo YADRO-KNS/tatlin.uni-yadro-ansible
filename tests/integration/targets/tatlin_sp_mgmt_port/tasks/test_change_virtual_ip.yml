@@ -1,5 +1,5 @@
 - name: Test change mgmt port virtual ip | Reset configuration
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -16,7 +16,7 @@
     init_connect_ip: "{{ connection.base_url }}"
 
 - name: Test change mgmt port virtual ip | Update virtual ip
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     virtual_address:
       ip: "{{ ip.management.ip2 }}"
@@ -33,7 +33,7 @@
     loop: "{{ connection|list }}"
 
 - name: Test change mgmt port virtual ip | Check virtual ip changed
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     virtual_address:
       ip: "{{ ip.management.ip2 }}"
@@ -46,7 +46,7 @@
     that: "result.changed == false"
 
 - name: Test change mgmt port virtual ip | Restore virtual ip
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     virtual_address:
       ip: "{{ init_connect_ip }}"

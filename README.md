@@ -1,6 +1,6 @@
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 
-YADRO Tatlin Ansible Collection allows to interact with Tatlin Unified. 
+YADRO Tatlin Unified Ansible Collection allows to interact with Tatlin Unified. 
 This collection helps to automate configuration of the Tatlin Unified.
 
 

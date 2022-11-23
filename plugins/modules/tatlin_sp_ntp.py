@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   servers:
     required: False
@@ -57,7 +57,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Set ntp servers
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 192.168.1.11
@@ -65,21 +65,21 @@ EXAMPLES = r"""
       - 127.0.0.1
 
 - name: Remove ntp server
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
     state: absent
 
 - name: Remove all ntp servers
-  yadro.tatlin.tatlin_sp_ntp:
+  yadro.tatlin_uni.tatlin_sp_ntp:
     connection: "{{ connection }}"
     state: absent
 """
 
 
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinNtpModule(TatlinModule):

@@ -2,7 +2,7 @@
 #### PREPARE
 #################################################
 - name: Test hosts info | Prepare testhost1
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost1
     port_type: eth
@@ -16,7 +16,7 @@
     mutual_password: targetpass
 
 - name: Test hosts info | Prepare testhost2
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost2
     port_type: fc
@@ -28,7 +28,7 @@
 #### TEST
 #################################################
 - name: Test hosts info | Get hosts info
-  yadro.tatlin.tatlin_sp_hosts_info:
+  yadro.tatlin_uni.tatlin_sp_hosts_info:
     connection: "{{ connection }}"
   register: result
 

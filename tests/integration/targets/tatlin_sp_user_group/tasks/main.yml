@@ -4,7 +4,7 @@
 #################################################
 
 - name: Test user group creation | Ensure TestGroup is absent
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     state: absent
@@ -14,7 +14,7 @@
 #################################################
 
 - name: Test user group creation | Create user group
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     parent_groups:
@@ -28,7 +28,7 @@
     that: "result.changed == true"
 
 - name: Test user group creation | Check TestGroup created
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     parent_groups:
@@ -43,7 +43,7 @@
     that: "result.changed == false"
 
 - name: Test user group update | Update user group
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     parent_groups:
@@ -58,7 +58,7 @@
     that: "result.changed == true"
 
 - name: Test user group update | Check parent groups were updated
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     parent_groups:
@@ -73,7 +73,7 @@
     that: "result.changed == false"
 
 - name: Test user group update | Check parent groups were updated
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     comment: Changed comment
@@ -86,7 +86,7 @@
     that: "result.changed == false"
 
 - name: Test user group deletion | Remove TestGroup
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     state: absent
@@ -97,7 +97,7 @@
     that: "result.changed == true"
 
 - name: Test user group deletion | Check TestGroup removed
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: TestGroup
     state: absent

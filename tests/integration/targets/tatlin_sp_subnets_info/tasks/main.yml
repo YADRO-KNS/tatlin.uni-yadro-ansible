@@ -4,7 +4,7 @@
 #################################################
 
 - name: Test subnets info | Ensure that subnet exists
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: tatlin_sp_subnets_info
     ip_start: '100.100.100.100'
@@ -15,7 +15,7 @@
 #################################################
 
 - name: Test subnets info | Get subnets info
-  yadro.tatlin.tatlin_sp_subnets_info:
+  yadro.tatlin_uni.tatlin_sp_subnets_info:
     connection: "{{ connection }}"
   register: result
 

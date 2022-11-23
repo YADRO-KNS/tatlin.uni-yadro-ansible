@@ -3,7 +3,7 @@
 #################################################
 
 - name: Test resources info | Ensure pool exists
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_218.1MB
     name: tatlin_sp_resources_info_pool
@@ -13,33 +13,33 @@
     spare_count: 0
 
 - name: Test resource block | Ensure host exists
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: host_for_block_resources1
     port_type: eth
     auth: none
 
 - name: Test resource block | Ensure host_group exists
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: host_group_for_block_resources1
 
 - name: Test resource file | Ensure subnet exists
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: subnet_for_file_resources1
     ip_start: '11.11.11.11'
     ip_end: '22.22.22.22'
 
 - name: Test resource file | Ensure user_group exists
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources1
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user exists
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: user_for_file_resources1
     password: password
@@ -48,7 +48,7 @@
       - data
 
 - name: Test resources info | Ensure block resource exists
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: tatlin_sp_resources_info_block
     pool: tatlin_sp_resources_info_pool
@@ -66,7 +66,7 @@
       - host_group_for_block_resources1
 
 - name: Test resources info | Ensure file resource exists
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: tatlin_sp_resources_info_file
     pool: tatlin_sp_resources_info_pool
@@ -91,7 +91,7 @@
 #################################################
 
 - name: Test resources info | Get resources info
-  yadro.tatlin.tatlin_sp_resources_info:
+  yadro.tatlin_uni.tatlin_sp_resources_info:
     connection: "{{ connection }}"
   register: result
 

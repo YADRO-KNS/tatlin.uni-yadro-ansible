@@ -3,7 +3,7 @@
 #################################################
 
 - name: Test host | Set host
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     port_type: eth
@@ -23,7 +23,7 @@
     that: "result.changed == true"
 
 - name: Test host | Check host is created
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     port_type: eth
@@ -43,7 +43,7 @@
 #################################################
 
 - name: Test host | Update tags
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     tags:
@@ -56,7 +56,7 @@
     that: "result.changed == true"
 
 - name: Test host | Check that tags were updated
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     tags:
@@ -73,7 +73,7 @@
 #### TEST 3
 #################################################
 - name: Test host | Change auth type to oneway
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     auth: oneway
@@ -86,7 +86,7 @@
     that: "result.changed == true"
 
 - name: Test host | Get host info
-  yadro.tatlin.tatlin_sp_hosts_info:
+  yadro.tatlin_uni.tatlin_sp_hosts_info:
     connection: "{{ connection }}"
   register: result
 
@@ -104,7 +104,7 @@
 #### TEST 4
 #################################################
 - name: Test host | Change auth type to oneway
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     auth: none
@@ -115,7 +115,7 @@
     that: "result.changed == true"
 
 - name: Test host | Get host info
-  yadro.tatlin.tatlin_sp_hosts_info:
+  yadro.tatlin_uni.tatlin_sp_hosts_info:
     connection: "{{ connection }}"
   register: result
 
@@ -134,7 +134,7 @@
 #################################################
 
 - name: Test host | Update ports
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     ports:
@@ -147,7 +147,7 @@
     that: "result.changed == true"
 
 - name: Test host | Check that ports were updated
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: testhost
     ports:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -11,7 +11,7 @@ __metaclass__ = type
 
 import json
 from hamcrest import assert_that, has_item, has_entries
-from ansible_collections.yadro.tatlin.tests.unit.compat.mock import ANY
+from ansible_collections.yadro.tatlin_uni.tests.unit.compat.mock import ANY
 
 
 def check_obj(objects, exp_params, ignore_order=None):

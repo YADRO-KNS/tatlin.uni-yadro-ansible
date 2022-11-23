@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -9,11 +9,11 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints as eps
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.drive import Drive
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.pool import Pool, PROVISION_TYPE
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
+import ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints as eps
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.utils import to_bytes
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.drive import Drive
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.pool import Pool, PROVISION_TYPE
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import TatlinClientError
 
 try:
     from typing import List, Dict, Optional, Union

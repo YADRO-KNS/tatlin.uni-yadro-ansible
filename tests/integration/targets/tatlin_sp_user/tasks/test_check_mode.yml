@@ -4,7 +4,7 @@
 #################################################
 
 - name: Test check mode | Ensure TestUser absent
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent
@@ -14,7 +14,7 @@
 #################################################
 
 - name: Test check mode | Create TestUser in check mode
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     password: TestUser
@@ -30,7 +30,7 @@
     that: "result.changed == true"
 
 - name: Test check mode | Check TestUser absent
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: TestUser
     state: absent

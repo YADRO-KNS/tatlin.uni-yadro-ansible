@@ -1,12 +1,12 @@
 ---
 
 - name: Test ldap config | Ensure ldap is disabled
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     state: absent
 
 - name: Test ldap config | Full config update
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -25,7 +25,7 @@
     that: "result.changed == true"
 
 - name: Test ldap config | Check config updated
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -62,7 +62,7 @@
     content: "{{ remote_cert.stdout }}"
 
 - name: Test ldap config | Enable ssl encryption
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: ansible_test
     encryption: ssl
@@ -75,7 +75,7 @@
     that: "result.changed == true"
 
 - name: Test ldap config | Enable tls encryption
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: ansible_test
     encryption: tls
@@ -88,7 +88,7 @@
     that: "result.changed == true"
 
 - name: Test ldap config | Change filter
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: ansible_test
     search_filter: (uid=*)
@@ -100,7 +100,7 @@
     that: "result.changed == true"
 
 - name: Test ldap config | Check filter and encryption updated
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: ansible_test
     search_filter: (uid=*)
@@ -112,7 +112,7 @@
     that: "result.changed == false"
 
 - name: Test AD config | Full config update
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -129,12 +129,12 @@
     that: "result.changed == true"
 
 - name: Test check mode | Ensure ldap is disabled
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     state: absent
 
 - name: Test check mode | Full config update
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -154,7 +154,7 @@
     that: "result.changed == true"
 
 - name: Test check mode | Check ldap is absent
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     state: absent
   check_mode: true

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -21,7 +21,7 @@ description:
   - This module supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   name:
     required: True
@@ -72,7 +72,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Create TestUser
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     password: "TestPassword"
@@ -83,7 +83,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify TestUser
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     enabled: false
@@ -91,7 +91,7 @@ EXAMPLES = r"""
       monitor
 
 - name: Delete TestUser
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: "TestUser"
     state: "absent"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 
 
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinUserModule(TatlinModule):

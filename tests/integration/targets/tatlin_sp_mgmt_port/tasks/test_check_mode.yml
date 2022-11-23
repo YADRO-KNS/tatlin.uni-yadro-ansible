@@ -1,5 +1,5 @@
 - name: Test mgmt port check mode | Reset configuration
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -12,7 +12,7 @@
             mask: "{{ ip.management.mask }}"
 
 - name: Test mgmt port check mode | Change SP addresses
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -35,7 +35,7 @@
     that: "result.changed == true"
 
 - name: Test mgmt port check mode | Check SP addresses were not changed
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -21,7 +21,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   name:
     required: True
@@ -64,7 +64,7 @@ options:
       - C(absent) resets port's configuration
 notes:
   - For configuring mgmt port it is recommended
-    to use M(yadro.tatlin.tatlin_sp_mgmt_port)
+    to use M(yadro.tatlin_uni.tatlin_sp_mgmt_port)
 """
 
 RETURN = r"""
@@ -82,7 +82,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Configure p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: 192.168.1.1
@@ -97,14 +97,14 @@ EXAMPLES = r"""
           mask: 24
 
 - name: Test port change | Reset p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     state: absent
 """
 
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinPortModule(TatlinModule):

@@ -4,7 +4,7 @@
 #################################################
 
 - name: Test subnet | Ensure subnet is absent
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     state: absent
@@ -14,7 +14,7 @@
 #################################################
 
 - name: Test subnet | Create subnet in check mode
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '1.1.1.1'
@@ -27,7 +27,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was not created
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '1.1.1.1'
@@ -44,7 +44,7 @@
 #################################################
 
 - name: Test subnet | Create subnet
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '1.1.1.1'
@@ -56,7 +56,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was created
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '1.1.1.1'
@@ -73,7 +73,7 @@
 #################################################
 
 - name: Test subnet | Change subnet ip range in check mode
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '3.3.3.3'
@@ -86,7 +86,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was not changed
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '3.3.3.3'
@@ -103,7 +103,7 @@
 #################################################
 
 - name: Test subnet | Change subnet ip range
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '3.3.3.3'
@@ -115,7 +115,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was changed
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     ip_start: '3.3.3.3'
@@ -132,7 +132,7 @@
 #################################################
 
 - name: Test subnet | Remove subnet in check mode
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     state: absent
@@ -144,7 +144,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was not removed
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     state: absent
@@ -160,7 +160,7 @@
 #################################################
 
 - name: Test subnet | Remove subnet
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     state: absent
@@ -171,7 +171,7 @@
     that: "result.changed == true"
 
 - name: Test subnet | Check subnet was removed
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: _tatlin_sp_subnet
     state: absent

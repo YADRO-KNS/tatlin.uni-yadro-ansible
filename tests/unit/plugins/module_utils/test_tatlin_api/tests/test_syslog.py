@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -10,12 +10,12 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SYSLOG_ENDPOINT
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.syslog import SyslogConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import SYSLOG_ENDPOINT
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.utils import (
     check_obj, check_called_with)
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     OPEN_URL_FUNC, SYSLOG_CONFIG_CLASS)
 
 

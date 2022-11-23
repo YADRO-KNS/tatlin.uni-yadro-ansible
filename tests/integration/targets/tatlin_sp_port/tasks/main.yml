@@ -1,11 +1,11 @@
 - name: Test port change | Reset configuration p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     state: absent
 
 - name: Test port change | Reset configuration p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     state: absent
@@ -14,7 +14,7 @@
 #### TEST 1
 #################################################
 - name: Test port change | Test check mode
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: "{{ ip.data.p00.gateway }}"
@@ -36,7 +36,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Check port was not changed
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: "{{ ip.data.p00.gateway }}"
@@ -61,7 +61,7 @@
 #### TEST 2
 #################################################
 - name: Test port change | Set p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: "{{ ip.data.p00.gateway }}"
@@ -82,7 +82,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Check port was changed
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: "{{ ip.data.p00.gateway }}"
@@ -107,7 +107,7 @@
 #### TEST 3
 #################################################
 - name: Test port change | Set p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     gateway: "{{ ip.data.p01.gateway }}"
@@ -127,7 +127,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Set p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     gateway: "{{ ip.data.p01.gateway }}"
@@ -151,7 +151,7 @@
 #### TEST 4
 #################################################
 - name: Test port change | Change gateway on p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: ""
@@ -162,7 +162,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Change gateway was changed
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     gateway: ""
@@ -186,7 +186,7 @@
 #### TEST 5
 #################################################
 - name: Test port change | Swap ips on p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     nodes:
@@ -205,7 +205,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Check port was changed
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     gateway: "{{ ip.data.p01.gateway }}"
@@ -229,7 +229,7 @@
 #### TEST 6
 #################################################
 - name: Test port change | Test reset p00
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     state: absent
@@ -240,7 +240,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Check p00 was reset
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     state: absent
@@ -252,7 +252,7 @@
     that: "result.changed == false"
 
 - name: Test port change | Check p00 was reset
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p00
     nodes:
@@ -276,7 +276,7 @@
 #### TEST 7
 #################################################
 - name: Test port change | Check reset p01
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     state: absent
@@ -287,7 +287,7 @@
     that: "result.changed == true"
 
 - name: Test port change | Check p01 was reset
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     state: absent
@@ -299,7 +299,7 @@
     that: "result.changed == false"
 
 - name: Test port change | Check p01 was reset
-  yadro.tatlin.tatlin_sp_port:
+  yadro.tatlin_uni.tatlin_sp_port:
     connection: "{{ connection }}"
     name: p01
     gateway: "{{ ip.data.p01.gateway }}"

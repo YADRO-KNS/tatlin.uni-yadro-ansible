@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -14,8 +14,8 @@ try:
 except ImportError:
     List = None
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinClientError
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import SMTP_ENDPOINT
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import TatlinClientError
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import SMTP_ENDPOINT
 
 
 ENCRYPTION_TLS = 'tls'

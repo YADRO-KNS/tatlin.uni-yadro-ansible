@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -14,10 +14,10 @@ try:
 except ImportError:
     Union = List = TYPE_CHECKING = None
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import USERS_ENDPOINT
 
 if TYPE_CHECKING:
-    from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.user_group import UserGroup
+    from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.user_group import UserGroup
 
 
 class User:

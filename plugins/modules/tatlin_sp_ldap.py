@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   host:
     required: False
@@ -114,7 +114,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Add ldap config
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 389
@@ -128,13 +128,13 @@ EXAMPLES = r"""
     type: custom
 
 - name: Change search filter
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     search_filter: (uid=*)
 
 - name: Enable tls encryption
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     lookup_password: password
     encryption: tls
@@ -142,7 +142,7 @@ EXAMPLES = r"""
     crt_path: /path/to/certificate.pem
 
 - name: Add AD config with ssl encryption
-  yadro.tatlin.tatlin_sp_ldap:
+  yadro.tatlin_uni.tatlin_sp_ldap:
     connection: "{{ connection }}"
     host: "{{ ldap_host }}"
     port: 636
@@ -160,7 +160,7 @@ EXAMPLES = r"""
 
 from io import open
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinLdapModule(TatlinModule):

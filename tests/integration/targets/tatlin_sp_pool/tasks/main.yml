@@ -2,14 +2,14 @@
     drive_group_name: HDD_218.1MB
 
 - name: Test pool | Ensure that pool is absent
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
     state: absent
 
 - name: Test pool | Wait until pool will be removed
-  yadro.tatlin.tatlin_sp_pools_info:
+  yadro.tatlin_uni.tatlin_sp_pools_info:
     connection: "{{ connection }}"
   register: result
   until: "{{ result.pools_info
@@ -23,7 +23,7 @@
 #### TEST 1
 #################################################
 - name: Test pool | Test check mode
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -44,7 +44,7 @@
       - "result.real_size == 201326592"
 
 - name: Test pool | Check pool was not created
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -68,7 +68,7 @@
 #### TEST 2
 #################################################
 - name: Test pool | Create new pool
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -88,7 +88,7 @@
       - "result.real_size == 301989888"
 
 - name: Test pool | Check pool was created
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -112,7 +112,7 @@
 #### TEST 3
 #################################################
 - name: Test pool | Update thresholds
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -127,7 +127,7 @@
       - "result.real_size == 301989888"
 
 - name: Test pool | Check thresholds were updated
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -151,7 +151,7 @@
 #### TEST 4
 #################################################
 - name: Test pool | Update drives count and spare count
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -166,7 +166,7 @@
       - "result.real_size == 285212672"
 
 - name: Test pool | Check drives and spare count were updated
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -190,7 +190,7 @@
 #### TEST 5
 #################################################
 - name: Test pool | Update pool size
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -204,7 +204,7 @@
       - "result.real_size == 402653184"
 
 - name: Test pool | Check pool size was updated
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -228,7 +228,7 @@
 #### TEST 6
 #################################################
 - name: Test pool | Pool remove
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool
@@ -242,7 +242,7 @@
       - "result.real_size == None"
 
 - name: Test pool | Check pool was removed
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: "{{ drive_group_name }}"
     name: tatlin_sp_pool

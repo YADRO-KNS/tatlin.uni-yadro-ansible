@@ -1,11 +1,11 @@
 - name: Test DNS config | Ensure DNS config is empty
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     state: absent
 
 #### TEST 1
 - name: Test DNS config check mode | Set config
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -20,7 +20,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config check mode | Check config was not changed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -36,7 +36,7 @@
 
 #### TEST 2
 - name: Test DNS config | Set server
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -48,7 +48,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check config was changed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -62,7 +62,7 @@
 
 #### TEST 3
 - name: Test DNS config | Set search list
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     search_list:
       - example.com
@@ -73,7 +73,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check config was changed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.1
@@ -88,7 +88,7 @@
 
 #### TEST 4
 - name: Test DNS config | Set two servers and two DNS suffixes
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.2
@@ -103,7 +103,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check config was changed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.2
@@ -120,7 +120,7 @@
 
 #### TEST 5
 - name: Test DNS config | Remove one server
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 1.1.1.1
@@ -132,7 +132,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check server was removed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.2
@@ -148,7 +148,7 @@
 
 #### TEST 6
 - name: Test DNS config | Remove one DNS suffix
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     search_list:
       - test.com
@@ -160,7 +160,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check suffix was removed
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.2
@@ -175,7 +175,7 @@
 
 #### TEST 7
 - name: Test DNS config | Clear config
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     state: absent
   register: result
@@ -185,7 +185,7 @@
     that: "result.changed == true"
 
 - name: Test DNS config | Check config is clear
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     state: absent
   check_mode: true
@@ -196,7 +196,7 @@
     that: "result.changed == false"
 
 - name: Test DNS config | Check config is clear
-  yadro.tatlin.tatlin_sp_dns:
+  yadro.tatlin_uni.tatlin_sp_dns:
     connection: "{{ connection }}"
     servers:
       - 127.0.0.2

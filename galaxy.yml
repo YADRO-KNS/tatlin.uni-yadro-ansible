@@ -1,10 +1,10 @@
 namespace: yadro
-name: tatlin
+name: tatlin_uni
 version: 1.0.0
 readme: README.md
 authors:
   - Sergey Kovalev <s.kovalev@yadro.com>
-description: Yadro Tatlin Ansible Collection
+description: Yadro Tatlin Unified Ansible Collection
 license:
   - GPL-3.0-or-later
 license_file: COPYING

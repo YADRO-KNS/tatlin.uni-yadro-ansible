@@ -1,5 +1,5 @@
 - name: Test change mgmt ips | Reset configuration
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -12,7 +12,7 @@
             mask: "{{ ip.management.mask }}"
 
 - name: Test change mgmt ips | Update SP addresses
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -34,7 +34,7 @@
     that: "result.changed == true"
 
 - name: Test change mgmt ips | Check SP addresses changed
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -60,7 +60,7 @@
     that: "result.changed == false"
 
 - name: Test change mgmt ips | Update single SP with single ip
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -74,7 +74,7 @@
     that: "result.changed == true"
 
 - name: Test change mgmt ips | Check SP addresses changed
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -95,7 +95,7 @@
     that: "result.changed == false"
 
 - name: Test change mgmt ips | Update both SP with single ip
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0
@@ -113,7 +113,7 @@
     that: "result.changed == true"
 
 - name: Test change mgmt ips | Check SP addresses changed
-  yadro.tatlin.tatlin_sp_mgmt_port:
+  yadro.tatlin_uni.tatlin_sp_mgmt_port:
     connection: "{{ connection }}"
     nodes:
       - name: sp-0

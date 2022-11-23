@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   drive_group:
     required: True
@@ -114,7 +114,7 @@ notes:
     module with state C(absent) task completes, but pool can still exist.
     Therefore, if new pool is created after removing pool with same name,
     it needs to be ensure that pool doesn't exists. This operation is out of
-    scope of this module. M(yadro.tatlin.tatlin_sp_pools_info) can be used in
+    scope of this module. M(yadro.tatlin_uni.tatlin_sp_pools_info) can be used in
     that case
 """
 
@@ -139,7 +139,7 @@ real_size:
 EXAMPLES = r"""
 ---
 - name: Create new pool
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_209.71MB
     name: testpool
@@ -152,14 +152,14 @@ EXAMPLES = r"""
     critical_threshold: 95
 
 - name: Resize pool
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_209.71MB
     name: testpool
     drives_count: 5
 
 - name: Update thresholds
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_209.71MB
     name: testpool
@@ -167,7 +167,7 @@ EXAMPLES = r"""
     critical_threshold: 90
 
 - name: Remove pool
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_209.71MB
     name: testpool
@@ -177,8 +177,8 @@ EXAMPLES = r"""
 
 import time
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import to_bytes
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.utils import to_bytes
 
 
 class TatlinPoolModule(TatlinModule):

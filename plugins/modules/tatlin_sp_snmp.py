@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ description:
   - This module supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   community:
     type: str
@@ -68,7 +68,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Set SNMP config
-  yadro.tatlin.tatlin_sp_snmp:
+  yadro.tatlin_uni.tatlin_sp_snmp:
     connection: "{{ connection }}"
     community: tatlin
     servers:
@@ -79,7 +79,7 @@ EXAMPLES = r"""
     state: present
 
 - name: Remove SNMP server
-  yadro.tatlin.tatlin_sp_snmp:
+  yadro.tatlin_uni.tatlin_sp_snmp:
     connection: "{{ connection }}"
     servers:
       - ip: example.com
@@ -87,14 +87,14 @@ EXAMPLES = r"""
     state: absent
 
 - name: Reset config
-  yadro.tatlin.tatlin_sp_snmp:
+  yadro.tatlin_uni.tatlin_sp_snmp:
     connection: "{{ connection }}"
     state: absent
 """
 
 
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinSnmpModule(TatlinModule):

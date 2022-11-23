@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -23,7 +23,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   name:
     required: True
@@ -137,7 +137,7 @@ changed_resources:
 EXAMPLES = r"""
 ---
 - name: Create one resource
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: example_resource
     pool: example_pool
@@ -157,7 +157,7 @@ EXAMPLES = r"""
       - example_host_group2
 
 - name: Create multiple resources
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: example_resource
     name_template: 1-3,5,7-8
@@ -178,7 +178,7 @@ EXAMPLES = r"""
       - example_host_group2
 
 - name: Change one resource
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: example_resource
     pool: example_pool
@@ -196,7 +196,7 @@ EXAMPLES = r"""
       - example_host_group3
 
 - name: Change multiple resources
-  yadro.tatlin.tatlin_sp_resource_block:
+  yadro.tatlin_uni.tatlin_sp_resource_block:
     connection: "{{ connection }}"
     name: example_resource
     name_template: 1-100
@@ -216,11 +216,11 @@ EXAMPLES = r"""
 """
 
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import (
     WrongResourceNameTemplate,
 )
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.utils import (
     get_resource_name_suffixes,
     generate_resource_name_template,
     to_bytes,

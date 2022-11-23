@@ -3,7 +3,7 @@
 #################################################
 
 - name: Test resource file | Ensure pool1 exists
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_218.1MB
     name: pool_for_file_resources1
@@ -14,7 +14,7 @@
     stripe_size: 4KiB
 
 - name: Test resource file | Ensure pool2 exists
-  yadro.tatlin.tatlin_sp_pool:
+  yadro.tatlin_uni.tatlin_sp_pool:
     connection: "{{ connection }}"
     drive_group: HDD_218.1MB
     name: pool_for_file_resources2
@@ -25,49 +25,49 @@
     stripe_size: 4KiB
 
 - name: Test resource file | Ensure subnet1 exists
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: subnet_for_file_resources1
     ip_start: '11.11.11.11'
     ip_end: '22.22.22.22'
 
 - name: Test resource file | Ensure subnet2 exists
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: subnet_for_file_resources2
     ip_start: '33.33.33.33'
     ip_end: '44.44.44.44'
 
 - name: Test resource file | Ensure subnet3 exists
-  yadro.tatlin.tatlin_sp_subnet:
+  yadro.tatlin_uni.tatlin_sp_subnet:
     connection: "{{ connection }}"
     name: subnet_for_file_resources3
     ip_start: '55.55.55.55'
     ip_end: '66.66.66.66'
 
 - name: Test resource file | Ensure user_group1 exists
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources1
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user_group2 exists
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources2
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user_group3 exists
-  yadro.tatlin.tatlin_sp_user_group:
+  yadro.tatlin_uni.tatlin_sp_user_group:
     connection: "{{ connection }}"
     name: group_for_file_resources3
     parent_groups:
       - data
 
 - name: Test resource file | Ensure user1 exists
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: user_for_file_resources1
     password: password
@@ -76,7 +76,7 @@
       - data
 
 - name: Test resource file | Ensure user2 exists
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: user_for_file_resources2
     password: password
@@ -85,7 +85,7 @@
       - data
 
 - name: Test resource file | Ensure user3 exists
-  yadro.tatlin.tatlin_sp_user:
+  yadro.tatlin_uni.tatlin_sp_user:
     connection: "{{ connection }}"
     name: user_for_file_resources3
     password: password
@@ -94,7 +94,7 @@
       - data
 
 - name: Test resource file | Get Tatlin version
-  yadro.tatlin.tatlin_sp_info:
+  yadro.tatlin_uni.tatlin_sp_info:
     connection: "{{ connection }}"
   register: result
 
@@ -106,7 +106,7 @@
 #################################################
 
 - name: Test resource file | Test check mode with create
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_check_resource_file
     pool: pool_for_file_resources1
@@ -120,7 +120,7 @@
     that: "result.changed == true"
 
 - name: Test resource file | Ensure resource is not set
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_check_resource_file
     pool: pool_for_file_resources1
@@ -138,7 +138,7 @@
 #################################################
 
 - name: Test resource file | Set single resource
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1
@@ -170,7 +170,7 @@
     that: "result.changed == true"
 
 - name: Test resource file | Ensure resource is set
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1
@@ -208,7 +208,7 @@
 
 - block:
   - name: Test resource file | Set multiple resource
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_
       name_template: 1,3,5
@@ -240,7 +240,7 @@
       that: "result.changed == true"
 
   - name: Test resource file | Ensure resources are set
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_
       name_template: 1,3,5
@@ -279,7 +279,7 @@
 #################################################
 
 - name: Test resource file | Update single resource
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1
@@ -310,7 +310,7 @@
     that: "result.changed == true"
 
 - name: Test resource file | Ensure resource was updated
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1
@@ -347,7 +347,7 @@
 
 - block:
   - name: Test resource file | Update multiple resources
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_
       pool: pool_for_file_resources1
@@ -379,7 +379,7 @@
       that: "result.changed == true"
 
   - name: Test resource file | Ensure resources were updated
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_
       pool: pool_for_file_resources1
@@ -419,7 +419,7 @@
 
 - block:
   - name: Test resource file | Set multiple resources with template at once
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_2_
       pool: pool_for_file_resources2
@@ -446,7 +446,7 @@
       that: "result.changed == true"
 
   - name: Test resource file | Ensure resources are set
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_2_
       pool: pool_for_file_resources2
@@ -481,7 +481,7 @@
 
 - block:
   - name: Test resource file | Reset ports, hosts and host_groups
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_2_
       pool: pool_for_file_resources2
@@ -498,7 +498,7 @@
       that: "result.changed == true"
 
   - name: Test resource file | Ensure resources are set
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_2_
       pool: pool_for_file_resources2
@@ -523,7 +523,7 @@
 
 - block:
   - name: Test resource file | Reset ports, hosts and host_groups
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_1
       pool: pool_for_file_resources1
@@ -539,7 +539,7 @@
       that: "result.changed == true"
 
   - name: Test resource file | Ensure resources are set
-    yadro.tatlin.tatlin_sp_resource_file:
+    yadro.tatlin_uni.tatlin_sp_resource_file:
       connection: "{{ connection }}"
       name: test_file_resource_1_1
       pool: pool_for_file_resources1
@@ -562,7 +562,7 @@
 #################################################
 
 - name: Test resource file | Test check mode with update
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1
@@ -576,7 +576,7 @@
     that: "result.changed == true"
 
 - name: Test resource file | Ensure resource was not updated
-  yadro.tatlin.tatlin_sp_resource_file:
+  yadro.tatlin_uni.tatlin_sp_resource_file:
     connection: "{{ connection }}"
     name: test_file_resource_1_1
     pool: pool_for_file_resources1

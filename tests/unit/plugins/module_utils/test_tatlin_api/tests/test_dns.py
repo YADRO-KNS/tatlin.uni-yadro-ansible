@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -11,10 +11,10 @@ __metaclass__ = type
 
 import json
 import pytest
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.models.dns import DnsConfig
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.endpoints import DNS_CONFIG_ENDPOINT
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
-from ansible_collections.yadro.tatlin.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.models.dns import DnsConfig
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.endpoints import DNS_CONFIG_ENDPOINT
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.utils import check_obj
+from ansible_collections.yadro.tatlin_uni.tests.unit.plugins.module_utils.test_tatlin_api.constants import (
     DNS_CONFIG_CLASS, OPEN_URL_FUNC)
 
 

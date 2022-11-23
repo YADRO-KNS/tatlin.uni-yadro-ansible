@@ -3,14 +3,14 @@
 #################################################
 
 - name: Test host group | Set host1
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: hostforgroup1
     port_type: eth
     auth: none
 
 - name: Test host group | Set host2
-  yadro.tatlin.tatlin_sp_host:
+  yadro.tatlin_uni.tatlin_sp_host:
     connection: "{{ connection }}"
     name: hostforgroup2
     port_type: eth
@@ -21,7 +21,7 @@
 #################################################
 
 - name: Test host group | Set host group
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags:
@@ -37,7 +37,7 @@
     that: "result.changed == true"
 
 - name: Test host group | Check host group is created
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags:
@@ -58,7 +58,7 @@
 #################################################
 
 - name: Test host group | Update tags and hosts
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags:
@@ -73,7 +73,7 @@
     that: "result.changed == true"
 
 - name: Test host group | Check tags and hosts were changed
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags:
@@ -93,7 +93,7 @@
 #################################################
 
 - name: Test host group | Reset tags and hosts
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags: []
@@ -105,7 +105,7 @@
     that: "result.changed == true"
 
 - name: Test host group | Check tags and hosts were reset
-  yadro.tatlin.tatlin_sp_host_group:
+  yadro.tatlin_uni.tatlin_sp_host_group:
     connection: "{{ connection }}"
     name: testgroup
     tags: []

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -15,8 +15,8 @@ except ImportError:
     Dict = List = Sequence = None
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import TatlinAuthorizationError
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.tatlin_client import TatlinClient
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import TatlinAuthorizationError
 
 
 class TatlinModule(AnsibleModule):

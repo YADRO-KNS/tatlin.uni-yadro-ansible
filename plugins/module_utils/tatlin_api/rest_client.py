@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.six.moves.http_client import HTTPResponse
 from ansible.module_utils.six.moves.urllib.error import URLError, HTTPError
 from ansible.module_utils.urls import ConnectionError, SSLValidationError
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.exception import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.exception import (
     RESTClientError,
     RESTClientNotFoundError,
     RESTClientRequestError,

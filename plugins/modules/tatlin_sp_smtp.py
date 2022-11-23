@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -22,7 +22,7 @@ description:
   - Supports check mode
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 options:
   address:
     type: str
@@ -81,7 +81,7 @@ error:
 EXAMPLES = r"""
 ---
 - name: Set SMTP config
-  yadro.tatlin.tatlin_sp_smtp:
+  yadro.tatlin_uni.tatlin_sp_smtp:
     connection: "{{ connection }}"
     address: 127.0.0.1
     port: 25
@@ -94,7 +94,7 @@ EXAMPLES = r"""
       - second@recipient.com
 
 - name: Add recipients
-  yadro.tatlin.tatlin_sp_smtp:
+  yadro.tatlin_uni.tatlin_sp_smtp:
     connection: "{{ connection }}"
     recipients:
       - first@recipient.com
@@ -102,21 +102,21 @@ EXAMPLES = r"""
       - third@recipient.com
 
 - name: Remove recipient
-  yadro.tatlin.tatlin_sp_smtp:
+  yadro.tatlin_uni.tatlin_sp_smtp:
     connection: "{{ connection }}"
     recipients:
       - second@recipient.com
     state: absent
 
 - name: Clear config
-  yadro.tatlin.tatlin_sp_smtp:
+  yadro.tatlin_uni.tatlin_sp_smtp:
     connection: "{{ connection }}"
     state: absent
 """
 
 
 from functools import partial
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinSmtpModule(TatlinModule):

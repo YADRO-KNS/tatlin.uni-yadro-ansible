@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -10,7 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api.utils import (
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api.utils import (
     get_resource_name_suffixes,
     generate_resource_name_template,
 )

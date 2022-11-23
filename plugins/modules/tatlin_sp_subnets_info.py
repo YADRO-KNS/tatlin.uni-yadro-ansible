@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# YADRO Tatlin Ansible Collection
+# YADRO Tatlin Unified Ansible Collection
 # Version 1.0.0
 # Copyright (c) 2022 YADRO (KNS Group LLC)
 
@@ -21,7 +21,7 @@ description:
     subnets in a form of detailed inventory
 author: "Sergey Kovalev (@kvlvs)"
 extends_documentation_fragment:
-  - yadro.tatlin.connection_options
+  - yadro.tatlin_uni.connection_options
 """
 
 RETURN = r"""
@@ -52,13 +52,13 @@ subnets_info:
 EXAMPLES = r"""
 ---
 - name: Get subnets info
-  yadro.tatlin.tatlin_sp_subnets_info:
+  yadro.tatlin_uni.tatlin_sp_subnets_info:
     connection: "{{ connection }}"
   register: result
 """
 
 
-from ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_module import TatlinModule
+from ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_module import TatlinModule
 
 
 class TatlinSubnetsInfoModule(TatlinModule):

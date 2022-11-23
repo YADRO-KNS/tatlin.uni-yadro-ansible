@@ -1,4 +1,4 @@
-TATLIN_API_PACKAGE = 'ansible_collections.yadro.tatlin.plugins.module_utils.tatlin_api'
+TATLIN_API_PACKAGE = 'ansible_collections.yadro.tatlin_uni.plugins.module_utils.tatlin_api'
 TATLIN_API_CLIENT_MODULE = TATLIN_API_PACKAGE + '.tatlin_client'
 TATLIN_API_CLIENT_CLASS = TATLIN_API_CLIENT_MODULE + '.TatlinClient'
 
