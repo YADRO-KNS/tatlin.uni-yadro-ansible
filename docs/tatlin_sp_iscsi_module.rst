@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module:
+.. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,25 +36,25 @@
 
 .. Title
 
-yadro.tatlin.tatlin_sp_iscsi module -- Manage iSCSI credentials
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+yadro.tatlin_uni.tatlin_sp_iscsi module -- Manage iSCSI credentials
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `yadro.tatlin collection <https://galaxy.ansible.com/yadro/tatlin>`_ (version 1.0.0).
+    This module is part of the `yadro.tatlin_uni collection <https://galaxy.ansible.com/yadro/tatlin_uni>`_ (version 1.0.0).
 
     You might already have this collection installed if you are using the ``ansible`` package.
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin`.
+    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin_uni`.
 
-    To use it in a playbook, specify: :code:`yadro.tatlin.tatlin_sp_iscsi`.
+    To use it in a playbook, specify: :code:`yadro.tatlin_uni.tatlin_sp_iscsi`.
 
 .. version_added
 
-.. versionadded:: 1.0.0 of yadro.tatlin
+.. versionadded:: 1.0.0 of yadro.tatlin_uni
 
 .. contents::
    :local:
@@ -103,7 +103,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-auth"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-auth:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-auth:
 
       .. rst-class:: ansible-option-title
 
@@ -145,7 +145,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection:
 
       .. rst-class:: ansible-option-title
 
@@ -185,7 +185,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/base_url"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/base_url:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection/base_url:
 
       .. rst-class:: ansible-option-title
 
@@ -217,47 +217,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-connection/login_path"></div>
-
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/login_path:
-
-      .. rst-class:: ansible-option-title
-
-      **login_path**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-connection/login_path" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
-
-      Tatlin REST API endpoint for authorization
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"auth/login"`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/password"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/password:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection/password:
 
       .. rst-class:: ansible-option-title
 
@@ -291,7 +253,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/timeout"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/timeout:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection/timeout:
 
       .. rst-class:: ansible-option-title
 
@@ -329,7 +291,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/username"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/username:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection/username:
 
       .. rst-class:: ansible-option-title
 
@@ -363,7 +325,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/validate_certs"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-connection/validate_certs:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-connection/validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -407,7 +369,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-mutual_password"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-mutual_password:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-mutual_password:
 
       .. rst-class:: ansible-option-title
 
@@ -443,7 +405,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-mutual_username"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-mutual_username:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-mutual_username:
 
       .. rst-class:: ansible-option-title
 
@@ -479,7 +441,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-password"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-password:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-password:
 
       .. rst-class:: ansible-option-title
 
@@ -515,7 +477,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-username"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__parameter-username:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__parameter-username:
 
       .. rst-class:: ansible-option-title
 
@@ -566,19 +528,19 @@ Examples
     
     ---
     - name: Set none auth type
-      yadro.tatlin.tatlin_sp_iscsi:
+      yadro.tatlin_uni.tatlin_sp_iscsi:
         connection: "{{ connection }}"
         auth: none
 
     - name: Set oneway auth type
-      yadro.tatlin.tatlin_sp_iscsi:
+      yadro.tatlin_uni.tatlin_sp_iscsi:
         connection: "{{ connection }}"
         auth: oneway
         username: user1
         password: user1
 
     - name: Set mutual auth type
-      yadro.tatlin.tatlin_sp_iscsi:
+      yadro.tatlin_uni.tatlin_sp_iscsi:
         connection: "{{ connection }}"
         auth: mutual
         username: user1
@@ -613,7 +575,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-error"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__return-error:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__return-error:
 
       .. rst-class:: ansible-option-title
 
@@ -653,7 +615,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_iscsi_module__return-msg:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_iscsi_module__return-msg:
 
       .. rst-class:: ansible-option-title
 

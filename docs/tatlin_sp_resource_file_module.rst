@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module:
+.. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,25 +36,25 @@
 
 .. Title
 
-yadro.tatlin.tatlin_sp_resource_file module -- Create or modify a file resource
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+yadro.tatlin_uni.tatlin_sp_resource_file module -- Create or modify a file resource
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `yadro.tatlin collection <https://galaxy.ansible.com/yadro/tatlin>`_ (version 1.0.0).
+    This module is part of the `yadro.tatlin_uni collection <https://galaxy.ansible.com/yadro/tatlin_uni>`_ (version 1.0.0).
 
     You might already have this collection installed if you are using the ``ansible`` package.
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin`.
+    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin_uni`.
 
-    To use it in a playbook, specify: :code:`yadro.tatlin.tatlin_sp_resource_file`.
+    To use it in a playbook, specify: :code:`yadro.tatlin_uni.tatlin_sp_resource_file`.
 
 .. version_added
 
-.. versionadded:: 1.0.0 of yadro.tatlin
+.. versionadded:: 1.0.0 of yadro.tatlin_uni
 
 .. contents::
    :local:
@@ -104,7 +104,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection:
 
       .. rst-class:: ansible-option-title
 
@@ -144,7 +144,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/base_url"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/base_url:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection/base_url:
 
       .. rst-class:: ansible-option-title
 
@@ -176,47 +176,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-connection/login_path"></div>
-
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/login_path:
-
-      .. rst-class:: ansible-option-title
-
-      **login_path**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-connection/login_path" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
-
-      Tatlin REST API endpoint for authorization
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"auth/login"`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/password"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/password:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection/password:
 
       .. rst-class:: ansible-option-title
 
@@ -250,7 +212,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/timeout"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/timeout:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection/timeout:
 
       .. rst-class:: ansible-option-title
 
@@ -288,7 +250,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/username"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/username:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection/username:
 
       .. rst-class:: ansible-option-title
 
@@ -322,7 +284,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/validate_certs"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-connection/validate_certs:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-connection/validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -366,7 +328,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-name:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -400,7 +362,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name_template"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-name_template:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-name_template:
 
       .. rst-class:: ansible-option-title
 
@@ -440,7 +402,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-pool"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-pool:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-pool:
 
       .. rst-class:: ansible-option-title
 
@@ -474,7 +436,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-ports"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-ports:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-ports:
 
       .. rst-class:: ansible-option-title
 
@@ -508,7 +470,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-read_cache"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-read_cache:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-read_cache:
 
       .. rst-class:: ansible-option-title
 
@@ -551,7 +513,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-size"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-size:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-size:
 
       .. rst-class:: ansible-option-title
 
@@ -593,7 +555,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-subnets"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-subnets:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-subnets:
 
       .. rst-class:: ansible-option-title
 
@@ -627,7 +589,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-type"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-type:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-type:
 
       .. rst-class:: ansible-option-title
 
@@ -668,7 +630,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-user_groups"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-user_groups:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-user_groups:
 
       .. rst-class:: ansible-option-title
 
@@ -702,7 +664,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-user_groups/name"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-user_groups/name:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-user_groups/name:
 
       .. rst-class:: ansible-option-title
 
@@ -736,7 +698,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-user_groups/permissions"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-user_groups/permissions:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-user_groups/permissions:
 
       .. rst-class:: ansible-option-title
 
@@ -778,7 +740,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-users"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-users:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-users:
 
       .. rst-class:: ansible-option-title
 
@@ -812,7 +774,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-users/name"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-users/name:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-users/name:
 
       .. rst-class:: ansible-option-title
 
@@ -846,7 +808,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-users/permissions"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-users/permissions:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-users/permissions:
 
       .. rst-class:: ansible-option-title
 
@@ -888,7 +850,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-wait"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-wait:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-wait:
 
       .. rst-class:: ansible-option-title
 
@@ -933,7 +895,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-wait_timeout"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-wait_timeout:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-wait_timeout:
 
       .. rst-class:: ansible-option-title
 
@@ -971,7 +933,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-write_cache"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__parameter-write_cache:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__parameter-write_cache:
 
       .. rst-class:: ansible-option-title
 
@@ -1029,7 +991,7 @@ Examples
     
     ---
     - name: Set single resource
-      yadro.tatlin.tatlin_sp_resource_file:
+      yadro.tatlin_uni.tatlin_sp_resource_file:
         connection: "{{ connection }}"
         name: example_resource
         pool: example_pool
@@ -1055,7 +1017,7 @@ Examples
             permissions: rw
 
     - name: Set multiple resources
-      yadro.tatlin.tatlin_sp_resource_file:
+      yadro.tatlin_uni.tatlin_sp_resource_file:
         connection: "{{ connection }}"
         name: example_resource
         name_template: 1-3,5,7-8
@@ -1082,7 +1044,7 @@ Examples
             permissions: rw
 
     - name: Change single resource
-      yadro.tatlin.tatlin_sp_resource_file:
+      yadro.tatlin_uni.tatlin_sp_resource_file:
         connection: "{{ connection }}"
         name: example_resource
         pool: example_pool
@@ -1106,7 +1068,7 @@ Examples
             permissions: rw
 
     - name: Change multiple resources
-      yadro.tatlin.tatlin_sp_resource_file:
+      yadro.tatlin_uni.tatlin_sp_resource_file:
         connection: "{{ connection }}"
         name: example_resource
         name_template: 1-100
@@ -1157,7 +1119,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-changed_resources"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__return-changed_resources:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__return-changed_resources:
 
       .. rst-class:: ansible-option-title
 
@@ -1197,7 +1159,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-created_resources"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__return-created_resources:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__return-created_resources:
 
       .. rst-class:: ansible-option-title
 
@@ -1237,7 +1199,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-error"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__return-error:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__return-error:
 
       .. rst-class:: ansible-option-title
 
@@ -1277,7 +1239,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_resource_file_module__return-msg:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_resource_file_module__return-msg:
 
       .. rst-class:: ansible-option-title
 

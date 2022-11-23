@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.yadro.tatlin.tatlin_sp_port_module:
+.. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,25 +36,25 @@
 
 .. Title
 
-yadro.tatlin.tatlin_sp_port module -- Configure data port
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+yadro.tatlin_uni.tatlin_sp_port module -- Configure data port
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `yadro.tatlin collection <https://galaxy.ansible.com/yadro/tatlin>`_ (version 1.0.0).
+    This module is part of the `yadro.tatlin_uni collection <https://galaxy.ansible.com/yadro/tatlin_uni>`_ (version 1.0.0).
 
     You might already have this collection installed if you are using the ``ansible`` package.
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin`.
+    To install it, use: :code:`ansible-galaxy collection install yadro.tatlin_uni`.
 
-    To use it in a playbook, specify: :code:`yadro.tatlin.tatlin_sp_port`.
+    To use it in a playbook, specify: :code:`yadro.tatlin_uni.tatlin_sp_port`.
 
 .. version_added
 
-.. versionadded:: 1.0.0 of yadro.tatlin
+.. versionadded:: 1.0.0 of yadro.tatlin_uni
 
 .. contents::
    :local:
@@ -103,7 +103,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection:
 
       .. rst-class:: ansible-option-title
 
@@ -143,7 +143,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/base_url"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/base_url:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection/base_url:
 
       .. rst-class:: ansible-option-title
 
@@ -175,47 +175,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-connection/login_path"></div>
-
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/login_path:
-
-      .. rst-class:: ansible-option-title
-
-      **login_path**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-connection/login_path" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
-
-      Tatlin REST API endpoint for authorization
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"auth/login"`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/password"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/password:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection/password:
 
       .. rst-class:: ansible-option-title
 
@@ -249,7 +211,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/timeout"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/timeout:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection/timeout:
 
       .. rst-class:: ansible-option-title
 
@@ -287,7 +249,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/username"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/username:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection/username:
 
       .. rst-class:: ansible-option-title
 
@@ -321,7 +283,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-connection/validate_certs"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-connection/validate_certs:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-connection/validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -365,7 +327,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-gateway"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-gateway:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-gateway:
 
       .. rst-class:: ansible-option-title
 
@@ -399,7 +361,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-name:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -433,7 +395,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-nodes"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-nodes:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-nodes:
 
       .. rst-class:: ansible-option-title
 
@@ -467,7 +429,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-nodes/address"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-nodes/address:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-nodes/address:
 
       .. rst-class:: ansible-option-title
 
@@ -501,7 +463,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-nodes/address/ip"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-nodes/address/ip:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-nodes/address/ip:
 
       .. rst-class:: ansible-option-title
 
@@ -535,7 +497,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-nodes/address/mask"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-nodes/address/mask:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-nodes/address/mask:
 
       .. rst-class:: ansible-option-title
 
@@ -570,7 +532,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-nodes/name"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-nodes/name:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-nodes/name:
 
       .. rst-class:: ansible-option-title
 
@@ -605,7 +567,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__parameter-state:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -653,7 +615,7 @@ Notes
 -----
 
 .. note::
-   - For configuring mgmt port it is recommended to use \ :ref:`yadro.tatlin.tatlin\_sp\_mgmt\_port <ansible_collections.yadro.tatlin.tatlin_sp_mgmt_port_module>`\ 
+   - For configuring mgmt port it is recommended to use \ :ref:`yadro.tatlin\_uni.tatlin\_sp\_mgmt\_port <ansible_collections.yadro.tatlin_uni.tatlin_sp_mgmt_port_module>`\ 
 
 .. Seealso
 
@@ -668,7 +630,7 @@ Examples
     
     ---
     - name: Configure p00
-      yadro.tatlin.tatlin_sp_port:
+      yadro.tatlin_uni.tatlin_sp_port:
         connection: "{{ connection }}"
         name: p00
         gateway: 192.168.1.1
@@ -683,7 +645,7 @@ Examples
               mask: 24
 
     - name: Test port change | Reset p00
-      yadro.tatlin.tatlin_sp_port:
+      yadro.tatlin_uni.tatlin_sp_port:
         connection: "{{ connection }}"
         name: p00
         state: absent
@@ -715,7 +677,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-error"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__return-error:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__return-error:
 
       .. rst-class:: ansible-option-title
 
@@ -755,7 +717,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.yadro.tatlin.tatlin_sp_port_module__return-msg:
+      .. _ansible_collections.yadro.tatlin_uni.tatlin_sp_port_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
