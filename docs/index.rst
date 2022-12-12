@@ -23,8 +23,8 @@ Yadro Tatlin Unified Ansible Collection
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="TODO" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="TODO" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 

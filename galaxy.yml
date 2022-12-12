@@ -10,7 +10,7 @@ license:
 license_file: COPYING
 tags: []
 dependencies: {}
-repository: TODO
-documentation: TODO
-homepage: TODO
-issues: TODO
+repository: https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible
+documentation: https://yadro-kns.github.io/tatlin.uni-yadro-ansible/
+homepage: https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible
+issues: https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible/issues

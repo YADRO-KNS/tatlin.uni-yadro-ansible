@@ -11,8 +11,10 @@ This collection helps to automate configuration of the Tatlin Unified.
 
 ## Installation
 
-TODO
+You can install this collection by executing the next command:
+
+```ansible-galaxy collection install git+https://github.com/YADRO-KNS/tatlin.uni-yadro-ansible```
 
 ## Documentation
 
-TODO
+https://yadro-kns.github.io/tatlin.uni-yadro-ansible/
