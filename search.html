@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search &mdash; Ansible Documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/ansible.css" type="text/css" />
+      <link rel="stylesheet" href="_static/antsibull-minimal.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/rtd-ethical-ads.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/images/Ansible-Mark-RGB_Black.png"/>
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/search.html"/>
+    
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="#" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+<script src="https://www.redhat.com/dtm.js"></script>
+
+
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="1.0">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+
+
+<script>
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','https://s.swiftypecdn.com/install/v2/st.js','_st');
+
+_st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+    <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+    <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+    <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Ansible
+          </a>
+              <div class="version">
+                1.0
+              </div><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <form class="version-dropdown" method="get">
+      <script>
+        function switchVersionTo(slug) {
+          var current_url_path = window.location.pathname;
+          var url_version = current_url_path.search("/1.0/") > -1
+            ? "/1.0/"
+            : "/latest/";
+          var new_version_url = current_url_path.replace(url_version, "/" + slug + "/");
+          window.location.replace(new_version_url);
+        }
+      </script>
+      <label class="sr-only" for="version-list">Select version:</label>
+      <select
+          class="version-list"
+          id="version-list"
+          onchange="switchVersionTo(this.value);"
+      >
+        
+        <option
+            value="latest"
+            
+        >
+            latest
+        </option>
+        
+        <option
+            value="devel"
+            
+        >
+            devel
+        </option>
+        
+      </select>
+    </form>
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_dns_module.html">yadro.tatlin_uni.tatlin_sp_dns module – Configure SP DNS settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_drives_info_module.html">yadro.tatlin_uni.tatlin_sp_drives_info module – Get information about drive groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_host_module.html">yadro.tatlin_uni.tatlin_sp_host module – Create and modify host</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_host_group_module.html">yadro.tatlin_uni.tatlin_sp_host_group module – Create and modify host group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_host_groups_info_module.html">yadro.tatlin_uni.tatlin_sp_host_groups_info module – Get information about host groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_hosts_info_module.html">yadro.tatlin_uni.tatlin_sp_hosts_info module – Get information about hosts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_info_module.html">yadro.tatlin_uni.tatlin_sp_info module – Get storage SP configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_iscsi_module.html">yadro.tatlin_uni.tatlin_sp_iscsi module – Manage iSCSI credentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_ldap_module.html">yadro.tatlin_uni.tatlin_sp_ldap module – Configure SP LDAP client settings.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_mgmt_port_module.html">yadro.tatlin_uni.tatlin_sp_mgmt_port module – Configure SP network settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_ntp_module.html">yadro.tatlin_uni.tatlin_sp_ntp module – Configure SP NTP client settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_pool_module.html">yadro.tatlin_uni.tatlin_sp_pool module – Create, modify or destroy a pool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_pools_info_module.html">yadro.tatlin_uni.tatlin_sp_pools_info module – Get information about configured pools.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_port_module.html">yadro.tatlin_uni.tatlin_sp_port module – Configure data port</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_ports_info_module.html">yadro.tatlin_uni.tatlin_sp_ports_info module – Get information about data ports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_resource_block_module.html">yadro.tatlin_uni.tatlin_sp_resource_block module – Create or modify a block resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_resource_file_module.html">yadro.tatlin_uni.tatlin_sp_resource_file module – Create or modify a file resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_resources_info_module.html">yadro.tatlin_uni.tatlin_sp_resources_info module – Get information about configured resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_restart_module.html">yadro.tatlin_uni.tatlin_sp_restart module – Restart Storage Processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_smtp_module.html">yadro.tatlin_uni.tatlin_sp_smtp module – Configure SP SMTP settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_snmp_module.html">yadro.tatlin_uni.tatlin_sp_snmp module – Configure SP SNMP settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_ssl_module.html">yadro.tatlin_uni.tatlin_sp_ssl module – Set storage SSL certificate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_subnet_module.html">yadro.tatlin_uni.tatlin_sp_subnet module – Create, modify or remove a subnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_subnets_info_module.html">yadro.tatlin_uni.tatlin_sp_subnets_info module – Get information about subnets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_syslog_module.html">yadro.tatlin_uni.tatlin_sp_syslog module – Configure SP syslog client settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_user_module.html">yadro.tatlin_uni.tatlin_sp_user module – Configure SP user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tatlin_sp_user_group_module.html">yadro.tatlin_uni.tatlin_sp_user_group module – Configure SP user group</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ansible</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Search</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <noscript>
+  <div id="fallback" class="admonition warning">
+    <p class="last">
+      Please activate JavaScript to enable the search functionality.
+    </p>
+  </div>
+  </noscript>
+
+  
+  <div id="search-results">
+  
+  </div>
+
+           </div>
+          </div>
+          
+
+<footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible project contributors.
+      <span class="lastupdated">Last updated on Dec 12, 2022.
+      </span></p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  <script>
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+  </script>
+  
+  <script id="searchindexloader"></script>
+  <!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+<!-- begin analytics -->
+<script>
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = 'https://js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script>
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script>
+
+
+</body>
+</html>
